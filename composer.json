@@ -1,0 +1,37 @@
+{
+	"name":			"JungleDB",
+	"description":	"An entity graph engine driven to collectively connect all forms of information.",
+	
+	"authors":		[
+		{
+			"name":		"Don Wilson",
+			"email":	"donwilson@gmail.com",
+			"homepage":	"http://pyxol.com/",
+			"role":		"Developer"
+		}
+	],
+	
+	"type":			"project",
+	"license":		"proprietary",
+	
+	"config":		{
+		"vendor-dir":	"public_html/vendor/"
+	},
+	
+	"require":		{
+		"php": ">=5.4.0",
+		
+		"pda/pheanstalk": "dev-master",
+		"neutron/sphinxsearch-api": "dev-psr0",
+		"domnikl/statsd": "*"
+	},
+	
+	"autoload":		{
+		"psr-0":	{
+			"JungleDB\\":	"public_html/engine/"
+		},
+		"classmap":	[
+			"public_html/lib/"
+		]
+	}
+}

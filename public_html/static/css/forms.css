@@ -1,0 +1,114 @@
+	
+	
+	.text_block { margin-bottom: 20px; line-height: 24px; }
+	.error_text { font: normal bold 12px Verdana; color: #CC0000; }
+	
+	.form_row { display: table; width: 710px; margin: 0 auto 20px auto; }
+	
+		.form_row .left { float: left; width: 175px; text-align: right; font: normal normal normal 12px Verdana; color: #303030; padding-top: 8px; }
+			.form_row .left .text_below { color: #b0b0b0; padding-top: 5px; padding-left: 10px; }
+		
+		.form_row .right { float: right; width: 500px; text-align: left; }
+			.form_row .right input[type="text"], .form_row .right input[type="password"], .form_row .right input[type="file"], .form_row .right textarea, .form_row .right select {
+				width: 460px !important;
+				width: 490px;
+				font: normal normal normal 12px Verdana;
+				color: #303030;
+				padding: 7px 15px;
+				border: 1px solid #c0c0c0;
+				background-color: #ffffff;
+			}
+			
+			.form_row .right input[type="submit"], .form_row .right input[type="reset"], .form_row .right input[type="button"] { font-weight: bold; font-size: 14px; padding: 5px 15px; width: 200px; text-align: center; }
+			.form_row .right input[type="checkbox"], .form_row .right input[type="radio"] { vertical-align: text-bottom; }
+			
+			.form_row .right .input_disabled { background-color: #fff; border-color: #f0f0f0; font-size: 12px; }
+			.form_row .right .input_below_me { margin-bottom: 5px; }
+			.form_row .right .text_below {
+				text-align: right;
+				padding-right: 15px;
+				
+				font: italic normal normal 11px/15px Verdana;
+				color: #b0b0b0;
+			}
+			.form_row .right .form_row_note {
+				background: #f0f0f0;
+				text-align: center;
+				
+				font: normal normal normal 12px/16px Verdana;
+				color: #707070;
+				
+				padding: 5px;
+				
+				margin-top: 10px;
+			}
+		
+		.form_row_error {
+			padding: 7px 12px;
+			position: absolute;
+			text-align: left;
+			
+			width: 180px;
+			
+			margin-top: 5px;
+			margin-left: 12px;
+			
+			display: -moz-inline-stack;
+			display: inline-block;
+			
+			font: normal normal normal 12px Verdana;
+			color: #fff;
+			cursor: normal;
+			text-shadow:0 -1px 1px #111111;
+			
+			     -o-border-radius: 4px;
+			   -moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			        border-radius: 4px;
+			
+			     -o-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+			   -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+			-webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+			        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+			
+			background-color:#3b3b3b;
+			
+			background-image:      -o-linear-gradient(bottom, rgb(133,3,3) 100%, rgb(173,2,25) 0%);
+			background-image:    -moz-linear-gradient(bottom, rgb(133,3,3) 100%, rgb(173,2,25) 0%);
+			background-image: -webkit-linear-gradient(bottom, rgb(133,3,3) 100%, rgb(173,2,25) 0%);
+			background-image:     -ms-linear-gradient(bottom, rgb(133,3,3) 100%, rgb(173,2,25) 0%);
+			background-image:         linear-gradient(bottom, rgb(133,3,3) 100%, rgb(173,2,25) 0%);
+			
+			background-image: -webkit-gradient(
+				linear,
+				left bottom,
+				left top,
+				color-stop(1, rgb(133,3,3)),
+				color-stop(0, rgb(173,2,25))
+			);
+		}
+		
+			.form_row_error:after {
+				content: "\25B8";
+				display: block;
+				font-size: 2em;
+				height: 0;
+				line-height: 0;
+				position: absolute;
+				color: rgb(133,3,3);
+				left: -0.375em;
+				top: 30%;
+				margin-top: .1em;
+				text-shadow: 0 -1px 2px #000000;
+				
+				     -o-transform: rotate(180deg);
+				   -moz-transform: rotate(180deg);
+				-webkit-transform: rotate(180deg);
+				        transform: rotate(180deg);
+			}
+	
+	.below_form_agree { text-align: center; margin-top: 15px; font: normal normal 12px Verdana; color: #909090; padding: 15px; background-color: #f0f0f0; }
+		.below_form_agree a { color: #707070; font-weight: bold; text-decoration: none; }
+			.below_form_agree a:hover { color: #000000; text-decoration: underline; }
+	
+	

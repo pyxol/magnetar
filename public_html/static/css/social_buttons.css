@@ -1,0 +1,390 @@
+	
+	
+	/* Social Buttons */
+	
+		.fb_share, .facebook_connect_button_large, .tw_tweet, .twitter_connect_button_large {
+			display: block;
+			
+			height: 32px;
+			width: 260px;
+			
+			border: 1px solid #4a5a7b;
+			
+			background-color: rgb(113,124,186);
+			
+			background-image:         linear-gradient(bottom, rgb(66,96,155) 0%, rgb(113,124,186) 100%);
+			background-image:      -o-linear-gradient(bottom, rgb(66,96,155) 0%, rgb(113,124,186) 100%);
+			background-image:    -moz-linear-gradient(bottom, rgb(66,96,155) 0%, rgb(113,124,186) 100%);
+			background-image: -webkit-linear-gradient(bottom, rgb(66,96,155) 0%, rgb(113,124,186) 100%);
+			background-image:     -ms-linear-gradient(bottom, rgb(66,96,155) 0%, rgb(113,124,186) 100%);
+			
+			background-image: -webkit-gradient(
+				linear,
+				left bottom,
+				left top,
+				color-stop(1, rgb(113,124,186)),
+				color-stop(0, rgb(66,96,155))
+			);
+			
+			     -o-border-radius: 3px;
+			   -moz-border-radius: 3px;
+			-webkit-border-radius: 3px;
+			        border-radius: 3px;
+		}
+		
+			.fb_share span, .facebook_connect_button_large span, .tw_tweet span, .twitter_connect_button_large span {
+				/* margin-left with background of facebook logo */
+				
+				display: inline-block;
+				
+				height: 24px !important;
+				height: 32px;
+				width: 226px !important;
+				width: 260px;
+				
+				padding-top: 8px;
+				padding-left: 34px;
+				
+				text-align: center;
+				
+				font: normal normal bold 14px/14px Verdana;
+				color: #fafafa;
+				
+				text-shadow: 1px 1px 1px rgba(42, 58, 111, 0.9);
+				
+				background: transparent url('../images/social_sprite.png') no-repeat left top;
+			}
+			
+				.fb_share:hover, .facebook_connect_button_large:hover, .tw_tweet:hover, .twitter_connect_button_large:hover {
+					background-color: rgb(63,92,149);
+					
+					background-image:         linear-gradient(top, rgb(103,116,178) 0%, rgb(63,92,149) 100%);
+					background-image:      -o-linear-gradient(top, rgb(103,116,178) 0%, rgb(63,92,149) 100%);
+					background-image:    -moz-linear-gradient(top, rgb(103,116,178) 0%, rgb(63,92,149) 100%);
+					background-image: -webkit-linear-gradient(top, rgb(103,116,178) 0%, rgb(63,92,149) 100%);
+					background-image:     -ms-linear-gradient(top, rgb(103,116,178) 0%, rgb(63,92,149) 100%);
+					
+					background-image: -webkit-gradient(
+						linear,
+						left bottom,
+						left top,
+						color-stop(0, rgb(63,92,149)),
+						color-stop(1, rgb(103,116,178))
+					);
+				}
+				
+					.fb_share:hover span, .facebook_connect_button_large:hover span, .tw_tweet:hover span, .twitter_connect_button_large:hover span { color: #fff; }
+				
+				.fb_share:active, .facebook_connect_button_large:active, .tw_tweet:active, .twitter_connect_button_large:active {
+					background-color: rgb(66,96,155);
+					
+					background-image:         linear-gradient(bottom, rgb(113,124,186) 0%, rgb(66,96,155) 100%);
+					background-image:      -o-linear-gradient(bottom, rgb(113,124,186) 0%, rgb(66,96,155) 100%);
+					background-image:    -moz-linear-gradient(bottom, rgb(113,124,186) 0%, rgb(66,96,155) 100%);
+					background-image: -webkit-linear-gradient(bottom, rgb(113,124,186) 0%, rgb(66,96,155) 100%);
+					background-image:     -ms-linear-gradient(bottom, rgb(113,124,186) 0%, rgb(66,96,155) 100%);
+					
+					background-image: -webkit-gradient(
+						linear,
+						left bottom,
+						left top,
+						color-stop(1, rgb(66,96,155)),
+						color-stop(0, rgb(113,124,186))
+					);
+				}
+				
+					.fb_share:active span, .facebook_connect_button_large:active span, .tw_tweet:active span, .twitter_connect_button_large:active span { color: #f0f0f0; }
+			
+			/* facebook button specifics */
+			
+			@-moz-keyframes facebookConnectPulse {
+				from {
+					   -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+				50% {
+					   -moz-box-shadow: 0px 0px 10px #576da9;
+					        box-shadow: 0px 0px 10px #576da9;
+				}
+				to {
+					   -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+			}
+			
+			@-webkit-keyframes facebookConnectPulse {
+				from {
+					-webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+				50% {
+					-webkit-box-shadow: 0px 0px 10px #576da9;
+					        box-shadow: 0px 0px 10px #576da9;
+				}
+				to {
+					-webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+			}
+			
+			@keyframes facebookConnectPulse {
+				from {
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+				50% {
+					        box-shadow: 0px 0px 10px #576da9;
+				}
+				to {
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+			}
+			
+			.facebook_connect_button_large {
+				     -o-box-shadow: 0 0 10px #576da9;
+				   -moz-box-shadow: 0 0 10px #576da9;
+				-webkit-box-shadow: 0 0 10px #576da9;
+				        box-shadow: 0 0 10px #576da9;
+				
+				     -o-animation: facebookConnectPulse 2s ease-in-out 0 infinite alternate;
+				   -moz-animation: facebookConnectPulse 2s ease-in-out 0 infinite alternate;
+				-webkit-animation: facebookConnectPulse 2s ease-in-out 0 infinite alternate;
+				    -ms-animation: facebookConnectPulse 2s ease-in-out 0 infinite alternate;
+				        animation: facebookConnectPulse 2s ease-in-out 0 infinite alternate;
+			}
+				.facebook_connect_button_large:hover {
+					-webkit-animation: none;
+					
+					   -moz-box-shadow: 0px 0px 10px #576da9;
+					-webkit-box-shadow: 0px 0px 10px #576da9;
+					        box-shadow: 0px 0px 10px #576da9;
+				}
+			
+			.fb_share, .tw_tweet {
+				height: 24px;
+				width: 90px;
+				
+				margin-bottom: 20px;
+			}
+			
+				.fb_share span, .tw_tweet span {
+					font-size: 11px;
+					line-height: 11px;
+					
+					background-position: 0 -41px;
+					
+					height: 19px !important;
+					height: 24px;
+					width: 64px !important;
+					width: 90px;
+					
+					padding-left: 26px;
+					padding-top: 7px;
+				}
+			
+			
+			/* Twitter buttons */
+			
+			@-moz-keyframes twitterConnectPulse {
+				from {
+					   -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);	 
+				}
+				50% {
+					   -moz-box-shadow: 0px 0px 5px #019ad2;
+					        box-shadow: 0px 0px 5px #019ad2;	 
+				}
+				to {
+					   -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);	
+				}
+			}
+			
+			@-webkit-keyframes twitterConnectPulse {
+				from {
+					-webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);	 
+				}
+				50% {
+					-webkit-box-shadow: 0px 0px 5px #019ad2;
+					        box-shadow: 0px 0px 5px #019ad2;	 
+				}
+				to {
+					-webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);	
+				}
+			}
+			
+			@keyframes twitterConnectPulse {
+				from {
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);	 
+				}
+				50% {
+					        box-shadow: 0px 0px 5px #019ad2;	 
+				}
+				to {
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);	
+				}
+			}
+			
+			.twitter_connect_button_large {
+				font: normal bold 12px/12px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+				color: #333;
+				text-shadow: none;
+				
+				border-color: #CCC;
+				
+				background: #f8f8f8;
+				
+				background-image:         linear-gradient(top, #dedede 0%, #fff 100%);
+				background-image:      -o-linear-gradient(top, #dedede 0%, #fff 100%);
+				background-image:    -moz-linear-gradient(top, #dedede 0%, #fff 100%);
+				background-image: -webkit-linear-gradient(top, #dedede 0%, #fff 100%);
+				background-image:     -ms-linear-gradient(top, #dedede 0%, #fff 100%);
+				
+				background-image: -webkit-gradient(
+					linear,
+					left bottom,
+					left top,
+					color-stop(1, #fff),
+					color-stop(0, #dedede)
+				);
+				
+				     -o-border-radius: 5px;
+				   -moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				        border-radius: 5px;
+				
+				     -o-box-shadow: 0 0 5px #019ad2;
+				   -moz-box-shadow: 0 0 5px #019ad2;
+				-webkit-box-shadow: 0 0 5px #019ad2;
+				        box-shadow: 0 0 5px #019ad2;
+				
+				   -moz-animation: twitterConnectPulse 2s ease-in-out 0 infinite alternate;
+				-webkit-animation: twitterConnectPulse 2s ease-in-out 0 infinite alternate;
+				        animation: twitterConnectPulse 2s ease-in-out 0 infinite alternate;
+			}
+				.twitter_connect_button_large:hover {
+					-webkit-animation: none;
+					
+					background-image:         linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image:      -o-linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image:    -moz-linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image: -webkit-linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image:     -ms-linear-gradient(top, #dedede 0%, #fff 100%);
+					
+					background-image: -webkit-gradient(
+						linear,
+						left bottom,
+						left top,
+						color-stop(1, #fff),
+						color-stop(0, #dedede)
+					);
+					
+					     -o-box-shadow: 0px 0px 5px #019ad2;
+					   -moz-box-shadow: 0px 0px 5px #019ad2;
+					-webkit-box-shadow: 0px 0px 5px #019ad2;
+					        box-shadow: 0px 0px 5px #019ad2;
+				}
+				
+				.twitter_connect_button_large span {
+					background-position: 8px -74px;
+					
+					font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+					color: #333;
+					text-shadow: none;
+				}
+				
+				.twitter_connect_button_large:active {
+					     -o-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					   -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					-webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+					        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
+				}
+			
+			.tw_tweet {
+				font: normal bold 12px/12px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+				color: #333;
+				text-shadow: none;
+				
+				border-color: #CCC;
+				
+				background: #f8f8f8;
+				
+				
+				background-image:         linear-gradient(top, #fff 0%, #dedede 100%);
+				background-image:      -o-linear-gradient(top, #fff 0%, #dedede 100%);
+				background-image:    -moz-linear-gradient(top, #fff 0%, #dedede 100%);
+				background-image: -webkit-linear-gradient(top, #fff 0%, #dedede 100%);
+				background-image:     -ms-linear-gradient(top, #fff 0%, #dedede 100%);
+				
+				background-image: -webkit-gradient(
+					linear,
+					left bottom,
+					left top,
+					color-stop(1, #fff),
+					color-stop(0, #dedede)
+				);
+				
+				     -o-border-radius: 4px;
+				   -mox-border-radius: 4px;
+				-webkit-border-radius: 4px;
+				        border-radius: 4px;
+			}
+			
+				.tw_tweet span {
+					background-position: 5px -78px;
+					padding-top: 6px;
+					
+					font: normal bold 12px/12px 'Helvetica Neue',Arial,sans-serif;
+					color: #333;
+					text-shadow: none;
+				}
+				
+				.tw_tweet:hover {
+					background-image:         linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image:      -o-linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image:    -moz-linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image: -webkit-linear-gradient(top, #dedede 0%, #fff 100%);
+					background-image:     -ms-linear-gradient(top, #dedede 0%, #fff 100%);
+					
+					background-image: -webkit-gradient(
+						linear,
+						left bottom,
+						left top,
+						color-stop(1, #fff),
+						color-stop(0, #dedede)
+					);
+					
+					     -o-box-shadow: inset 0 8px 8px -8px rgba(75, 75, 75, 0.3);
+					   -moz-box-shadow: inset 0 8px 8px -8px rgba(75, 75, 75, 0.3);
+					-webkit-box-shadow: inset 0 8px 8px -8px rgba(75, 75, 75, 0.3);
+					        box-shadow: inset 0 8px 8px -8px rgba(75, 75, 75, 0.3);
+				}
+				
+					.tw_tweet:hover span, .twitter_connect_button_large:hover span {
+						color: #333;
+						text-shadow: none;
+					}
+				
+				.tw_tweet:active, .twitter_connect_button_large:active {
+					background: #fcfcfc;
+					
+					background-image:         linear-gradient(top, #fff 0%, #dedede 100%);
+					background-image:      -o-linear-gradient(top, #fff 0%, #dedede 100%);
+					background-image:    -moz-linear-gradient(top, #fff 0%, #dedede 100%);
+					background-image: -webkit-linear-gradient(top, #fff 0%, #dedede 100%);
+					background-image:     -ms-linear-gradient(top, #fff 0%, #dedede 100%);
+					
+					background-image: -webkit-gradient(
+						linear,
+						left bottom,
+						left top,
+						color-stop(1, #dedede),
+						color-stop(0, #fff)
+					);
+				}
+				
+					.tw_tweet:active span { background-position: 5px -113px; color: rgba(51, 51, 51, 0.7); }
+					.twitter_connect_button_large:active span { background-position: 8px -109px; color: rgba(51, 51, 51, 0.7); }
+	
+	
