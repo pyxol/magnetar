@@ -1,4 +1,4 @@
-magnetar
+Magnetar
 ========
 
-MVC PHP engine
+A moderately minimalist framework for mostly modern web application development.

@@ -1,37 +1,30 @@
 {
-	"name":			"JungleDB",
-	"description":	"An entity graph engine driven to collectively connect all forms of information.",
-	
-	"authors":		[
+	"name": "donwilson/magnetar",
+	"type": "library",
+	"description": "Magnetar is a web application framework that focuses on speed and ease of use.",
+	"keywords": ["magnetar", "framework"],
+	"license": "MIT",
+	"authors": [
 		{
-			"name":		"Don Wilson",
-			"email":	"donwilson@gmail.com",
-			"homepage":	"http://pyxol.com/",
-			"role":		"Developer"
+			"name": "Don Wilson",
+			"email": "donwilson@gmail.com",
+			"homepage": "http://pyxol.com/",
+			"role": "Lead Developer"
 		}
 	],
-	
-	"type":			"project",
-	"license":		"proprietary",
-	
-	"config":		{
-		"vendor-dir":	"public_html/vendor/"
+	"require": {
+		"php": "^8.2"
 	},
-	
-	"require":		{
-		"php": ">=5.4.0",
-		
-		"pda/pheanstalk": "dev-master",
-		"neutron/sphinxsearch-api": "dev-psr0",
-		"domnikl/statsd": "*"
+	"autoload": {
+		"psr-4": {
+			"Magnetar\\": "src/Magnetar/"
+		}
 	},
-	
-	"autoload":		{
-		"psr-0":	{
-			"JungleDB\\":	"public_html/engine/"
-		},
-		"classmap":	[
-			"public_html/lib/"
-		]
-	}
+	"config": {
+		"optimize-autoloader": true,
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"minimum-stability": "stable",
+	"prefer-stable": true
 }
