@@ -9,25 +9,33 @@
 		 * @param string $string The string to convert
 		 * @param string $separator Optional. The separator to use. Defaults to "-".
 		 * @param bool $lowercase Optional. Whether to lowercase the string. Defaults to true.
+		 * @param string $default Optional. The default string to return if the string is empty. Defaults to an empty string.
 		 * @return string
 		 */
 		public static function mkurl(
 			string $string,
-			string $separator="-",
-			bool $lowercase=true
+			string $separator='-',
+			bool $lowercase=true,
+			string $default=''
 		): string {
 			if(!empty($lowercase)) {
 				$string = strtolower($string);
 			}
 			
 			$string = trim($string);
-			$string = str_replace(["'"], "", $string);
-			$string = preg_replace("#([^A-Za-z0-9". (("-" !== $separator)?preg_quote($separator, "#"):"") ."])#si", $separator, $string);
+			$string = str_replace(["'"], '', $string);
+			$string = preg_replace(
+				"#([^A-Za-z0-9". (('-' !== $separator)?preg_quote($separator, '#'):'') ."])#si",
+				$separator,
+				$string
+			);
 			
 			$string = preg_replace("#". preg_quote($separator, "#") ."{2,}#si", $separator, $string);
 			//$string = preg_replace("#". preg_quote($separator, "#") ."(". preg_quote($separator, "#") ."+)#si", $separator, $string);
 			
-			$string = trim($string, $separator);
+			if("" === ($string = trim($string, $separator))) {
+				return $default;
+			}
 			
 			return $string;
 		}
@@ -38,8 +46,8 @@
 		 * @return string
 		 * @see https://stackoverflow.com/a/32921891/103337
 		 */
-		public static function stripZalgoText(string $string=""): string {
-			$string = preg_replace("~(?:[\p{M}]{1})([\p{M}])+?~uis", "", $string);
+		public static function stripZalgoText(string $string=''): string {
+			$string = preg_replace("~(?:[\p{M}]{1})([\p{M}])+?~uis", '', $string);
 			
 			return $string;
 		}
@@ -51,26 +59,26 @@
 		 * @see https://stackoverflow.com/a/14167216/103337
 		 */
 		public static function formatPhoneNumber(int|string $phoneNumber): string {
-			$phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
+			$phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
 			
 			if(strlen($phoneNumber) > 10) {
-				$countryCode = substr($phoneNumber, 0, strlen($phoneNumber)-10);
+				$countryCode = substr($phoneNumber, 0, (strlen($phoneNumber) - 10));
 				$areaCode = substr($phoneNumber, -10, 3);
 				$nextThree = substr($phoneNumber, -7, 3);
 				$lastFour = substr($phoneNumber, -4, 4);
 				
-				$phoneNumber = '+'.$countryCode.' ('.$areaCode.') '.$nextThree.'-'.$lastFour;
+				$phoneNumber = '+'. $countryCode .' ('. $areaCode .') '. $nextThree .'-'. $lastFour;
 			} elseif(strlen($phoneNumber) == 10) {
 				$areaCode = substr($phoneNumber, 0, 3);
 				$nextThree = substr($phoneNumber, 3, 3);
 				$lastFour = substr($phoneNumber, 6, 4);
 				
-				$phoneNumber = '('.$areaCode.') '.$nextThree.'-'.$lastFour;
+				$phoneNumber = '('. $areaCode .') '. $nextThree .'-'. $lastFour;
 			} elseif(strlen($phoneNumber) == 7) {
 				$nextThree = substr($phoneNumber, 0, 3);
 				$lastFour = substr($phoneNumber, 3, 4);
 				
-				$phoneNumber = $nextThree.'-'.$lastFour;
+				$phoneNumber = $nextThree .'-'. $lastFour;
 			}
 			
 			return $phoneNumber;
@@ -129,7 +137,10 @@
 			
 			$text = str_ireplace(array_keys($hard_replacers), array_values($hard_replacers), $text);
 			
-			$encasings = array_merge(["(" => ")", "[" => "]"], $user_encasings);
+			$encasings = array_merge([
+				'(' => ')',
+				'[' => ']',
+			], $user_encasings);
 			
 			foreach($encasings as $encasing_open => $encasing_close) {
 				$text = preg_replace_callback("#". preg_quote($encasing_open, "#") ."([^". preg_quote($encasing_close, "#") ."]+?)". preg_quote($encasing_close, "#") ."#si", function($matches) {
@@ -182,10 +193,10 @@
 			$milliseconds = ($seconds - floor($seconds));
 			
 			if(!empty($hours)) {
-				return sprintf('%02d:%02d:%02d', $hours, $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', $milliseconds), 0, $precision):"");
+				return sprintf('%02d:%02d:%02d', $hours, $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', (string)$milliseconds), 0, $precision):"");
 			}
 			
-			return sprintf('%02d:%02d', $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', $milliseconds), 0, $precision):"");
+			return sprintf('%02d:%02d', $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', (string)$milliseconds), 0, $precision):"");
 		}
 		
 		/**
@@ -217,8 +228,8 @@
 				$length = 12;
 			}
 			
-			$string = "";
-			$chars = array_merge(range("a", "z"), range("A", "Z"), range(0, 9));
+			$string = '';
+			$chars = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
 			
 			for($i = 0; $i < $length; $i++) {
 				$string .= $chars[ array_rand($chars) ];
@@ -233,8 +244,8 @@
 		 * @return string
 		 */
 		public static function flipCase(string $str): string {
-			$uppercase = range("A", "Z");
-			$lowercase = range("a", "z");
+			$uppercase = range('A', 'Z');
+			$lowercase = range('a', 'z');
 			
 			$final = [];
 			$bits = str_split($str);
@@ -280,7 +291,7 @@
 		 */
 		public static function commonlyIgnorableWords(): array {
 			// @TODO move elsewhere
-			return array_unique(array_merge([
+			return [
 				"you",
 				"my",
 				"me",
@@ -444,7 +455,7 @@
 				"thing",
 				"an",
 				"know",
-			], range("a", "z"), get_col("SELECT `word` FROM `ignore_word`")));
+			];
 		}
 		
 		/**
@@ -498,15 +509,15 @@
 			//$hours = intval(intval($sec) / 3600);
 			$hours = intval($sec / 3600);
 			
-			$hms .= ($padHours?str_pad($hours, 2, "0", STR_PAD_LEFT) .':':$hours .':');
+			$hms .= ($padHours?str_pad((string)$hours, 2, '0', STR_PAD_LEFT) .':':$hours .':');
 			
 			$minutes = intval(($sec / 60) % 60);
 			
-			$hms .= str_pad($minutes, 2, "0", STR_PAD_LEFT) .':';
+			$hms .= str_pad((string)$minutes, 2, '0', STR_PAD_LEFT) .':';
 			
 			$seconds = intval($sec % 60);
 			
-			$hms .= str_pad($seconds, 2, "0", STR_PAD_LEFT);
+			$hms .= str_pad((string)$seconds, 2, '0', STR_PAD_LEFT);
 			
 			return $hms;
 		}

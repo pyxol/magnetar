@@ -19,7 +19,7 @@
 			$first_char = substr($var, 0, 1);
 			$last_char = substr($var, -1);
 			
-			if((("[" !== $first_char) && ("]" !== $last_char)) && (("{" !== $first_char) && ("}" !== $last_char))) {
+			if((('[' !== $first_char) && (']' !== $last_char)) && (('{' !== $first_char) && ('}' !== $last_char))) {
 				return $var;
 			}
 			

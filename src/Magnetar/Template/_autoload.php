@@ -52,7 +52,7 @@
 	 * @return string
 	 */
 	function esc_tag(string $string): string {
-		$string = strtolower(preg_replace("#[^A-Za-z0-9_:]#i", "", $string));
+		$string = strtolower(preg_replace("#[^A-Za-z0-9_:]#i", '', $string));
 		
 		return $string;
 	}

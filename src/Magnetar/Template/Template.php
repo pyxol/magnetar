@@ -3,9 +3,6 @@
 	
 	namespace Magnetar\Template;
 	
-	use Magnetar\Template\Data;
-	use Magnetar\Template\View;
-	
 	class Template {
 		protected Data $data;
 		
@@ -37,8 +34,8 @@
 		 */
 		public function getPath(string $tpl_name): string {
 			// sanitize the template name
-			if(false === strpos($tpl_name, ".php")) {
-				$tpl_name .= ".php";
+			if(!preg_match("#\.php$#si", $tpl_name)) {
+				$tpl_name .= '.php';
 			}
 			
 			return $this->base_path . $tpl_name;

@@ -5,11 +5,11 @@
 	
 	use \Exception;
 	
-	use Magnetar\Database\DatabaseInterface;
 	use Magnetar\Config\Config;
 	
 	abstract class AbstractDatabase implements DatabaseInterface {
 		use DatabaseTrait;
+		
 		protected Config $config;
 		
 		/**
@@ -28,22 +28,4 @@
 			// wire up to DB instance
 			$this->wireUp();
 		}
-		
-		// query
-		abstract public function query(array $sql_query, array $params=[]): int|false;
-		
-		// get rows
-		abstract public function get_rows(string $sql_query, array $params=[], array|false $column_key=false): array|false;
-		
-		// get row
-		abstract public function get_row(string $sql_query, array $params=[]): array|false;
-		
-		// get column
-		abstract public function get_col(string $sql_query, array $params=[], string|int $column_key=0): array|false;
-		
-		// get assoc column
-		abstract public function get_col_assoc(string $sql_query, array $params=[], string $assoc_key, string|int $column_key=0): array|false;
-		
-		// get var
-		abstract public function get_var(string $sql_query, array $params=[], string|int|false $column_key=false): string|int|false;
 	}

@@ -4,8 +4,6 @@
 	namespace Magnetar\Utilities\Cryptography;
 	
 	class Encryption {
-		protected string $encryption_key;
-		
 		protected string $salt;
 		protected string $digest_method = 'SHA256';   // a value from openssl_get_md_methods()
 		protected string $cipher_method = 'aes-128-ctr';   // a value from openssl_get_cipher_methods()

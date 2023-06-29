@@ -32,7 +32,7 @@
 			]);
 			
 			if(empty($this->object['id'])) {
-				throw new Exception("Media #". $id ." not found");
+				throw new Exception("Media not found");
 			}
 		}
 		

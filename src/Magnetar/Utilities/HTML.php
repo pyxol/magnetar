@@ -12,23 +12,27 @@
 		 * @return string
 		 */
 		public static function highlightText(
-			string $string="",
-			string $text="",
-			string $hilight_element="mark"
+			string $string='',
+			string $text='',
+			string $hilight_element='mark'
 		): string {
-			if("" === ($string = strtolower(trim($string)))) {
+			if('' === ($string = strtolower(trim($string)))) {
 				return $text;
 			}
 			
-			$strings = explode(" ", $string);
+			$strings = explode(' ', $string);
 			$strings = array_unique($strings);
 			
 			foreach($strings as $string) {
-				if(in_array($string, [$hilight_element, "href", "src"])) {
+				if(in_array($string, [$hilight_element, 'href', 'src'])) {
 					continue;
 				}
 				
-				$text = preg_replace("#(". preg_quote($string, "#") .")#si", "<". $hilight_element .">\\1</". $hilight_element .">", $text);
+				$text = preg_replace(
+					"#(". preg_quote($string, "#") .")#si",
+					"<". $hilight_element .">\\1</". $hilight_element .">",
+					$text
+				);
 			}
 			
 			return $text;
@@ -53,17 +57,17 @@
 			$strings = preg_split("#\n{1,}#si", $string, -1, PREG_SPLIT_NO_EMPTY);
 			
 			if($strip_html) {
-				$strings = array_map("strip_tags", $strings);
+				$strings = array_map('strip_tags', $strings);
 			}
 			
 			if($escape_html) {
-				$strings = array_map("esc_html", $strings);
+				$strings = array_map('esc_html', $strings);
 			}
 			
 			if((false !== $filter_each_paragraph_cb) && is_callable($filter_each_paragraph_cb)) {
 				$strings = array_map($filter_each_paragraph_cb, $strings);
 			}
 			
-			return "<p>". implode("</p><p>", $strings) ."</p>";
+			return '<p>'. implode('</p><p>', $strings) .'</p>';
 		}
 	}

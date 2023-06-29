@@ -9,7 +9,10 @@
 		protected ?AbstractDatabase $db = null;
 		public ?array $object = null;
 		
-		public function __construct(int|null $id=null, ?AbstractDatabase $db=null) {
+		public function __construct(
+			int|null $id=null,
+			?AbstractDatabase $db=null
+		) {
 			if(!is_null($db)) {
 				$this->setDb($db);
 			}

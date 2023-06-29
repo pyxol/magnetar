@@ -9,6 +9,11 @@
 	class MemcachedStore extends AbstractCacheStore {
 		protected $memcached;
 		
+		/**
+		 * Connect to Memcached
+		 * @param Config $config
+		 * @return void
+		 */
 		protected function connect(Config $config): void {
 			$this->memcached = new Memcached();
 			$this->memcached->addServer(
@@ -19,7 +24,7 @@
 		
 		/**
 		 * Clear entirety of cache. If a prefix is set, only keys with that prefix will be cleared.
-		 * According to the Memcached documentation, this method does not guarantee that all keys will be cleared. Whomp whomp.
+		 * According to the Memcached documentation, this method does not guarantee that all keys will be cleared. Whomp whomp
 		 * @return void
 		 */
 		public function clear(): void {
@@ -39,7 +44,7 @@
 		}
 		
 		/**
-		 * Delete a value from the cache.
+		 * Delete a value from the cache
 		 * @param string $key
 		 * @return bool
 		 */
@@ -50,10 +55,10 @@
 		/**
 		 * Get a value from the cache. If the value does not exist, null is returned.
 		 * If a callback is provided, it will be called and the return value will be
-		 * stored in the cache and returned.
+		 * stored in the cache and returned
 		 *
 		 * @param string $key
-		 * @param mixed $callback Optional. The value to store in cache if the key does not exist. If callable, the return value will be stored.
+		 * @param mixed $callback Optional. The value to store in cache if the key does not exist. If callable, the return value will be stored
 		 * @return mixed
 		 */
 		public function get(string $key, mixed $callback=null): mixed {
@@ -92,27 +97,27 @@
 		}
 		
 		/**
-		 * Increment the value of an item in the cache.
+		 * Increment the value of an item in the cache
 		 * @param string $key
-		 * @param int $value How much to increment by
+		 * @param int $step How much to increment by
 		 * @return int|false
 		 */
-		public function increment(string $key, $value=1): int|false {
-			return $this->memcached->increment($this->prefix . $key, $value);
+		public function increment(string $key, int $step=1): int|false {
+			return $this->memcached->increment($this->prefix . $key, $step);
 		}
 		
 		/**
-		 * Decrement the value of an item in the cache.
+		 * Decrement the value of an item in the cache
 		 * @param string $key
-		 * @param int $value How much to decrement by
+		 * @param int $step How much to decrement by
 		 * @return int|false
 		 */
-		public function decrement(string $key, $value=1): int|false {
-			return $this->memcached->decrement($this->prefix . $key, $value);
+		public function decrement(string $key, int $step=1): int|false {
+			return $this->memcached->decrement($this->prefix . $key, $step);
 		}
 		
 		/**
-		 * Determine if an item exists in the cache.
+		 * Determine if an item exists in the cache
 		 * @param string $key
 		 * @return bool
 		 */
@@ -123,7 +128,7 @@
 		}
 		
 		/**
-		 * Determine if the given items exist in the cache.
+		 * Determine if the given items exist in the cache
 		 * @param array $keys
 		 * @return array
 		 */

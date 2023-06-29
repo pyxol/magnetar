@@ -13,7 +13,7 @@
 		 */
 		public static function based_string_encode(string $str): string {
 			$string = base64_encode($str);
-			$string = trim($string, "=");
+			$string = trim($string, '=');
 			$string = strrev($string);
 			$string = Str::flipCase($string);
 			

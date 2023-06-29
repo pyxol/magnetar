@@ -29,7 +29,7 @@
 			]);
 			
 			if(empty($this->object['id'])) {
-				throw new Exception("Entity Type #". $id ." not found");
+				throw new Exception("Entity Type not found");
 			}
 		}
 		
@@ -129,6 +129,8 @@
 			if(!empty($sub_section) && preg_match("#^[A-Za-z0-9\-_]+#si", $sub_section) && ("" !== ($sub_section = strtolower(trim($sub_section))))) {
 				$uri_path .= $sub_section ."/";
 			}
+			
+			// @TODO replacement for site_url
 			
 			return site_url($uri_path);
 		}

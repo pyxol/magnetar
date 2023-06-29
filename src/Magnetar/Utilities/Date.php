@@ -66,19 +66,32 @@
 		
 		/**
 		 * Get the age of a person by their date of birth
-		 * @param string|int $timestamp_start The timestamp of the person's date of birth
-		 * @param string|int|false $timestamp_end Optional. The timestamp of the person's date of death. Defaults to false
+		 * @param string|int $start The timestamp of the person's date of birth
+		 * @param string|int|false $end Optional. The timestamp of the person's date of death. Defaults to false
 		 * @return int
 		 */
 		public static function getAge(
-			string|int $timestamp_start,
-			string|int|false $timestamp_end=false
+			string|int $start,
+			string|int|false $end=false
 		): int {
-			// stop date/death date?
-			if((false !== $timestamp_end) && is_numeric($timestamp_end)) {
-				return (date("md", date("U", $timestamp_start)) > date("md", $timestamp_end)?((date("Y", $timestamp_end) - date("Y", $timestamp_start)) - 1):(date("Y", $timestamp_end) - date("Y", $timestamp_start)));
+			if(!is_numeric($start)) {
+				// convert to timestamp
+				$start = (int)strtotime($start);
 			}
 			
-			return (date("md", date("U", $timestamp_start)) > date("md")?((date("Y") - date("Y", $timestamp_start)) - 1):(date("Y") - date("Y", $timestamp_start)));
+			if(false === $end) {
+				// default to current timestamp
+				$end = time();
+			} elseif(!is_numeric($end)) {
+				// convert to timestamp
+				$end = (int)strtotime($end);
+			}
+			
+			// if the month+day of start is later in the year than the month+day of end, then the person has not had their birthday yet
+			if(date("md", $start) > date("md", $end)) {
+				return ((date("Y", $end) - date("Y", $start)) - 1);
+			}
+			
+			return (date("Y", $end) - date("Y", $start));
 		}
 	}

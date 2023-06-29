@@ -19,7 +19,7 @@
 			}
 			
 			if(!is_numeric($seed)) {
-				$seed = preg_replace("#[^0-9]+#si", "", md5($seed));
+				$seed = preg_replace("#[^0-9]+#si", '', md5($seed));
 			}
 			
 			mt_srand((int)$seed);
@@ -48,7 +48,7 @@
 			}
 			
 			if(!is_numeric($seed)) {
-				$seed = preg_replace("#[^0-9]+#si", "", md5($seed));
+				$seed = preg_replace("#[^0-9]+#si", '', md5($seed));
 			}
 			
 			mt_srand((int)$seed);

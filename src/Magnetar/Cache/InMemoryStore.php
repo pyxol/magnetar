@@ -5,17 +5,31 @@
 	
 	use Magnetar\Config;
 	
-	class MemoryStore extends AbstractCacheStore {
+	class InMemoryStore extends AbstractCacheStore {
 		protected array $store = [];
 		
+		/**
+		 * Unused connect method
+		 * @param Config $config
+		 * @return void
+		 */
 		protected function connect(Config $config): void {
 			// nothing needed for this method in this class
 		}
 		
+		/**
+		 * Clear entirety of cache
+		 * @return void
+		 */
 		public function clear(): void {
 			$this->store = [];
 		}
 		
+		/**
+		 * Delete a value from the cache
+		 * @param string $key
+		 * @return bool
+		 */
 		public function delete(string $key): bool {
 			unset($this->store[ $key ]);
 			
@@ -25,15 +39,15 @@
 		/**
 		 * Get a value from the cache. If the value does not exist, null is returned.
 		 * If a callback is provided, it will be called and the return value will be
-		 * stored in the cache and returned.
+		 * stored in the cache and returned
 		 *
 		 * @param string $key
-		 * @param mixed $callback Optional. The value to store in cache if the key does not exist. If callable, the return value will be stored.
+		 * @param mixed $callback Optional. The value to store in cache if the key does not exist. If callable, the return value will be stored
 		 * @return mixed
 		 */
 		public function get(string $key, mixed $callback=null): mixed {
-			if(isset($this->store[ $this->prefix . $key ])) {
-				return $this->store[ $this->prefix . $key ];
+			if(isset($this->store[ $key ])) {
+				return $this->store[ $key ];
 			}
 			
 			if(is_null($callback)) {
@@ -48,7 +62,7 @@
 		}
 		
 		/**
-		 * Get the values for the given keys. Null is returned for each key that doesn't exist or isn't scalar.
+		 * Get the values for the given keys. Null is returned for each key that doesn't exist or isn't scalar
 		 * @param array $keys
 		 * @return array
 		 */
@@ -63,46 +77,48 @@
 		}
 		
 		/**
-		 * Increment the value of an item in the cache.
+		 * Increment the value of an item in the cache
 		 * @param string $key
+		 * @param int $step How much to increment by
 		 * @return int|bool
 		 */
-		public function increment(string $key): int|false {
-			if(!isset($this->store[ $this->prefix . $key ])) {
-				$this->store[ $this->prefix . $key ] = 0;
+		public function increment(string $key, int $step=1): int|false {
+			if(!isset($this->store[ $key ])) {
+				$this->store[ $key ] = 0;
 			}
 			
-			$this->store[ $this->prefix . $key ]++;
+			$this->store[ $key ]++;
 			
-			return $this->store[ $this->prefix . $key ];
+			return $this->store[ $key ];
 		}
 		
 		/**
-		 * Decrement the value of an item in the cache.
+		 * Decrement the value of an item in the cache
 		 * @param string $key
+		 * @param int $step How much to decrement by
 		 * @return int|bool
 		 */
-		public function decrement(string $key): int|false {
-			if(!isset($this->store[ $this->prefix . $key ])) {
-				$this->store[ $this->prefix . $key ] = 0;
+		public function decrement(string $key, int $step=1): int|false {
+			if(!isset($this->store[ $key ])) {
+				$this->store[ $key ] = 0;
 			}
 			
-			$this->store[ $this->prefix . $key ]--;
+			$this->store[ $key ]--;
 			
-			return $this->store[ $this->prefix . $key ];
+			return $this->store[ $key ];
 		}
 		
 		/**
-		 * Determine if an item exists in the cache.
+		 * Determine if an item exists in the cache
 		 * @param string $key
 		 * @return bool
 		 */
 		public function has(string $key): bool {
-			return isset($this->store[ $this->prefix . $key ]);
+			return isset($this->store[ $key ]);
 		}
 		
 		/**
-		 * Determine if the given items exist in the cache.
+		 * Determine if the given items exist in the cache
 		 * @param array $keys
 		 * @return array
 		 */
@@ -110,7 +126,7 @@
 			$has = [];
 			
 			foreach($keys as $key) {
-				$has[ $key ] = isset($this->store[ $this->prefix . $key ]);
+				$has[ $key ] = isset($this->store[ $key ]);
 			}
 			
 			return $has;
@@ -124,7 +140,7 @@
 		 * @return mixed
 		 */
 		public function set(string $key, $value, int $ttl=0): mixed {
-			return $this->store[ $this->prefix . $key ] = $value;
+			return $this->store[ $key ] = $value;
 		}
 		
 		/**
@@ -135,7 +151,7 @@
 		 */
 		public function setMany(array $values, int $ttl=0): void {
 			foreach($values as $key => $value) {
-				$this->store[ $this->prefix . $key ] = $value;
+				$this->store[ $key ] = $value;
 			}
 		}
 	}

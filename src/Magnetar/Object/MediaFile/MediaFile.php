@@ -12,6 +12,7 @@
 	
 	use Magnetar\Database\AbstractDatabase;
 	use Magnetar\Object\AbstractObject;
+	use Magnetar\Utilities\JSON;
 	
 	class MediaFile extends AbstractObject {
 		protected ?AbstractDatabase $db = null;
@@ -33,14 +34,14 @@
 			]);
 			
 			if(empty($this->object['id'])) {
-				throw new Exception("Media File #". $id ." not found");
+				throw new Exception("Media File not found");
 			}
 			
 			// parse meta data
-			$this->object['meta_data'] = (!empty($this->object['meta_data'])?maybe_json_decode($this->object['meta_data']):[]);
+			$this->object['meta_data'] = (!empty($this->object['meta_data'])?JSON::maybe_decode($this->object['meta_data']):[]);
 			
 			// parse cargo
-			$this->object['cargo'] = (!empty($this->object['cargo'])?maybe_json_decode($this->object['cargo']):[]);
+			$this->object['cargo'] = (!empty($this->object['cargo'])?JSON::maybe_decode($this->object['cargo']):[]);
 		}
 		
 		/**
@@ -98,8 +99,9 @@
 				$thumbor = new Thumbor(THUMB_IMAGE_URL, THUMB_IMAGE_HASH_KEY);
 				$thumbor->addFilter('strip_icc');
 				
-				if("gif" == get_file_ext($this->object['s3_key'])) {
-					$thumbor->addFilter('format', "jpg");   // jpg=disables animation from webp/gif
+				if(preg_match("#\.gif(?:\?|\#|$)", $this->object['s3_key'])) {
+					// jpg=disables animation from webp/gif
+					$thumbor->addFilter('format', "jpg");
 				} else {
 					$thumbor->addFilter('format', "webp");
 				}
@@ -130,7 +132,7 @@
 		 * @return string
 		 */
 		public function getFileExt() {
-			return get_file_ext($this->object['file_name']);
+			return pathinfo($this->object['file_name'], PATHINFO_EXTENSION);
 		}
 		
 		/**

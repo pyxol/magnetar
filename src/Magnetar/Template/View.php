@@ -3,8 +3,6 @@
 	
 	namespace Magnetar\Template;
 	
-	use Magnetar\Template\Template;
-	
 	// a class to encapsulate a template that's being rendered
 	// holds data via magic methods
 	class View {

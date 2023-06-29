@@ -20,7 +20,7 @@
 			$x_parts = ['k', 'm', 'b', 't'];
 			$x_count_parts = count($x_array) - 1;
 			$x_display = $x;
-			$x_display = $x_array[0] . ((int) $x_array[1][0] !== 0 ? '.' . $x_array[1][0] : '');
+			$x_display = $x_array[0] . ((0 !== (int)$x_array[1][0])?'.'. $x_array[1][0]:'');
 			$x_display .= $x_parts[$x_count_parts - 1];
 			
 			return $x_display;
@@ -46,14 +46,14 @@
 			$max_number = max($number_from, $number_to);
 			
 			if(!is_numeric($seed)) {
-				$seed = preg_replace("#[^0-9]+#si", "", md5($seed));
+				$seed = preg_replace("#[^0-9]+#si", '', md5($seed));
 			}
 			
 			mt_srand((int)$seed);
 			
 			$selected_value = mt_rand($number_from, $number_to);
 			
-			mt_srand(microtime(true));   // attempt to re-randomize the internal seed
+			mt_srand((int)microtime(true));   // attempt to re-randomize the internal seed
 			
 			return $selected_value;
 		}

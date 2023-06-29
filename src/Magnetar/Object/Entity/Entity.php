@@ -6,6 +6,8 @@
 	use Magnetar\Object\AbstractObject;
 	use Magnetar\Object\EntityType\EntityType;
 	use Magnetar\Object\Media\Media;
+	use Magnetar\Utilities\Str;
+	use Magnetar\Utilities\JSON;
 	use Exception;
 	
 	class Entity extends AbstractObject {
@@ -31,7 +33,7 @@
 			]);
 			
 			if(empty($this->object['id'])) {
-				throw new Exception("Entity #". $id ." not found");
+				throw new Exception("Entity not found");
 			}
 		}
 		
@@ -41,7 +43,10 @@
 		 * @param mixed $default Optional. Only used in conjunction with $specific_key. Return this if meta key(s) not found
 		 * @return mixed
 		 */
-		public function getMeta($specific_key=null, $default=false): mixed {
+		public function getMeta(
+			string|null $specific_key=null,
+			mixed $default=false
+		): mixed {
 			if(is_null($this->meta)) {
 				$this->meta = $this->db->get_col_assoc("
 					SELECT
@@ -54,7 +59,10 @@
 				], 'meta_key', 'meta_value');
 				
 				if(!empty($this->meta)) {
-					$this->meta = array_map('maybe_json_decode', $this->meta);
+					$this->meta = array_map(
+						[Magnetar\Utilities\JSON::class, 'maybe_decode'],
+						$this->meta
+					);
 				}
 			}
 			
@@ -136,7 +144,10 @@
 		 * @param int|false $height Optional. Height of the thumbnail
 		 * @return string
 		 */
-		public function getThumb(int|false $width=THUMB_WIDTH, int|false $height=false): string {
+		public function getThumb(
+			int|false $width=THUMB_WIDTH,
+			int|false $height=false
+		): string {
 			try {
 				$entity_image_id = $this->getThumbnailID();
 				
@@ -159,13 +170,18 @@
 			return $this->object['title'] ?? '';
 		}
 		
-		
+		/**
+		 * Get the slug of the entity
+		 * @uses mkurl()
+		 * @return string
+		 */
 		public function getSlug(): string {
-			if("" === ($slug = mkurl($this->getTitle()))) {
-				$slug = "entity";
-			}
-			
-			return $slug;
+			return Str::mkurl(
+				$this->getTitle(),
+				'-',
+				true,
+				'entity'
+			);
 		}
 		
 		/**
@@ -174,9 +190,11 @@
 		 * @param int|false $sub_section_id Optional. ID of the sub section
 		 * @return string
 		 * @uses site_url()
-		 * @uses mkurl()
 		 */
-		public function getUrl(string $sub_section="", int|false $sub_section_id=false): string {
+		public function getUrl(
+			string $sub_section='',
+			int|false $sub_section_id=false
+		): string {
 			$slug = $this->getSlug();
 			
 			$uri_path = "/entity/". $this->type()->getSlug() ."/". $this->object['id'] ."-". $slug ."/";
@@ -250,7 +268,7 @@
 				}
 				
 				//$ext_ids[ strtolower(trim($raw_ext_key)) ] = trim($raw_ext_value);
-				$ext_ids[ $raw_ext_key ] = maybe_json_decode($raw_ext_value);
+				$ext_ids[ $raw_ext_key ] = JSON::maybe_decode($raw_ext_value);
 				
 				if(is_array($ext_ids[ $raw_ext_key ])) {
 					$ext_ids[ $raw_ext_key ] = array_map("trim", $ext_ids[ $raw_ext_key ]);

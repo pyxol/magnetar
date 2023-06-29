@@ -4,7 +4,6 @@
 	namespace Magnetar\Router;
 	
 	use Magnetar\Http\Request\Request;
-	use Magnetar\Router\Route;
 	
 	class Router {
 		protected Request $request;
