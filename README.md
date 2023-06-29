@@ -3,4 +3,4 @@
 
 ## Magnetar
 
-A moderately minimalist framework for mostly modern web application development.
+Magnetar is a web application framework that focuses on speed and ease of use.

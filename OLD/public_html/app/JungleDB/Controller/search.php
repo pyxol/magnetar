@@ -13,7 +13,6 @@
 		private $time_taken		= 0;
 		private $num_pages_max	= 10;
 		private $entity_type	= false;
-		private $entity_type 	= false;
 		private $min_search_len	= 3;
 		
 		public function get($query="") {

@@ -18,7 +18,10 @@
 	"autoload": {
 		"psr-4": {
 			"Magnetar\\": "src/Magnetar/"
-		}
+		},
+		"files": [
+			"src/Magnetar/Templates/_autoload.php"
+		]
 	},
 	"config": {
 		"optimize-autoloader": true,

@@ -53,7 +53,7 @@
 			
 			$hash = $this->_to_hash($name);
 			
-			return = $this->_cache_dir . $hash .".". $this->_cache_ext;
+			return $this->_cache_dir . $hash .".". $this->_cache_ext;
 		}
 		
 		
@@ -97,8 +97,8 @@
 						if($cache_match[1] >= date($this->_date_syntax)) {
 							$cache_contents = "";	// reset the contents variable
 							
-							while(!feof($handle) {
-								$cache_contents .= fread($handle, 1024);
+							while(!feof($handler)) {
+								$cache_contents .= fread($handler, 1024);
 							}
 							
 							if(!empty($cache_contents)) {

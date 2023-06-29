@@ -1,0 +1,7 @@
+vendor/
+tmp/*
+*.sql
+*.sql.gz
+
+# Ignore all log files
+*.log
