@@ -7,16 +7,18 @@
 	class MemoryStore extends AbstractCache {
 		protected array $store = [];
 		
-		public function connect(Config $config): void {
-			$this->prefix = $config->get('cache.prefix', '');
+		protected function connect(Config $config): void {
+			// nothing needed for this class
 		}
 		
 		public function clear(): void {
 			$this->store = [];
 		}
 		
-		public function delete(string $key): void {
+		public function delete(string $key): bool {
 			unset($this->store[ $key ]);
+			
+			return true;
 		}
 		
 		/**

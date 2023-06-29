@@ -8,14 +8,20 @@
 	abstract class AbstractCache {
 		protected string $prefix = '';
 		
+		public function __construct(protected Config $config) {
+			if("" !== ($this->prefix = $config->get('cache.prefix', ''))) {
+				$this->prefix .= ':';
+			}
+			
+			$this->connect($config);
+		}
+		
 		// connection
-		abstract public function connect(Config $config): void;
-		
-		
+		abstract protected function connect(Config $config): void;
 		
 		// cleanup
 		abstract public function clear(): void;
-		abstract public function delete(string $key): void;
+		abstract public function delete(string $key): bool;
 		
 		// getters
 		abstract public function get(string $key): mixed;

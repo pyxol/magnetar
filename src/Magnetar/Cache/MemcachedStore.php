@@ -6,28 +6,10 @@
 	use Magnetar\Config;
 	use Memcached;
 	
-	
-	
-	
-	
-	
-	
-	
-	// @TODO unfinished?
-	
-	
-	
-	
-	
-	
-	
 	class MemcachedStore extends AbstractCache {
 		protected $memcached;
-		protected array $store = [];
 		
-		public function connect(Config $config): void {
-			$this->prefix = $config->get('cache.prefix', '');
-			
+		protected function connect(Config $config): void {
 			$this->memcached = new Memcached();
 			$this->memcached->addServer(
 				$config->get('cache.memcached.host', 'localhost'),
@@ -35,12 +17,34 @@
 			);
 		}
 		
+		/**
+		 * Clear entirety of cache. If a prefix is set, only keys with that prefix will be cleared.
+		 * According to the Memcached documentation, this method does not guarantee that all keys will be cleared. Whomp whomp.
+		 * @return void
+		 */
 		public function clear(): void {
-			$this->store = [];
+			if("" === $this->prefix) {
+				$this->memcached->flush();
+				
+				return;
+			}
+			
+			$keys = $this->memcached->getAllKeys();
+			
+			foreach($keys as $key) {
+				if(0 === strpos($key, $this->prefix)) {
+					$this->memcached->delete($key);
+				}
+			}
 		}
 		
-		public function delete(string $key): void {
-			unset($this->store[ $key ]);
+		/**
+		 * Delete a value from the cache.
+		 * @param string $key
+		 * @return bool
+		 */
+		public function delete(string $key): bool {
+			return $this->memcached->delete($this->prefix . $key);
 		}
 		
 		/**
