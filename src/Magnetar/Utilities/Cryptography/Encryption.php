@@ -35,7 +35,7 @@
 		 * @param string $raw_string String to encrypt
 		 * @return string|false
 		 */
-		public function encrypt($raw_string): string {
+		public function encrypt(string $raw_string): string|false {
 			$enc_key = openssl_digest($this->salt, $this->digest_method, true);
 			$enc_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->cipher_method));
 			
@@ -53,7 +53,7 @@
 		 * @param string $crypted_string String to decrypt
 		 * @return string|false
 		 */
-		public function decrypt($crypted_string): string {
+		public function decrypt(string $crypted_string): string|false {
 			list($crypted_token, $enc_iv) = explode("::", $crypted_string, 2);
 			$enc_key = openssl_digest($this->salt, $this->digest_method, true);
 			

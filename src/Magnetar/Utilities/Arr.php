@@ -5,18 +5,17 @@
 	
 	class Arr {
 		/**
-		 * Pick the same 'random' value from an array every time using a unique identifier as a seed to PHP's random number generator
+		 * Pick the same 'random' value from an array every time using a unique identifier as a seed to PHP's random number generator. Returns null if no values are in array
 		 * @param array $array Array of values to pick from
 		 * @param int|string $seed Seed value
 		 * @return mixed
 		 */
-		public static function pickArrayValueBySeed($array, $seed) {
-			if(!is_array($array)) {
-				return;
-			}
-			
+		public static function pickArrayValueBySeed(
+			array $array,
+			int|string $seed
+		): mixed {
 			if(empty($array)) {
-				return;
+				return null;
 			}
 			
 			if(!is_numeric($seed)) {
@@ -35,18 +34,17 @@
 		}
 		
 		/**
-		 * Shuffle an array randomly the same every time using a unique identifier as a seed to PHP's random number generator. Does not affect the source variable
+		 * Shuffle an array randomly the same every time using a unique identifier as a seed to PHP's random number generator. Does not affect the source variable. Returns null if no values are in array
 		 * @param array $array Array of values to shuffle
 		 * @param int|string $seed Seed value
 		 * @return mixed
 		 */
-		public static function shuffleArrayBySeed($array, $seed) {
-			if(!is_array($array)) {
-				return;
-			}
-			
+		public static function shuffleArrayBySeed(
+			array $array,
+			int|string $seed
+		): mixed {
 			if(empty($array)) {
-				return;
+				return null;
 			}
 			
 			if(!is_numeric($seed)) {
