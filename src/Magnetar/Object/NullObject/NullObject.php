@@ -1,11 +1,9 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Object\Entity;
+	namespace Magnetar\Object\NullObject;
 	
 	use Magnetar\Object\AbstractObject;
-	use Magnetar\Object\EntityType\EntityType;
-	use Magnetar\Object\Media\Media;
 	use Exception;
 	
 	class NullObject extends AbstractObject {
