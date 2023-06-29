@@ -5,7 +5,7 @@
 	
 	use Magnetar\Config;
 	
-	abstract class AbstractCache {
+	abstract class AbstractCacheStore {
 		protected string $prefix = '';
 		
 		public function __construct(protected Config $config) {

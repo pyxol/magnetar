@@ -2,13 +2,14 @@
 	declare(strict_types=1);
 	
 	namespace Magnetar\Cache;
+	
 	use Magnetar\Config;
 	
-	class MemoryStore extends AbstractCache {
+	class MemoryStore extends AbstractCacheStore {
 		protected array $store = [];
 		
 		protected function connect(Config $config): void {
-			// nothing needed for this class
+			// nothing needed for this method in this class
 		}
 		
 		public function clear(): void {

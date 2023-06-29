@@ -6,7 +6,7 @@
 	use Magnetar\Config;
 	use Memcached;
 	
-	class MemcachedStore extends AbstractCache {
+	class MemcachedStore extends AbstractCacheStore {
 		protected $memcached;
 		
 		protected function connect(Config $config): void {
