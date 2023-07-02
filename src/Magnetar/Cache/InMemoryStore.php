@@ -3,7 +3,7 @@
 	
 	namespace Magnetar\Cache;
 	
-	use Magnetar\Config;
+	use Magnetar\Config\Config;
 	
 	class InMemoryStore extends AbstractCacheStore {
 		protected array $store = [];

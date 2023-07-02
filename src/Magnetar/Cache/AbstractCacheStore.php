@@ -3,7 +3,7 @@
 	
 	namespace Magnetar\Cache;
 	
-	use Magnetar\Config;
+	use Magnetar\Config\Config;
 	
 	/**
 	 * Abstract class for cache stores
