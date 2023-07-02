@@ -1,5 +1,5 @@
 {
-	"name": "donwilson/magnetar",
+	"name": "pyxol/magnetar",
 	"type": "library",
 	"description": "Magnetar is a web application framework that focuses on speed and ease of use.",
 	"keywords": ["magnetar", "framework"],
