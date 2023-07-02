@@ -1,0 +1,119 @@
+<?php
+	declare(strict_types=1);
+	
+	namespace Magnetar\Kernel\Http;
+	
+	use Magnetar\Kernel\AbstractKernel;
+	use Magnetar\Kernel\KernelPanicException;
+	use Magnetar\Http\Request\Request;
+	use Magnetar\Http\Response\Response;
+	use Magnetar\Router\Router;
+	use Magnetar\Template\Template;
+	
+	class Http extends AbstractKernel {
+		protected Request $request;
+		protected Response $response;
+		protected Router $router;
+		
+		/**
+		 * Initialize method called by constructor
+		 * @return void
+		 */
+		protected function preprocess(): void {
+			// prep request and response objects
+			$this->request = new Request();
+			$this->response = new Response();
+			
+			// prep router
+			$this->router = new Router($this->request);
+		}
+		
+		/**
+		 * Called after kernel execution
+		 * @return void
+		 */
+		protected function postprocess(): void {
+			// do nothing
+		}
+		
+		/**
+		 * Handle a kernel panic
+		 * @return void
+		 */
+		protected function handlePanic(KernelPanicException $e): void {
+			// initialize template engine
+			$tpl = new Template();
+			
+			$this->response->status(503)->send($tpl->render('errors/503', [
+				'message' => $e->getMessage(),
+			]));
+		}
+		
+		/**
+		 * Register a GET route
+		 * @param string $pattern The path pattern to attempt to serve. Expects a regex expression. Named regex groups are converted to parameters
+		 * @param null|callable|array $callback The callback to execute when the path is requested
+		 * @return void
+		 * @see App\Router\Router::attemptPattern()
+		 */
+		public function get(string $pattern, null|callable|array $callback=null): void {
+			// GET request method?
+			if($this->router->get($pattern)) {
+				// serve request
+				$this->execute($callback, $this->request, $this->response);
+			}
+		}
+		
+		/**
+		 * Register a POST route
+		 * @param string $pattern The path pattern to attempt to serve. Expects a regex expression. Named regex groups are converted to parameters
+		 * @param null|callable|array $callback The callback to execute when the path is requested
+		 * @return void
+		 * @see App\Router\Router::attemptPattern()
+		 */
+		public function post(string $pattern, null|callable|array $callback): void {
+			// POST request method?
+			if($this->router->post($pattern)) {
+				// serve request
+				$this->execute($callback, $this->request, $this->response);
+			}
+		}
+		
+		/**
+		 * Register a route for any request method
+		 * @param string $pattern The path pattern to attempt to serve. Expects a regex expression. Named regex groups are converted to parameters
+		 * @param null|callable|array $callback The callback to execute when the path is requested
+		 * @return void
+		 * @see App\Router\Router::attemptPattern()
+		 */
+		public function any(string $pattern, null|callable|array $callback): void {
+			// any request method
+			if($this->router->any($pattern)) {
+				// serve request
+				$this->execute($callback, $this->request, $this->response);
+			}
+		}
+		
+		/**
+		 * Finalize processing HTTP request. If no route is previously matched, this will render a 404
+		 * @return void
+		 */
+		public function serve(): void {
+			// no route has triggered an execution, send out a 404
+			$this->handle404('Requested path is not found');
+		}
+		
+		/**
+		 * Handle a 404 response
+		 * @param string $message The message to display
+		 * @return void
+		 */
+		public function handle404(string $message=''): void {
+			// initialize template engine
+			$tpl = new Template();
+			
+			$this->response->status(404)->send($tpl->render('errors/404', [
+				'message' => $message
+			]));
+		}
+	}
