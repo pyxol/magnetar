@@ -12,7 +12,7 @@
 		 * @return void
 		 * @throws Exception
 		 */
-		protected function pullObject(int $id): void {
+		protected function pullObject(int|null $id): void {
 			// nothing needed for this method in this class
 		}
 	}

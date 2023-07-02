@@ -17,7 +17,11 @@
 		 * @return void
 		 * @throws Exception
 		 */
-		protected function pullObject(int $id): void {
+		protected function pullObject(int|null $id): void {
+			if(is_null($id)) {
+				throw new Exception("A valid ID is required");
+			}
+			
 			$this->object = $this->db->get_row("
 				SELECT
 					entity_type.*

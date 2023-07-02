@@ -1,7 +1,20 @@
+# composer
 vendor/
-tmp/*
+
+# editors
+/.vscode
+
+# phpunit
+/phpunit.xml
+/.phpunit.cache
+.phpunit.result.cache
+
+# database files
 *.sql
 *.sql.gz
 
-# Ignore all log files
+# log files
 *.log
+
+# tmp files
+tmp/*

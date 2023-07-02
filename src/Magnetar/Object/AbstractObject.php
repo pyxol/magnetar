@@ -48,5 +48,5 @@
 		
 		
 		// get the object from storage
-		abstract protected function pullObject(int $id): void;
+		abstract protected function pullObject(int|null $id): void;
 	}
