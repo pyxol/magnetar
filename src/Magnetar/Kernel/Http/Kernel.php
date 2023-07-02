@@ -10,7 +10,7 @@
 	use Magnetar\Router\Router;
 	use Magnetar\Template\Template;
 	
-	class Http extends AbstractKernel {
+	class Kernel extends AbstractKernel {
 		protected Request $request;
 		protected Response $response;
 		protected Router $router;
