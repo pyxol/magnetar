@@ -64,7 +64,7 @@
 				
 				if(!empty($this->meta)) {
 					$this->meta = array_map(
-						[Magnetar\Utilities\JSON::class, 'maybe_decode'],
+						[JSON::class, 'maybe_decode'],
 						$this->meta
 					);
 				}

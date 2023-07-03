@@ -5,6 +5,24 @@
 	
 	class JSON {
 		/**
+		 * Encode a variable into a JSON string
+		 * @param mixed $var
+		 * @return string
+		 */
+		public static function encode(mixed $var): string {
+			return json_encode($var);
+		}
+		
+		/**
+		 * Decode raw JSON into a variable. Automatically assigns associated values
+		 * @param string $var Raw JSON to decode
+		 * @return mixed
+		 */
+		public static function decode(string $var): mixed {
+			return json_decode($var, true);
+		}
+		
+		/**
 		 * Attempt to decode the string if it looks like JSON data. Returns decoded array or $var if not JSON data
 		 * @param mixed $var Raw string that might be raw JSON data
 		 * @return mixed
