@@ -3,17 +3,18 @@
 	
 	namespace Magnetar\Http\Controller;
 	
-	use Magnetar\App;
+	use Magnetar\Kernel\Kernel;
 	use Magnetar\Config\DatabaseConfig;
 	use Magnetar\Database\MariaDB\Database;
 	
 	class Controller {
-		protected App $app;
+		protected Kernel $app;
 		protected ?Database $database = null;
 		
-		public function __construct(App $app) {
+		// @TODO needs more work
+		public function __construct(Kernel $kernel) {
 			// assign app
-			$this->app = $app;
+			$this->app = $kernel;
 		}
 		
 		/**

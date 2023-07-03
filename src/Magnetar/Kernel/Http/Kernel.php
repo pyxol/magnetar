@@ -3,14 +3,14 @@
 	
 	namespace Magnetar\Kernel\Http;
 	
-	use Magnetar\Kernel\AbstractKernel;
+	use Magnetar\Kernel\Kernel as BaseKernel;
 	use Magnetar\Kernel\KernelPanicException;
 	use Magnetar\Http\Request\Request;
 	use Magnetar\Http\Response\Response;
 	use Magnetar\Router\Router;
 	use Magnetar\Template\Template;
 	
-	class Kernel extends AbstractKernel {
+	class Kernel extends BaseKernel {
 		protected Request $request;
 		protected Response $response;
 		protected Router $router;
@@ -54,7 +54,7 @@
 		 * @param string $pattern The path pattern to attempt to serve. Expects a regex expression. Named regex groups are converted to parameters
 		 * @param null|callable|array $callback The callback to execute when the path is requested
 		 * @return void
-		 * @see App\Router\Router::attemptPattern()
+		 * @see Http\Router\Router::attemptPattern()
 		 */
 		public function get(string $pattern, null|callable|array $callback=null): void {
 			// GET request method?
@@ -69,7 +69,7 @@
 		 * @param string $pattern The path pattern to attempt to serve. Expects a regex expression. Named regex groups are converted to parameters
 		 * @param null|callable|array $callback The callback to execute when the path is requested
 		 * @return void
-		 * @see App\Router\Router::attemptPattern()
+		 * @see Http\Router\Router::attemptPattern()
 		 */
 		public function post(string $pattern, null|callable|array $callback): void {
 			// POST request method?
@@ -84,7 +84,7 @@
 		 * @param string $pattern The path pattern to attempt to serve. Expects a regex expression. Named regex groups are converted to parameters
 		 * @param null|callable|array $callback The callback to execute when the path is requested
 		 * @return void
-		 * @see App\Router\Router::attemptPattern()
+		 * @see Http\Router\Router::attemptPattern()
 		 */
 		public function any(string $pattern, null|callable|array $callback): void {
 			// any request method
