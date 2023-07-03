@@ -49,7 +49,7 @@
 		}
 		
 		/**
-		 * End of line method. Redirect to a specific URL
+		 * Redirect to a specific URL
 		 */
 		public function redirect(string $path, int $response_code=302): void {
 			// sanitize response code
@@ -64,13 +64,10 @@
 			
 			// send location header
 			$this->header("Location: ". $path, true, $response_code);
-			
-			// done
-			$this->end();
 		}
 		
 		/**
-		 * End of line method. Set HTML header and prints HTML response
+		 * Set HTML header and prints HTML response
 		 * @param string $body The HTML body to print
 		 * @return void
 		 */
@@ -78,13 +75,10 @@
 			$this->header("Content-Type: text/html; charset=UTF-8");
 			
 			print $body;
-			
-			// done
-			$this->end();
 		}
 		
 		/**
-		 * End of line method. Set JSON header and prints JSON response
+		 * Set JSON header and prints JSON response
 		 * @param array $body The JSON body to print
 		 * @return void
 		 */
@@ -92,16 +86,5 @@
 			$this->header("Content-Type: application/json");
 			
 			print json_encode($body);
-			
-			// done
-			$this->end();
-		}
-		
-		/**
-		 * Kills the page
-		 * @return void
-		 */
-		protected function end() {
-			die;
 		}
 	}

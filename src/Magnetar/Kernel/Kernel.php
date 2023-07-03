@@ -2,12 +2,27 @@
 	declare(strict_types=1);
 	
 	namespace Magnetar\Kernel;
-	
+
 	use Magnetar\Kernel\AbstractKernel;
+	use Magnetar\Application;
 	use Magnetar\Kernel\KernelPanicException;
 	
 	// raw kernel class
 	class Kernel extends AbstractKernel {
+		protected Application $app;
+		
+		protected array $bootstrappers = [
+			\Magnetar\Bootstrap\LoadConfigs::class,
+		];
+		
+		public function __construct(
+			Application $app
+		) {
+			$this->app = $app;
+			
+			parent::__construct();
+		}
+		
 		/**
 		 * Initialize method called by constructor
 		 * @return void
@@ -30,6 +45,7 @@
 		 * @return void
 		 */
 		protected function handlePanic(KernelPanicException $e): void {
-			// do nothing
+			// print out message from caught exception
+			die($e->getMessage());
 		}
 	}

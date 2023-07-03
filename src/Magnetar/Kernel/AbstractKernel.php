@@ -5,13 +5,10 @@
 	
 	use Exception;
 	
-	use Magnetar\Config\Config;
 	use Magnetar\Kernel\KernelPanicException;
 	
 	abstract class AbstractKernel {
-		public function __construct(
-			protected Config $config
-		) {
+		public function __construct() {
 			$this->preprocess();
 		}
 		
@@ -26,10 +23,8 @@
 		 */
 		protected function execute(): void {
 			try {
-				$numargs = func_num_args();
-				
 				// at least one arg is required
-				if($numargs < 1) {
+				if(func_num_args() < 1) {
 					throw new KernelPanicException('Unable to process callback');
 				}
 				
@@ -59,17 +54,17 @@
 				// handle kernel panic
 				$this->handlePanic($e);
 			} catch(Exception $e) {
-				die('Unhandled kernel exception: '. $e->getMessage());
+				print 'Unhandled kernel exception: '. $e->getMessage();
 			}
 			
-			$this->end();
+			$this->terminate();
 		}
 		
 		/**
 		 * End script execution
 		 * @return void
 		 */
-		protected function end(): void {
+		protected function terminate(): void {
 			// wrap up
 			$this->postprocess();
 			

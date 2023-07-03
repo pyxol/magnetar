@@ -19,6 +19,7 @@
 		 * @param string $user Username to connect with
 		 * @param string $password Password to connect with
 		 * @param int|string $port Optional. Port to connect to. Defaults to 3306
+		 * 
 		 * @throws Exception
 		 */
 		public function __construct(Config $config) {

@@ -3,17 +3,45 @@
 	
 	namespace Magnetar\Kernel\Http;
 	
-	use Magnetar\Kernel\Kernel as BaseKernel;
-	use Magnetar\Kernel\KernelPanicException;
+	use Magnetar\Kernel\AbstractKernel;
 	use Magnetar\Http\Request\Request;
 	use Magnetar\Http\Response\Response;
 	use Magnetar\Router\Router;
+	use Magnetar\Application;
+	use Magnetar\Kernel\KernelPanicException;
 	use Magnetar\Template\Template;
 	
-	class Kernel extends BaseKernel {
+	class Kernel extends AbstractKernel {
+		protected Application $app;
+		
 		protected Request $request;
 		protected Response $response;
 		protected Router $router;
+		
+		public function __construct(
+			Application $app
+		) {
+			$this->app = $app;
+			
+			parent::__construct();
+		}
+		
+		/**
+		 * Array of classes to instantiate and call using kernel->bootstrap()
+		 * @var array
+		 */
+		protected array $bootstrappers = [
+			\Magnetar\Bootstrap\LoadConfigs::class,
+		];
+		
+		/**
+		 * Bootstrap the application using the kernel's bootstrappers
+		 */
+		public function bootstrap(): void {
+			if(!$this->app->hasBeenBootstrapped()) {
+				$this->app->bootstrapWith($this->bootstrappers);
+			}
+		}
 		
 		/**
 		 * Initialize method called by constructor

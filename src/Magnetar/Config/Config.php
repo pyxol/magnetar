@@ -9,18 +9,16 @@
 		protected array $store = [];
 		
 		public function __construct(string|array|null $values=null) {
-			if(is_array($values)) {
-				$this->store = $values;
-			} elseif(is_string($values)) {
-				if(file_exists($values)) {
-					try {
-						$this->load($values);
-					} catch(Exception $e) {
-						$this->store = [];
-						
-						throw new Exception("Could not load config file: {$values}");
-					}
+			if(is_string($values)) {
+				try {
+					$this->load($values);
+				} catch(Exception $e) {
+					$this->store = [];
+					
+					throw new Exception("Could not load config file $values");
 				}
+			} elseif(is_array($values)) {
+				$this->store = $values;
 			}
 		}
 		
@@ -166,20 +164,20 @@
 		
 		/**
 		 * Load a config file
-		 * @param string $file The file to load
+		 * @param string $file The full filepath to load
 		 * @param string|false $key Optional. The key to set the config values to. Set false to use file for entire config
 		 * @return void
 		 */
 		public function load(string $file, string|false $key=false): void {
-			$config_file_path = CONFIGS_DIR . $file . ((false === strpos($file, '.php'))?'.php':'');
+			//$config_file_path = CONFIGS_DIR . $file . ((false === strpos($file, '.php'))?'.php':'');
 			
 			// if the file doesn't exist, throw an exception
-			if(!file_exists($config_file_path)) {
+			if(!file_exists($file)) {
 				throw new Exception('Config file not found: ' . $file);
 			}
 			
 			// load the config file
-			$config = require($config_file_path);
+			$config = require($file);
 			
 			// if the config is not an array, throw an exception
 			if(!is_array($config)) {

@@ -10,6 +10,7 @@
 		/**
 		 * Filler method for pulling an object from storage
 		 * @return void
+		 * 
 		 * @throws Exception
 		 */
 		protected function pullObject(int|null $id): void {

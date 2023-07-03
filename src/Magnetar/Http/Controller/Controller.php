@@ -4,7 +4,7 @@
 	namespace Magnetar\Http\Controller;
 	
 	use Magnetar\Kernel\Kernel;
-	use Magnetar\Config\DatabaseConfig;
+	use Magnetar\Config\Config;
 	use Magnetar\Database\MariaDB\Database;
 	
 	class Controller {
@@ -25,7 +25,8 @@
 			// get the database connection
 			if(is_null($this->database)) {
 				$this->database = new Database(
-					new DatabaseConfig()
+					// @TODO fix
+					new Config(__DIR__ ."/../../../config/database.php")
 				);
 			}
 			
