@@ -48,6 +48,8 @@
 		 * @return void
 		 */
 		protected function preprocess(): void {
+			$this->bootstrap();
+			
 			// prep request and response objects
 			$this->request = new Request();
 			$this->response = new Response();
