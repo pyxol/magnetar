@@ -8,6 +8,7 @@
 				'dbname' => 'db',
 				'user' => 'user',
 				'password' => 'password',
+				'charset' => 'utf8mb4',
 			],
 		],
 	];
