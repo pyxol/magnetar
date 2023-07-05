@@ -1,3 +1,6 @@
+# library-specific ignores
+#dev/public/*
+
 # composer
 vendor/
 

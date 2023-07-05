@@ -8,10 +8,6 @@
 	use Magnetar\Kernel\KernelPanicException;
 	
 	abstract class AbstractKernel {
-		public function __construct() {
-			$this->preprocess();
-		}
-		
 		abstract protected function preprocess(): void;
 		abstract protected function postprocess(): void;
 		
@@ -23,6 +19,9 @@
 		 */
 		protected function execute(): void {
 			try {
+				// run preprocess routine
+				$this->preprocess();
+				
 				// at least one arg is required
 				if(func_num_args() < 1) {
 					throw new KernelPanicException('Unable to process callback');
@@ -57,6 +56,9 @@
 				print 'Unhandled kernel exception: '. $e->getMessage();
 			}
 			
+			// run postprocess routine
+			$this->postprocess();
+			
 			$this->terminate();
 		}
 		
@@ -65,9 +67,6 @@
 		 * @return void
 		 */
 		protected function terminate(): void {
-			// wrap up
-			$this->postprocess();
-			
 			// end app
 			die;
 		}

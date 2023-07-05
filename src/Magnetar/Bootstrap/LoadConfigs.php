@@ -9,7 +9,51 @@
 	
 	class LoadConfigs implements BootstrapLoaderInterface {
 		public function bootstrap(Application $app): void {
-			// @TODO not working now, eventually load config files
-			$app->instance('config', new Config($app->basePath('config')));
+			// load config
+			$app->instance('config', $config = new Config([]));
+			
+			$this->loadConfigFiles($app, $config);
+			
+			// default PHP settings
+			date_default_timezone_set($config->get('app.timezone', 'UTC'));
+			
+			mb_internal_encoding('UTF-8');
+		}
+		
+		/**
+		 * Load the configuration items from all of the files.
+		 * @param Application $app
+		 * @param Config $config
+		 * @return void
+		 */
+		protected function loadConfigFiles(Application $app, Config $config): void {
+			$files = $this->getConfigFiles($app);
+			
+			foreach($files as $file) {
+				$config->set(basename($file, '.php'), require $file);
+			}
+		}
+		
+		/**
+		 * Get all of the configuration files for the application.
+		 * @param Application $app
+		 * @return array
+		 */
+		protected function getConfigFiles(Application $app): array {
+			$config_dir = $app->basePath('config') . DIRECTORY_SEPARATOR .'*.php';
+			
+			if(false === ($raw_files = glob($app->basePath('config') . DIRECTORY_SEPARATOR .'*.php'))) {
+				return [];
+			}
+			
+			$files = [];
+			
+			foreach($raw_files as $file) {
+				$files[ basename($file, '.php') ] = $file;
+			}
+			
+			ksort($files, SORT_NATURAL);
+			
+			return $files;
 		}
 	}

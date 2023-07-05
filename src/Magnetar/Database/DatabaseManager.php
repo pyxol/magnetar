@@ -14,5 +14,7 @@
 			$this->app = $app;
 			
 			// @TODO
+			
+			// take app->config->get('database') and create connection
 		}
 	}

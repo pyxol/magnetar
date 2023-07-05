@@ -41,6 +41,7 @@
 	"minimum-stability": "stable",
 	"prefer-stable": true,
 	"require-dev": {
+		"filp/whoops": "^2.15",
 		"phpunit/phpunit": "^10.2"
 	}
 }

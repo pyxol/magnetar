@@ -33,7 +33,7 @@
 		 * @return void
 		 */
 		public function setBasePath(string $base_path): void {
-			$this->base_path = rtrim($base_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;;
+			$this->base_path = realpath(rtrim($base_path, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
 		}
 		
 		/**
@@ -41,7 +41,7 @@
 		 * @return string
 		 */
 		public function basePath(string $rel_path=''): string {
-			return $this->base_path . DIRECTORY_SEPARATOR . ltrim($rel_path, DIRECTORY_SEPARATOR);
+			return $this->base_path . ltrim($rel_path, DIRECTORY_SEPARATOR);
 		}
 		
 		/**

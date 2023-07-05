@@ -19,8 +19,6 @@
 			Application $app
 		) {
 			$this->app = $app;
-			
-			parent::__construct();
 		}
 		
 		/**
@@ -45,7 +43,7 @@
 		 * @return void
 		 */
 		protected function handlePanic(KernelPanicException $e): void {
-			// print out message from caught exception
+			// print out message from caught exception and exit
 			die($e->getMessage());
 		}
 	}

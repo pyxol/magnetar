@@ -38,12 +38,6 @@
 		protected array $instances = [];
 		
 		/**
-		 * The container's parameter overrides
-		 * @var array
-		 */
-		protected array $parameterOverrides = [];
-		
-		/**
 		 * The container's build stack
 		 * @var array
 		 */
@@ -59,6 +53,13 @@
 		 * @var array
 		 */
 		protected array $abstractAliases = [];
+		
+		/**
+		 * The extension closures for services.
+		 *
+		 * @var array[]
+		 */
+		protected array $extenders = [];
 		
 		/**
 		 * Parameter override stack
@@ -84,6 +85,9 @@
 		 */
 		protected array $resolved = [];
 		
+		
+		protected array $globalBeforeResolvingCallbacks = [];
+		protected array $globalAfterResolvingCallbacks = [];
 		protected array $beforeResolvingCallbacks = [];
 		protected array $globalResolvingCallbacks = [];
 		protected array $resolvingCallbacks = [];
@@ -215,11 +219,11 @@
 		 * Get all callbacks for a given type.
 		 *
 		 * @param string $abstract
-		 * @param object $object
+		 * @param mixed $object
 		 * @param array $callbacksPerType
 		 * @return array
 		 */
-		protected function getCallbacksForType(string $abstract, object $object, array $callbacksPerType): array {
+		protected function getCallbacksForType(string $abstract, mixed $object, array $callbacksPerType): array {
 			$results = [];
 			
 			foreach($callbacksPerType as $type => $callbacks) {
@@ -517,7 +521,7 @@
 		 * @return array
 		 */
 		protected function getLastParameterOverride(): array {
-			return $this->parameterOverrides[ count($this->parameterOverrides) - 1 ];
+			return count($this->with) ? end($this->with) : [];
 		}
 		
 		/**

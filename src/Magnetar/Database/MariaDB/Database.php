@@ -22,7 +22,7 @@
 			];
 			
 			// connect to the database
-			$this->pdo = new PDO("mysql:host=". $this->config->get('host') .";dbname=". $this->config->get('name'), $this->config->get('user'), $this->config->get('password'), $default_options);
+			$this->pdo = new PDO("mysql:host=". $this->config->get('host') .";dbname=". $this->config->get('dbname'), $this->config->get('user'), $this->config->get('password'), $default_options);
 			
 			// optional charset settings
 			if($cfg_charset = $this->config->get('charset')) {

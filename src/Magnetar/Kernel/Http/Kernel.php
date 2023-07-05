@@ -3,15 +3,16 @@
 	
 	namespace Magnetar\Kernel\Http;
 	
-	use Magnetar\Kernel\AbstractKernel;
+	use Magnetar\Kernel\Kernel as BaseKernel;
+	use Magnetar\Application;
 	use Magnetar\Http\Request\Request;
 	use Magnetar\Http\Response\Response;
 	use Magnetar\Router\Router;
-	use Magnetar\Application;
-	use Magnetar\Kernel\KernelPanicException;
 	use Magnetar\Template\Template;
 	
-	class Kernel extends AbstractKernel {
+	use Magnetar\Kernel\KernelPanicException;
+	
+	class Kernel extends BaseKernel {
 		protected Application $app;
 		
 		protected Request $request;
@@ -23,7 +24,17 @@
 		) {
 			$this->app = $app;
 			
-			parent::__construct();
+			$this->bootstrap();
+			
+			// prep request and response objects
+			$this->request = new Request();
+			$this->response = new Response();
+			
+			// prep router
+			$this->router = new Router($this->request);
+			
+			// preprocess
+			$this->preprocess();
 		}
 		
 		/**
@@ -48,14 +59,7 @@
 		 * @return void
 		 */
 		protected function preprocess(): void {
-			$this->bootstrap();
-			
-			// prep request and response objects
-			$this->request = new Request();
-			$this->response = new Response();
-			
-			// prep router
-			$this->router = new Router($this->request);
+			// currently does nothing
 		}
 		
 		/**
@@ -63,7 +67,7 @@
 		 * @return void
 		 */
 		protected function postprocess(): void {
-			// do nothing
+			// currently does nothing
 		}
 		
 		/**
