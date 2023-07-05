@@ -85,7 +85,7 @@
 		public function registerCoreContainerAliases(): void {
 			foreach([
 				'config' => [ \Magnetar\Config\Config::class, \Magnetar\Config\Config::class ],
-				'db' => [ \Magnetar\Database\Database::class, \Magnetar\Database\Database::class ],
+				'database' => [ \Magnetar\Database\Database::class, \Magnetar\Database\Database::class ],
 			] as $key => $aliases) {
 				foreach($aliases as $alias) {
 					$this->alias($key, $alias);
