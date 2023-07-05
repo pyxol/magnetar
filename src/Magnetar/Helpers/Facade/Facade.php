@@ -102,7 +102,7 @@
 				return static::$resolvedInstance[ $name ];
 			}
 			
-			if (static::$app) {
+			if(static::$app) {
 				if(static::$cached) {
 					return static::$resolvedInstance[ $name ] = static::$app[ $name ];
 				}
@@ -112,11 +112,31 @@
 		}
 		
 		/**
-		 * Get default Facade aliases
+		 * Clear a resolved facade instance.
+		 *
+		 * @param  string  $name
+		 * @return void
+		 */
+		public static function clearResolvedInstance($name) {
+			unset(static::$resolvedInstance[$name]);
+		}
+		
+		/**
+		 * Clear all of the resolved instances.
+		 *
+		 * @return void
+		 */
+		public static function clearResolvedInstances() {
+			static::$resolvedInstance = [];
+		}
+		
+		/**
+		 * Get a list of default Facade aliases to register
 		 * @return array
 		 */
 		public static function defaultAliases(): array {
 			return [
+				'Config' => Config::class,
 				'DB' => DB::class,
 			];
 		}

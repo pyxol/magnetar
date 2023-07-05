@@ -43,6 +43,7 @@
 		 */
 		protected array $bootstrappers = [
 			\Magnetar\Bootstrap\LoadConfigs::class,
+			\Magnetar\Bootstrap\RegisterFacades::class,
 		];
 		
 		/**

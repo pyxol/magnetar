@@ -5,5 +5,4 @@
 		
 		// environment ("dev" or "production")
 		'env' => 'dev',
-		
 	];
