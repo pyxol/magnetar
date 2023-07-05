@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Helpers\Facade;
+	namespace Magnetar\Bootstrap;
 	
 	use Magnetar\Application;
 	use Magnetar\Helpers\Facade\Facade;
