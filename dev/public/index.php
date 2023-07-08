@@ -1,6 +1,5 @@
 <?php
 	// rudimentary script to test the framework
-	
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
@@ -13,6 +12,9 @@
 	use Magnetar\Http\Request\Request;
 	use Magnetar\Http\Response\Response;
 	
+	use Magnetar\Helpers\Facades\Config;
+	use Magnetar\Helpers\Facades\DB;
+	
 	// test-specific stuff
 	try {
 		// initialize whoops
@@ -23,13 +25,27 @@
 		die("Error initializing Whoops: ". $e->getMessage());
 	}
 	
-	class TestController extends Controller {
+	class DevController extends Controller {
 		public function index(Request $req, Response $res) {
+			$tables = DB::get_rows("
+				SHOW TABLES
+			");
+			
 			$res->send('Hello, World!');
 		}
 		
-		public function test(Request $req, Response $res) {
-			$res->send('Test page');
+		public function db(Request $req, Response $res) {
+			$tables = DB::get_rows("
+				SHOW TABLES
+			");
+			
+			//$tables = Config::get('database.tables');
+			
+			$res->send('<pre>'. esc_html(print_r($tables, true)) .'</pre>');
+		}
+		
+		public function devpage(Request $req, Response $res) {
+			$res->send('Dev page');
 		}
 	}
 	// end of test-specific stuff
@@ -47,13 +63,18 @@
 		
 		// routes
 		$kernel->get(
-			'/^test\/?/i',
-			[TestController::class, 'test']
+			'/^dev\/?/i',
+			[DevController::class, 'devpage']
+		);
+		
+		$kernel->get(
+			'/^db\/?/i',
+			[DevController::class, 'db']
 		);
 		
 		$kernel->get(
 			'/^\/?/i',
-			[TestController::class, 'index']
+			[DevController::class, 'index']
 		);
 		
 		$kernel->serve();

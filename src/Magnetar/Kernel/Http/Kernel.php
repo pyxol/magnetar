@@ -24,8 +24,6 @@
 		) {
 			$this->app = $app;
 			
-			$this->bootstrap();
-			
 			// prep request and response objects
 			$this->request = new Request();
 			$this->response = new Response();
@@ -51,8 +49,16 @@
 		 */
 		public function bootstrap(): void {
 			if(!$this->app->hasBeenBootstrapped()) {
-				$this->app->bootstrapWith($this->bootstrappers);
+				$this->app->bootstrapWith($this->bootstrappers());
 			}
+		}
+		
+		/**
+		 * Get the bootstrap classes for the application.
+		 * @return array
+		 */
+		protected function bootstrappers() {
+			return $this->bootstrappers;
 		}
 		
 		/**
@@ -61,6 +67,8 @@
 		 */
 		protected function preprocess(): void {
 			// currently does nothing
+			
+			$this->bootstrap();
 		}
 		
 		/**

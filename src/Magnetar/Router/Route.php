@@ -16,7 +16,7 @@
 		 * The pattern to match against
 		 * @var string
 		 */
-		protected string $pattern = "";
+		protected string $pattern = '';
 		
 		public function __construct(string $pattern, array $raw_matches, Request $request) {
 			// assign pattern

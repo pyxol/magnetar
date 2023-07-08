@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Helpers\Facade;
+	namespace Magnetar\Helpers\Facades;
 	
 	use Exception;
 	use Closure;
@@ -27,15 +27,6 @@
 		 * @var bool
 		 */
 		protected static $cached = true;
-		
-		 /**
-		 * Get the root object behind the facade.
-		 *
-		 * @return mixed
-		 */
-		public static function getFacadeRoot() {
-			return static::resolveFacadeInstance(static::getFacadeKey());
-		}
 		
 		/**
 		 * Run a Closure 
@@ -68,28 +59,20 @@
 		}
 		
 		/**
+		* Get the root object behind the facade.
+		*
+		* @return mixed
+		*/
+	   public static function getFacadeRoot() {
+		   return static::resolveFacadeInstance(static::getFacadeKey());
+	   }
+		
+		/**
 		 * Get the named key that this facade represents
 		 * @return string
 		 */
 		protected static function getFacadeKey(): string {
 			throw new Exception("Base Facade class should not be used");
-		}
-		
-		/**
-		 * Return the facade's application instance
-		 * @return Application
-		 */
-		public static function getFacadeApplication(): Application {
-			return static::$app;
-		}
-		
-		/**
-		 * Set the facade's application instance
-		 * @param Application $app
-		 * @return void
-		 */
-		public static function setFacadeApplication(Application $app): void {
-			static::$app = $app;
 		}
 		
 		/**
@@ -123,7 +106,6 @@
 		
 		/**
 		 * Clear all of the resolved instances.
-		 *
 		 * @return void
 		 */
 		public static function clearResolvedInstances() {
@@ -139,6 +121,23 @@
 				'Config' => Config::class,
 				'DB' => DB::class,
 			];
+		}
+		
+		/**
+		 * Return the facade's application instance
+		 * @return Application
+		 */
+		public static function getFacadeApplication(): Application {
+			return static::$app;
+		}
+		
+		/**
+		 * Set the facade's application instance
+		 * @param Application $app
+		 * @return void
+		 */
+		public static function setFacadeApplication(Application $app): void {
+			static::$app = $app;
 		}
 		
 		/**

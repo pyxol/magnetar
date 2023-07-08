@@ -11,8 +11,6 @@
 		protected bool $bootstrapped = false;
 		protected bool $booted = false;
 		
-		protected static array $configs = [];
-		
 		/**
 		 * Application constructor
 		 * @param string|null $base_path The full directory path of the application including trailing string
@@ -59,6 +57,8 @@
 		 * @return void
 		 */
 		public function bootstrapWith(array $bootstrappers): void {
+			//die("<pre>" . print_r($bootstrappers, true) . "</pre>");
+			
 			$this->bootstrapped = true;
 			
 			foreach($bootstrappers as $bootstrapper) {
@@ -84,11 +84,13 @@
 		 */
 		public function registerCoreContainerAliases(): void {
 			foreach([
-				'config' => [ \Magnetar\Config\Config::class, \Magnetar\Config\Config::class ],
-				'database' => [ \Magnetar\Database\Database::class, \Magnetar\Database\Database::class ],
+				'app' => [ self::class, \Magnetar\Application::class, \Magnetar\Container\ContainerInterface::class ],
+				'config' => [ \Magnetar\Config\Config::class ],
+				'database' => [ \Magnetar\Database\ConnectionManager::class ],
 			] as $key => $aliases) {
 				foreach($aliases as $alias) {
-					$this->alias($key, $alias);
+					//$this->alias($key, $alias);   // this is in lieu of adding a service worker
+					$this->bind($key, $alias);   // without a service worker framework in place, only very basic classes can be added
 				}
 			}
 		}

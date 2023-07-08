@@ -3,8 +3,9 @@
 	
 	namespace Magnetar\Tests\Object\NullObject;
 	
-	use Magnetar\Object\NullObject\NullObject;
 	use PHPUnit\Framework\TestCase;
+	
+	use Magnetar\Object\NullObject\NullObject;
 	
 	class NullObjectTest extends TestCase {
 		protected ?NullObject $nullobject;

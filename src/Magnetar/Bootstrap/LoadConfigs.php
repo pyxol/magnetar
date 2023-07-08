@@ -17,7 +17,7 @@
 			// default PHP settings
 			date_default_timezone_set($config->get('app.timezone', 'UTC'));
 			
-			mb_internal_encoding('UTF-8');
+			mb_internal_encoding($config->get('app.internal_encoding', 'UTF-8'));
 		}
 		
 		/**
@@ -30,6 +30,7 @@
 			$files = $this->getConfigFiles($app);
 			
 			foreach($files as $file) {
+				//print "setting config '". basename($file, '.php') ."' from ". $file ."<br>\n";
 				$config->set(basename($file, '.php'), require $file);
 			}
 		}

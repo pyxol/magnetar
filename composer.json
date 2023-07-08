@@ -13,12 +13,11 @@
 		}
 	],
 	"require": {
-		"php": "^8.1",
-		
-		"aws/aws-sdk-php": "^3.171",
-		"beeyev/thumbor-php": "^1.8",
-		"league/flysystem": "^3.0",
-		"league/flysystem-aws-s3-v3": "^3.0"
+		"php": "^8.1"
+	},
+	"require-dev": {
+		"filp/whoops": "^2.15",
+		"phpunit/phpunit": "^10.2"
 	},
 	"autoload": {
 		"psr-4": {
@@ -33,15 +32,17 @@
 			"Magnetar\\Tests\\": "tests/"
 		}
 	},
+	"suggest": {
+		"ext-memcached": "Required for using memcache-specific caching functionality",
+		"ext-pdo": "Required for using database functionality",
+		"filp/whoops": "Strongly suggested for development environments",
+		"phpunit/phpunit": "Required for running unit tests"
+	},
 	"config": {
 		"optimize-autoloader": true,
 		"preferred-install": "dist",
 		"sort-packages": true
 	},
 	"minimum-stability": "stable",
-	"prefer-stable": true,
-	"require-dev": {
-		"filp/whoops": "^2.15",
-		"phpunit/phpunit": "^10.2"
-	}
+	"prefer-stable": true
 }

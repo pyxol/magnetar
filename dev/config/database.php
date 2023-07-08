@@ -11,4 +11,12 @@
 				'charset' => 'utf8mb4',
 			],
 		],
+		
+		
+		// @TMP
+		'tables' => [
+			'test1',
+			'test2',
+			'test3',
+		]
 	];

@@ -6,28 +6,35 @@
 	use PDO;
 	
 	use Magnetar\Database\AbstractDatabase;
+	use Magnetar\Database\QuickQueryInterface;
+	use Magnetar\Container\Container;
 	
-	class Database extends AbstractDatabase {
+	class Database extends AbstractDatabase implements QuickQueryInterface {
 		// PDO instance
 		protected PDO|null $pdo = null;
 		
 		/**
 		 * Start the database-specific connection
+		 * @param Container $container The application container
 		 * @return void
 		 */
-		protected function wireUp(): void {
+		protected function wireUp(Container $container): void {
+			die("MariaDB.wireUp()");
+			
+			$config = $container->make('config')->get('database.connections.mariadb', []);
+			
 			// PDO options
 			$default_options = [
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 			];
 			
 			// connect to the database
-			$this->pdo = new PDO("mysql:host=". $this->config->get('host') .";dbname=". $this->config->get('dbname'), $this->config->get('user'), $this->config->get('password'), $default_options);
+			$this->pdo = new PDO("mysql:host=". $config['host'] .";dbname=". $config['dbname'], $config['user'], $config['password'], $default_options);
 			
 			// optional charset settings
-			if($cfg_charset = $this->config->get('charset')) {
-				$this->pdo->exec("SET NAMES ". $cfg_charset);
-				$this->pdo->exec("SET CHARACTER SET ". $cfg_charset);
+			if(isset($config['charset'])) {
+				$this->pdo->exec("SET NAMES ". $config['charset']);
+				$this->pdo->exec("SET CHARACTER SET ". $config['charset']);
 			}
 		}
 		

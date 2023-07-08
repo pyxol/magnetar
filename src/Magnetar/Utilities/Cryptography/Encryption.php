@@ -18,14 +18,19 @@
 		 */
 		public function __construct(
 			string $salt,
-			string|null $digest_method = null,
-			string|null $cipher_method = null
+			string|null $digest_method=null,
+			string|null $cipher_method=null
 		) {
 			//$this->salt = php_uname() . $salt;   // unable to remember why php_uname is desirable here, will look into
 			$this->salt = $salt;
 			
-			$this->digest_method = $digest_method;
-			$this->cipher_method = $cipher_method;
+			if(!is_null($digest_method)) {
+				$this->digest_method = $digest_method;
+			}
+			
+			if(!is_null($cipher_method)) {
+				$this->cipher_method = $cipher_method;
+			}
 		}
 		
 		/**

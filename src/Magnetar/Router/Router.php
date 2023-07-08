@@ -15,6 +15,12 @@
 			$this->prefixPath = $prefixPath;
 		}
 		
+		/**
+		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against
+		 * @param string $pattern The pattern to match against
+		 * @param string $method The HTTP method to match against
+		 * @return bool
+		 */
 		public function group(string $prefixPath, callable $callback) {
 			$router = new Router($this->request, $prefixPath);
 			

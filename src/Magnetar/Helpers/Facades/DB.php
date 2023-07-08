@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Helpers\Facade;
+	namespace Magnetar\Helpers\Facades;
 	
 	class DB extends Facade {
 		/**

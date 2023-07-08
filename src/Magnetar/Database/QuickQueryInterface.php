@@ -3,10 +3,7 @@
 	
 	namespace Magnetar\Database;
 	
-	interface DatabaseInterface {
-		// query
-		public function query(array $sql_query, array $params=[]): int|false;
-		
+	interface QuickQueryInterface {
 		// get rows
 		public function get_rows(string $sql_query, array $params=[], array|false $column_key=false): array|false;
 		
