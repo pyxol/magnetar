@@ -52,9 +52,9 @@
 			} catch(KernelPanicException $e) {
 				// handle kernel panic
 				$this->handlePanic($e);
-			} catch(Exception $e) {
+			}/*  catch(Exception $e) {
 				print 'Unhandled kernel exception: '. $e->getMessage();
-			}
+			} */
 			
 			// run postprocess routine
 			$this->postprocess();
@@ -68,6 +68,7 @@
 		 */
 		protected function terminate(): void {
 			// end app
-			die;
+			//die;
+			die("<br><br><hr><br><br>Time took: ". (microtime(true) - MAGNETAR_START));
 		}
 	}

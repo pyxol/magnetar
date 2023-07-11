@@ -3,7 +3,7 @@
 	
 	namespace Magnetar\Router;
 	
-	use Magnetar\Http\Request\Request;
+	use Magnetar\Http\Request;
 	
 	class Route {
 		/**
@@ -18,7 +18,11 @@
 		 */
 		protected string $pattern = '';
 		
-		public function __construct(string $pattern, array $raw_matches, Request $request) {
+		public function __construct(
+			string $pattern,
+			array $raw_matches,
+			Request $request
+		) {
 			// assign pattern
 			$this->pattern = $pattern;
 			

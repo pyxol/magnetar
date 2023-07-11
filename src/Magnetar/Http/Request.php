@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Http\Request;
+	namespace Magnetar\Http;
 	
 	use Magnetar\Router\Route;
 	

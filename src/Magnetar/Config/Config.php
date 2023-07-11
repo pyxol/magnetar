@@ -3,9 +3,10 @@
 	
 	namespace Magnetar\Config;
 	
+	use ArrayAccess;
 	use Exception;
 	
-	class Config {
+	class Config implements ArrayAccess {
 		protected array $store = [];
 		
 		public function __construct(string|array|null $values=null) {
@@ -193,5 +194,45 @@
 			
 			// set the config values
 			$this->setAll($config);
+		}
+		
+		/**
+		 * Determine if the given configuration option exists
+		 * @param mixed $key
+		 * @return bool
+		 */
+		public function offsetExists(mixed $key): bool {
+			return $this->has((string)$key);
+		}
+		
+		/**
+		 * Get a configuration option.
+		 *
+		 * @param mixed $key
+		 * @return mixed
+		 */
+		public function offsetGet(mixed $key): mixed {
+			return $this->get($key);
+		}
+		
+		/**
+		 * Set a configuration option.
+		 *
+		 * @param mixed $key
+		 * @param mixed $value
+		 * @return void
+		 */
+		public function offsetSet(mixed $key, mixed $value): void {
+			$this->set((string)$key, $value);
+		}
+		
+		/**
+		 * Unset a configuration option.
+		 *
+		 * @param mixed $key
+		 * @return void
+		 */
+		public function offsetUnset(mixed $key): void {
+			$this->set((string)$key, null);
 		}
 	}

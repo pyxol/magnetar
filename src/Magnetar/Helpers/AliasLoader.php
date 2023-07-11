@@ -5,13 +5,13 @@
 	
 	class AliasLoader {
 		/**
-		 * The array of class aliases.
+		 * The array of class aliases
 		 * @var array
 		 */
 		protected $aliases = [];
 		
 		/**
-		 * Indicates if a loader has been registered.
+		 * Indicates if a loader has been registered
 		 * @var bool
 		 */
 		protected $loaded = false;
@@ -26,7 +26,7 @@
 		protected static $instance;
 		
 		/**
-		 * Set the aliases to be loaded.
+		 * Set the aliases to be loaded
 		 * @param array $aliases
 		 */
 		public function __construct(array $aliases=[]) {
@@ -84,13 +84,13 @@
 			
 			$facade = static::$aliasNamespace . $facade;
 			
-			print "loadFacade: $alias => $facade<br>\n"; // "Facades\MyClass" => "Facades\Myclass
+			//print "loadFacade: $alias => $facade<br>\n"; // "Facades\MyClass" => "Facades\Myclass
 			
 			$this->load($facade);
 		}
 		
 		/**
-		 * Add an alias to the loader.
+		 * Add an alias to the loader
 		 * @param string $class
 		 * @param string $alias
 		 * @return void
@@ -100,7 +100,7 @@
 		}
 		
 		/**
-		 * Register the loader on the auto-loader stack.
+		 * Register the loader on the auto-loader stack
 		 * @return void
 		 */
 		public function register(): void {
@@ -112,7 +112,7 @@
 		}
 		
 		/**
-		 * Prepend the load method to the auto-loader stack.
+		 * Prepend the load method to the auto-loader stack
 		 * @return void
 		 */
 		protected function prependToLoaderStack(): void {
@@ -120,7 +120,7 @@
 		}
 		
 		/**
-		 * Get the registered aliases.
+		 * Get the registered aliases
 		 * @return array
 		 */
 		public function getAliases(): array {
@@ -128,7 +128,7 @@
 		}
 		
 		/**
-		 * Set the registered aliases.
+		 * Set the registered aliases
 		 * @param array $aliases
 		 * @return void
 		 */
@@ -137,7 +137,7 @@
 		}
 		
 		/**
-		 * Indicates if the loader has been registered.
+		 * Indicates if the loader has been registered
 		 * @return bool
 		 */
 		public function isLoaded(): bool {
@@ -145,7 +145,7 @@
 		}
 		
 		/**
-		 * Set the "loaded" state of the loader.
+		 * Set the "loaded" state of the loader
 		 * @param bool $value
 		 * @return void
 		 */
@@ -154,7 +154,7 @@
 		}
 		
 		/**
-		 * Set the value of the singleton AliasLoader.
+		 * Set the value of the singleton AliasLoader
 		 * @param AliasLoader $loader
 		 * @return void
 		 */
@@ -163,7 +163,7 @@
 		}
 		
 		/**
-		 * Clone method.
+		 * Clone method
 		 * @return void
 		 */
 		private function __clone() {

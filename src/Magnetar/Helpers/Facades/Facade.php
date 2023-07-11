@@ -34,13 +34,13 @@
 		 * @return void
 		 */
 		public static function resolved(Closure $callback): void {
-			$accessor = static::getFacadeKey();
+			$key = static::getFacadeKey();
 			
-			if(true === static::$app->resolved($accessor)) {
+			if(true === static::$app->resolved($key)) {
 				$callback(static::getFacadeRoot());
 			}
 			
-			static::$app->afterResolving($accessor, function($service) use ($callback) {
+			static::$app->afterResolving($key, function($service) use ($callback) {
 				$callback($service);
 			});
 		}
@@ -115,11 +115,18 @@
 		/**
 		 * Get a list of default Facade aliases to register
 		 * @return array
+		 * 
+		 * @see \Magnetar\Application::registerCoreContainerAliases()
 		 */
 		public static function defaultAliases(): array {
 			return [
+				'App' => App::class,
 				'Config' => Config::class,
 				'DB' => DB::class,
+				'File' => File::class,
+				'Request' => Request::class,
+				'Response' => Response::class,
+				'Router' => Router::class,
 			];
 		}
 		

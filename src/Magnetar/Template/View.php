@@ -21,7 +21,11 @@
 		 * @param string $template_path The path to the template file
 		 * @param array $view_data The data to pass to the template
 		 */
-		public function __construct(Template $template, string $template_path, array $view_data=[]) {
+		public function __construct(
+			Template $template,
+			string $template_path,
+			array $view_data=[]
+		) {
 			//print "data=". print_r($view_data, true) ."<br>";
 			
 			$this->template = $template;

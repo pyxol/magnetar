@@ -5,8 +5,8 @@
 	
 	use Magnetar\Kernel\Kernel as BaseKernel;
 	use Magnetar\Application;
-	use Magnetar\Http\Request\Request;
-	use Magnetar\Http\Response\Response;
+	use Magnetar\Http\Request;
+	use Magnetar\Http\Response;
 	use Magnetar\Router\Router;
 	use Magnetar\Template\Template;
 	
@@ -103,7 +103,10 @@
 			// GET request method?
 			if($this->router->get($pattern)) {
 				// serve request
-				$this->execute($callback, $this->request, $this->response);
+				//$this->execute($callback, $this->request, $this->response);
+				
+				// attempt to execute without specifying request/response
+				$this->execute($callback);
 			}
 		}
 		

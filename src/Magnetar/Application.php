@@ -75,18 +75,40 @@
 			static::setInstance($this);
 			
 			$this->instance('app', $this);
+			
 			$this->instance(Container::class, $this);
 		}
 		
 		/**
 		 * Register a core list of container aliases
 		 * @return void
+		 * 
+		 * @see Magnetar\Helpers\Facades\Facade::defaultAliases()
 		 */
 		public function registerCoreContainerAliases(): void {
 			foreach([
-				'app' => [ self::class, \Magnetar\Application::class, \Magnetar\Container\ContainerInterface::class ],
-				'config' => [ \Magnetar\Config\Config::class ],
-				'database' => [ \Magnetar\Database\ConnectionManager::class ],
+				'app' => [
+					self::class,
+					\Magnetar\Application::class
+				],
+				'config' => [
+					\Magnetar\Config\Config::class
+				],
+				'database' => [
+					\Magnetar\Database\ConnectionManager::class
+				],
+				'files' => [
+					\Magnetar\Filesystem\Filesystem::class
+				],
+				'request' => [
+					\Magnetar\Http\Request::class
+				],
+				'response' => [
+					\Magnetar\Http\Response::class
+				],
+				'router' => [
+					\Magnetar\Router\Router::class
+				],
 			] as $key => $aliases) {
 				foreach($aliases as $alias) {
 					//$this->alias($key, $alias);   // this is in lieu of adding a service worker

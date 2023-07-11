@@ -21,3 +21,6 @@ vendor/
 
 # tmp files
 tmp/*
+
+# ideas
+.idea/*

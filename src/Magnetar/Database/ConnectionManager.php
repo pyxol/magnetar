@@ -5,12 +5,15 @@
 	
 	use Exception;
 	
+	use Magnetar\Application;
 	use Magnetar\Database\DatabaseAdapterInterface;
 	
 	class ConnectionManager {
 		protected array $connections = [];
 		
-		public function __construct() {
+		public function __construct(
+			protected Application $app
+		) {
 			
 		}
 		
@@ -25,7 +28,14 @@
 			// interfaces with the app's configuration to create the default database connection
 			// unless overwritten by driver_name
 			
-			die(self::class .".connection(): Somehow need to pass an instance of the app to this class");
+			
+			print "<p>@TODO: Somehow app in ConnectionManager::connection() is effectively empty</p>\n";
+			print "<p>Likely an issue with ConnectionManager being called far too early, maybe different class should be called in Application-&gt;registerCoreContainerAliases()</p>";
+			print "ConnectionManager::connection - ". $this->app['config']->get('app.timezone') ."<br>\n";
+			
+			print self::class .".connection(): Somehow need to pass an instance of the app to this class<br>\n";
+			
+			die("<pre>". esc_html(print_r($this->app['config'], true)));
 			
 			//// this->app doesn't seem to be updated, even though it's passed by reference
 			//print "<pre>config.get=". print_r([
