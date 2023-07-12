@@ -6,7 +6,7 @@
 	use Magnetar\Container\Container;
 	
 	class Application extends Container {
-		protected string|null $basePath = null;
+		protected string|null $base_path = null;
 		
 		protected bool $bootstrapped = false;
 		protected bool $booted = false;
