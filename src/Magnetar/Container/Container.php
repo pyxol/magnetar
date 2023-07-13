@@ -957,14 +957,26 @@
 		 *
 		 * @throws Magnetar\Container\ResolvingDependenciesException
 		 */
-		protected function resolveClass(ReflectionParameter $dependency): mixed {
+		protected function resolveClass(ReflectionParameter $parameter): mixed {
 			try {
 				return $parameter->isVariadic()
 					? $this->resolveVariadicClass($parameter)
 					: $this->make(Helper::getParameterClassName($parameter));
 			} catch(InstanceNotFoundException $e) {
-				if($dependency->isOptional()) {
-					return $dependency->getDefaultValue();
+				//if($dependency->isOptional()) {
+				//	return $dependency->getDefaultValue();
+				//}
+				
+				if($parameter->isDefaultValueAvailable()) {
+					array_pop($this->with);
+					
+					return $parameter->getDefaultValue();
+				}
+				
+				if($parameter->isVariadic()) {
+					array_pop($this->with);
+					
+					return [];
 				}
 				
 				throw new ResolvingDependenciesException(
@@ -979,7 +991,7 @@
 		 * @return mixed
 		 */
 		protected function resolveVariadicClass(ReflectionParameter $parameter): mixed {
-			$className = Util::getParameterClassName($parameter);
+			$className = Helper::getParameterClassName($parameter);
 			
 			$abstract = $this->getAlias($className);
 			

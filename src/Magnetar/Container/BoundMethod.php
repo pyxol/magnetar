@@ -2,15 +2,15 @@
 	declare(strict_types=1);
 	
 	namespace Magnetar\Container;
-
+	
 	use Closure;
 	use InvalidArgumentException;
 	use ReflectionFunction;
 	use ReflectionMethod;
-
+	
 	use Magnetar\Container\BindingResolutionException;
 	use Magnetar\Container\Helper;
-
+	
 	class BoundMethod {
 		/**
 		 * Call the given Closure / class@method and inject its dependencies
@@ -176,26 +176,26 @@
 			array &$dependencies
 		): void {
 			if(array_key_exists($paramName = $parameter->getName(), $parameters)) {
-				$dependencies[] = $parameters[$paramName];
+				$dependencies[] = $parameters[ $paramName ];
 				
-				unset($parameters[$paramName]);
+				unset($parameters[ $paramName ]);
 			} elseif(!is_null($className = Helper::getParameterClassName($parameter))) {
 				if(array_key_exists($className, $parameters)) {
-					$dependencies[] = $parameters[$className];
+					$dependencies[] = $parameters[ $className ];
 					
-					unset($parameters[$className]);
+					unset($parameters[ $className ]);
 				} elseif($parameter->isVariadic()) {
 					$variadicDependencies = $container->make($className);
 					
 					$dependencies = array_merge($dependencies, is_array($variadicDependencies)
 						? $variadicDependencies
-						: [$variadicDependencies]);
+						: [ $variadicDependencies ]);
 				} else {
 					$dependencies[] = $container->make($className);
 				}
 			} elseif($parameter->isDefaultValueAvailable()) {
 				$dependencies[] = $parameter->getDefaultValue();
-			} elseif(! $parameter->isOptional() && !array_key_exists($paramName, $parameters)) {
+			} elseif(!$parameter->isOptional() && !array_key_exists($paramName, $parameters)) {
 				$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 				
 				throw new BindingResolutionException($message);

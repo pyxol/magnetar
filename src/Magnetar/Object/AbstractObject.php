@@ -33,7 +33,7 @@
 		
 		// getter
 		public function __get(string $key): mixed {
-			return $this->object[$key] ?? null;
+			return $this->object[ $key ] ?? null;
 		}
 		
 		// setter
