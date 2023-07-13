@@ -5,18 +5,11 @@
 		'connections' => [
 			'mariadb' => [
 				'host' => 'localhost',
-				'dbname' => 'db',
+				'port' => '3306',
+				'database' => 'db',
 				'user' => 'user',
 				'password' => 'password',
 				'charset' => 'utf8mb4',
 			],
 		],
-		
-		
-		// @TMP
-		'tables' => [
-			'test1',
-			'test2',
-			'test3',
-		]
 	];

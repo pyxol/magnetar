@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5633adb685775f71533cbd64d827c6d4",
+    "content-hash": "6cbf90d97308eccdaa8d7eac7d19c947",
     "packages": [],
     "packages-dev": [
         {
@@ -77,6 +77,80 @@
                 }
             ],
             "time": "2023-04-12T12:00:00+00:00"
+        },
+        {
+            "name": "jbzoo/jbdump",
+            "version": "1.5.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JBZoo/JBDump.git",
+                "reference": "044e1f9f648d2467d9161732f1195a44d452ca50"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JBZoo/JBDump/zipball/044e1f9f648d2467d9161732f1195a44d452ca50",
+                "reference": "044e1f9f648d2467d9161732f1195a44d452ca50",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.10"
+            },
+            "replace": {
+                "smetdenis/jbdump": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "SmetDenis",
+                    "email": "admin@jbzoo.com"
+                },
+                {
+                    "name": "Kaloyan K. Tsvetkov",
+                    "email": "kaloyan@kaloyan.info"
+                },
+                {
+                    "name": "Jeremy Dorn",
+                    "email": "jeremy@jeremydorn.com"
+                },
+                {
+                    "name": "Florin Patan",
+                    "email": "florinpatan@gmail.com"
+                }
+            ],
+            "description": "Script for debug and dump PHP variables and other stuff. This tool is a nice replacement for print_r() and var_dump() functions.",
+            "keywords": [
+                "debug",
+                "debugging",
+                "dump",
+                "dumper",
+                "jbdump",
+                "krumo",
+                "php",
+                "pretty",
+                "print",
+                "print_r",
+                "var_dump",
+                "vars"
+            ],
+            "support": {
+                "issues": "https://github.com/JBZoo/JBDump/issues",
+                "source": "https://github.com/JBZoo/JBDump/tree/1.5.6"
+            },
+            "time": "2021-03-31T09:21:47+00:00"
         },
         {
             "name": "myclabs/deep-copy",

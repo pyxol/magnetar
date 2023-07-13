@@ -20,13 +20,13 @@
 		 * The resolved object instances
 		 * @var array
 		 */
-		protected static $resolvedInstance;
+		protected static array $resolvedInstance;
 		
 		/**
 		 * Indicates if the resolved instance should be cached
 		 * @var bool
 		 */
-		protected static $cached = true;
+		protected static bool $cached = true;
 		
 		/**
 		 * Run a Closure 
@@ -59,13 +59,12 @@
 		}
 		
 		/**
-		* Get the root object behind the facade.
-		*
+		* Get the root object behind the facade
 		* @return mixed
 		*/
-	   public static function getFacadeRoot() {
-		   return static::resolveFacadeInstance(static::getFacadeKey());
-	   }
+		public static function getFacadeRoot(): mixed {
+			return static::resolveFacadeInstance(static::getFacadeKey());
+		}
 		
 		/**
 		 * Get the named key that this facade represents
@@ -95,20 +94,19 @@
 		}
 		
 		/**
-		 * Clear a resolved facade instance.
-		 *
-		 * @param  string  $name
+		 * Clear a resolved facade instance
+		 * @param string $name
 		 * @return void
 		 */
-		public static function clearResolvedInstance($name) {
-			unset(static::$resolvedInstance[$name]);
+		public static function clearResolvedInstance(string $name): void {
+			unset(static::$resolvedInstance[ $name ]);
 		}
 		
 		/**
-		 * Clear all of the resolved instances.
+		 * Clear all of the resolved instances
 		 * @return void
 		 */
-		public static function clearResolvedInstances() {
+		public static function clearResolvedInstances(): void {
 			static::$resolvedInstance = [];
 		}
 		

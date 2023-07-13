@@ -57,8 +57,6 @@
 		 * @return void
 		 */
 		public function bootstrapWith(array $bootstrappers): void {
-			//die("<pre>" . print_r($bootstrappers, true) . "</pre>");
-			
 			$this->bootstrapped = true;
 			
 			foreach($bootstrappers as $bootstrapper) {
@@ -111,8 +109,7 @@
 				],
 			] as $key => $aliases) {
 				foreach($aliases as $alias) {
-					//$this->alias($key, $alias);   // this is in lieu of adding a service worker
-					$this->bind($key, $alias);   // without a service worker framework in place, only very basic classes can be added
+					$this->alias($key, $alias);
 				}
 			}
 		}

@@ -30,7 +30,6 @@
 			$files = $this->getConfigFiles($app);
 			
 			foreach($files as $file) {
-				//print "setting config '". basename($file, '.php') ."' from ". $file ."<br>\n";
 				$config->set(basename($file, '.php'), require $file);
 			}
 		}

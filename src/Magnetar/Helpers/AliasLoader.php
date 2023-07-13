@@ -84,8 +84,6 @@
 			
 			$facade = static::$aliasNamespace . $facade;
 			
-			//print "loadFacade: $alias => $facade<br>\n"; // "Facades\MyClass" => "Facades\Myclass
-			
 			$this->load($facade);
 		}
 		

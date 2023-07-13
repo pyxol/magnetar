@@ -4,12 +4,15 @@
 	namespace Magnetar\Database\MariaDB;
 	
 	use PDO;
+	use RuntimeException;
 	
-	use Magnetar\Database\AbstractDatabase;
-	use Magnetar\Database\QuickQueryInterface;
 	use Magnetar\Container\Container;
+	use Magnetar\Database\AbstractDatabaseAdapter;
+	use Magnetar\Database\QuickQueryInterface;
+	use Magnetar\Database\DatabaseAdapterException;
 	
-	class Database extends AbstractDatabase implements QuickQueryInterface {
+	
+	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {
 		// PDO instance
 		protected PDO|null $pdo = null;
 		
@@ -17,11 +20,21 @@
 		 * Start the database-specific connection
 		 * @param Container $container The application container
 		 * @return void
+		 * 
+		 * @throws RuntimeException
+		 * @throws DatabaseAdapterException
 		 */
 		protected function wireUp(Container $container): void {
-			die("MariaDB.wireUp()");
+			//if(!extension_loaded('pdo_mysql')) {
+			//	throw new RuntimeException("The PDO MySQL extension is not loaded");
+			//}
 			
-			$config = $container->make('config')->get('database.connections.mariadb', []);
+			// get the configuration data
+			
+			// check if the configuration data is valid
+			$this->throwIfInvalidConfig(
+				$config = $container['config']->get('database.connections.mariadb', [])
+			);
 			
 			// PDO options
 			$default_options = [
@@ -29,7 +42,7 @@
 			];
 			
 			// connect to the database
-			$this->pdo = new PDO("mysql:host=". $config['host'] .";dbname=". $config['dbname'], $config['user'], $config['password'], $default_options);
+			$this->pdo = new PDO("mysql:host=". $config['host'] .";dbname=". $config['database'], $config['user'], $config['password'], $default_options);
 			
 			// optional charset settings
 			if(isset($config['charset'])) {

@@ -26,8 +26,6 @@
 			string $template_path,
 			array $view_data=[]
 		) {
-			//print "data=". print_r($view_data, true) ."<br>";
-			
 			$this->template = $template;
 			$this->template_path = $template_path;
 			

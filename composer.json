@@ -17,6 +17,7 @@
 	},
 	"require-dev": {
 		"filp/whoops": "^2.15",
+		"jbzoo/jbdump": "^1.5",
 		"phpunit/phpunit": "^10.2"
 	},
 	"autoload": {

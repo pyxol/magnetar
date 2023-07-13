@@ -15,10 +15,14 @@
 	use Magnetar\Container\ContainerInterface;
 	use Magnetar\Container\Helper;
 	use Magnetar\Container\BoundMethod;
-	use Magnetar\Container\ContextualBindingBuilder;
+	use Magnetar\Container\RewindableGenerator;
+	
+	use Magnetar\Container\BindingResolutionException;
 	use Magnetar\Container\BuildResolutionException;
+	use Magnetar\Container\ContextualBindingBuilder;
 	use Magnetar\Container\InstanceNotFoundException;
 	use Magnetar\Container\ResolvingDependenciesException;
+	use Magnetar\Container\SelfAliasException;
 	use Magnetar\Container\UninstantiableException;
 	
 	class Container implements ArrayAccess, ContainerInterface {
@@ -29,10 +33,22 @@
 		protected static $instance;
 		
 		/**
+		 * An array of the types that have been resolved
+		 * @var array
+		 */
+		protected array $resolved = [];
+		
+		/**
 		 * The container's bindings
 		 * @var array
 		 */
 		protected array $bindings = [];
+		
+		/**
+		 * The container's method bindings
+		 * @var array
+		 */
+		protected array $methodBindings = [];
 		
 		/**
 		 * Storage for the container's instances
@@ -41,10 +57,10 @@
 		protected array $instances = [];
 		
 		/**
-		 * The container's build stack
+		 * Storage for the container's aliases
 		 * @var array
 		 */
-		protected array $buildStack = [];
+		protected array $scopedInstances = [];
 		
 		/**
 		 * Known aliases for abstracts
@@ -64,6 +80,14 @@
 		 */
 		protected array $extenders = [];
 		
+		protected array $tags = [];
+		
+		/**
+		 * The container's build stack
+		 * @var array
+		 */
+		protected array $buildStack = [];
+		
 		/**
 		 * Parameter override stack
 		 * @var array
@@ -82,24 +106,18 @@
 		 */
 		protected array $reboundCallbacks = [];
 		
-		/**
-		 * An array of the types that have been resolved
-		 * @var array
-		 */
-		protected array $resolved = [];
-		
 		
 		protected array $globalBeforeResolvingCallbacks = [];
+		protected array $globalResolvingCallbacks = [];
 		protected array $globalAfterResolvingCallbacks = [];
 		protected array $beforeResolvingCallbacks = [];
-		protected array $globalResolvingCallbacks = [];
 		protected array $resolvingCallbacks = [];
 		protected array $afterResolvingCallbacks = [];
 		
 		/**
 		 * Define a contextual binding.
 		 *
-		 * @param  array|string  $concrete
+		 * @param array|string $concrete
 		 * @return Magnetar\Container\ContextualBindingBuilder
 		 */
 		public function when($concrete) {
@@ -118,7 +136,11 @@
 		 * @return bool
 		 */
 		public function bound(string $abstract): bool {
-			return isset($this->bindings[ $abstract ]);
+			return (
+				isset($this->bindings[ $abstract ])
+				|| isset($this->instances[ $abstract ])
+				|| $this->isAlias($abstract)
+			);
 		}
 		
 		/**
@@ -136,7 +158,14 @@
 		 * @return bool
 		 */
 		public function resolved(string $abstract): bool {
-			return isset($this->instances[ $abstract ]);
+			if($this->isAlias($abstract)) {
+				$abstract = $this->getAlias($abstract);
+			}
+			
+			return (
+				isset($this->resolved[ $abstract ])
+				|| isset($this->instances[ $abstract ])
+			);
 		}
 		
 		/**
@@ -145,11 +174,13 @@
 		 * @return bool
 		 */
 		public function isShared(string $abstract): bool {
-			if(isset($this->instances[ $abstract ])) {
-				return true;
-			}
-			
-			return (isset($this->bindings[ $abstract ]['shared']) && $this->bindings[ $abstract ]['shared']);
+			return (
+				isset($this->instances[ $abstract ])
+				|| (
+					isset($this->bindings[ $abstract ]['shared'])
+					&& (true === $this->bindings[ $abstract ]['shared'])
+				)
+			);
 		}
 		
 		/**
@@ -162,7 +193,7 @@
 		}
 		
 		/**
-		 * Bind a new instance to the container
+		 * Register a binding
 		 * @param string $abstract
 		 * @param Closure|null $concrete
 		 * @param bool $shared
@@ -180,9 +211,9 @@
 				$concrete = $abstract;
 			}
 			
-			if(!$concrete instanceof Closure) {
+			if(!($concrete instanceof Closure)) {
 				if(!is_string($concrete)) {
-					throw new TypeError(self::class .'::bind(): Argument #2 ($concrete) must be of type Closure|string|null');
+					throw new TypeError(self::class .'::bind(): Argument #2 (concrete) must be of type Closure|string|null');
 				}
 				
 				$concrete = $this->getClosure($abstract, $concrete);
@@ -207,7 +238,10 @@
 		 * @return Closure
 		 */
 		protected function getClosure(string $abstract, string $concrete): Closure {
-			return function(Container $container, array $parameters=[]) use ($abstract, $concrete): mixed {
+			return function(
+				Container $container,
+				array $parameters=[]
+			) use ($abstract, $concrete): mixed {
 				if($abstract == $concrete) {
 					return $container->build($concrete);
 				}
@@ -237,7 +271,7 @@
 		
 		/**
 		 * Get the method to be bound in class@method format
-		 * @param  array|string  $method
+		 * @param array|string $method
 		 * @return string
 		 */
 		protected function parseBindMethod(array|string $method): string {
@@ -254,7 +288,7 @@
 		 * @param mixed $instance
 		 * @return mixed
 		 */
-		public function callMethodBinding($method, $instance) {
+		public function callMethodBinding(string $method, mixed $instance): mixed {
 			return call_user_func($this->methodBindings[ $method ], $instance, $this);
 		}
 		
@@ -265,7 +299,11 @@
 		 * @param Closure|string $implementation
 		 * @return void
 		 */
-		public function addContextualBinding(string $concrete, string $abstract, Closure|string $implementation): void {
+		public function addContextualBinding(
+			string $concrete,
+			string $abstract,
+			Closure|string $implementation
+		): void {
 			$this->contextual[ $concrete ][ $this->getAlias($abstract) ] = $implementation;
 		}
 		
@@ -276,7 +314,11 @@
 		 * @param bool $shared
 		 * @return void
 		 */
-		public function bindIf(string $abstract, Closure|string|null $concrete=null, bool $shared=false): void {
+		public function bindIf(
+			string $abstract,
+			Closure|string|null $concrete=null,
+			bool $shared=false
+		): void {
 			if(!$this->bound($abstract)) {
 				$this->bind($abstract, $concrete, $shared);
 			}
@@ -289,7 +331,10 @@
 		 * @param Closure|string|null $concrete
 		 * @return void
 		 */
-		public function singleton(string $abstract, Closure|string|null $concrete=null): void {
+		public function singleton(
+			string $abstract,
+			Closure|string|null $concrete=null
+		): void {
 			$this->bind($abstract, $concrete, true);
 		}
 		
@@ -300,7 +345,10 @@
 		 * @param Closure|string|null $concrete
 		 * @return void
 		 */
-		public function singletonIf(string $abstract, Closure|string|null $concrete=null): void {
+		public function singletonIf(
+			string $abstract,
+			Closure|string|null $concrete=null
+		): void {
 			if(!$this->bound($abstract)) {
 				$this->singleton($abstract, $concrete);
 			}
@@ -312,7 +360,10 @@
 		 * @param Closure|string|null $concrete
 		 * @return void
 		 */
-		public function scoped(string $abstract, Closure|string|null $concrete=null): void {
+		public function scoped(
+			string $abstract,
+			Closure|string|null $concrete=null
+		): void {
 			$this->scopedInstances[] = $abstract;
 			
 			$this->singleton($abstract, $concrete);
@@ -324,7 +375,10 @@
 		 * @param Closure|string|null $concrete
 		 * @return void
 		 */
-		public function scopedIf(string $abstract, Closure|string|null $concrete=null): void {
+		public function scopedIf(
+			string $abstract,
+			Closure|string|null $concrete=null
+		): void {
 			if(!$this->bound($abstract)) {
 				$this->scoped($abstract, $concrete);
 			}
@@ -431,19 +485,18 @@
 			}
 			
 			return new RewindableGenerator(function () use ($tag) {
-				foreach ($this->tags[$tag] as $abstract) {
+				foreach ($this->tags[ $tag ] as $abstract) {
 					yield $this->make($abstract);
 				}
 			}, count($this->tags[ $tag ]));
 		}
 		
 		/**
-		 * Alias a type to a different name.
-		 *
+		 * Alias a type to a different name
 		 * @param string $abstract
 		 * @param string $alias
 		 * @return void
-		 *
+		 * 
 		 * @throws SelfAliasException
 		 */
 		public function alias(string $abstract, string $alias): void {
@@ -505,7 +558,7 @@
 		 * @return array
 		 */
 		protected function getReboundCallbacks(string $abstract): array {
-			return $this->reboundCallbacks[$abstract] ?? [];
+			return $this->reboundCallbacks[ $abstract ] ?? [];
 		}
 		
 		 /**
@@ -527,7 +580,11 @@
 		 *
 		 * @throws InvalidArgumentException
 		 */
-		public function call(callable|string $callback, array $parameters=[], string|null $defaultMethod=null): mixed {
+		public function call(
+			callable|string $callback,
+			array $parameters=[],
+			string|null $defaultMethod=null
+		): mixed {
 			$pushedToBuildStack = false;
 			
 			if(($className = $this->getClassForCallable($callback)) && !in_array(
@@ -563,8 +620,8 @@
 		protected function getClassForCallable(callable|string $callback): string|false {
 			if(PHP_VERSION_ID >= 80200) {
 				if(
-					is_callable($callback) &&
-					!($reflector = new ReflectionFunction($callback(...)))->isAnonymous()
+					is_callable($callback)
+					&& !($reflector = new ReflectionFunction($callback(...)))->isAnonymous()
 				) {
 					return $reflector->getClosureScopeClass()->name ?? false;
 				}
@@ -641,26 +698,15 @@
 		 * @param array $parameters
 		 * @param bool $raiseEvents
 		 * @return mixed
+		 * 
+		 * @throws Magnetar\Container\BindingResolutionException
 		 */
 		protected function resolve(
 			string|callable $abstract,
 			array $parameters=[],
 			bool $raiseEvents=true
 		): mixed {
-			//print "aliases=<pre>". esc_html(print_r([
-			//	'abstract' => $abstract,
-			//	'parameters' => $parameters,
-			//	'raiseEvents' => $raiseEvents ? "true" : "false",
-			//	'this.aliases' => $this->aliases,
-			//], true)) ."</pre> <hr>";
-			
-			$test1 = $abstract;
-			
-			
 			$abstract = $this->getAlias($abstract);
-			
-			$test2 = $abstract;
-			$test3 = "debug";
 			
 			// First we'll fire any event handlers which handle the "before" resolving of
 			// specific types. This gives some hooks the chance to add various extends
@@ -670,9 +716,6 @@
 			}
 			
 			$concrete = $this->getContextualConcrete($abstract);
-			
-			$test4 = $concrete;
-			$test5 = "resolve";
 			
 			// if parameters are provided, we need to create a contextualized instance
 			$needsContextualBuild = (!empty($parameters) || !is_null($concrete));
@@ -687,12 +730,6 @@
 			if(is_null($concrete)) {
 				$concrete = $this->getConcrete($abstract);
 			}
-			
-			$test6 = [
-				'abstract' => $abstract,
-				'concrete' => $concrete,
-			];
-			$test7 = "3";
 			
 			// instantiante an instance of the concrete type
 			$object = $this->isBuildable($concrete, $abstract)
@@ -748,8 +785,6 @@
 			if(empty($this->abstractAliases[ $abstract ])) {
 				return null;
 			}
-			
-			//die("abstract(". $abstract .")=". $this->abstractAliases[ $abstract ] ."<br>\n");
 			
 			foreach($this->abstractAliases[ $abstract ] as $alias) {
 				if(!is_null($binding = $this->findInContextualBindings($alias))) {
@@ -846,7 +881,7 @@
 			$results = [];
 			
 			foreach($dependencies as $dependency) {
-				if ($this->hasParameterOverride($dependency)) {
+				if($this->hasParameterOverride($dependency)) {
 					$results[] = $this->getParameterOverride($dependency);
 					
 					continue;
@@ -912,9 +947,7 @@
 				return [];
 			}
 			
-			throw new ResolvingDependenciesException(
-				'Unresolvable dependency resolving [' . $parameter->getType() . '] in class ' . $parameter->getDeclaringClass()->getName()
-			);
+			$this->unresolvablePrimitive($parameter);
 		}
 		
 		/**
@@ -926,7 +959,9 @@
 		 */
 		protected function resolveClass(ReflectionParameter $dependency): mixed {
 			try {
-				return $this->get($dependency->getType()->getName());
+				return $parameter->isVariadic()
+					? $this->resolveVariadicClass($parameter)
+					: $this->make(Helper::getParameterClassName($parameter));
 			} catch(InstanceNotFoundException $e) {
 				if($dependency->isOptional()) {
 					return $dependency->getDefaultValue();
@@ -994,12 +1029,15 @@
 		 * @param Closure|null $callback
 		 * @return void
 		 */
-		public function beforeResolving(Closure|string $abstract, Closure|null $callback=null): void {
+		public function beforeResolving(
+			Closure|string $abstract,
+			Closure|null $callback=null
+		): void {
 			if(is_string($abstract)) {
 				$abstract = $this->getAlias($abstract);
 			}
 			
-			if(is_null($callback) && ($abstract instanceof Closure)) {
+			if(($abstract instanceof Closure) && is_null($callback)) {
 				$this->globalBeforeResolvingCallbacks[] = $abstract;
 			} else {
 				$this->beforeResolvingCallbacks[ $abstract ][] = $callback;
@@ -1013,7 +1051,10 @@
 		 * @param Closure|null $callback
 		 * @return void
 		 */
-		public function resolving(Closure|string $abstract, Closure|null $callback=null): void {
+		public function resolving(
+			Closure|string $abstract,
+			Closure|null $callback=null
+		): void {
 			if(is_string($abstract)) {
 				$abstract = $this->getAlias($abstract);
 			}
@@ -1032,7 +1073,10 @@
 		 * @param Closure|null $callback
 		 * @return void
 		 */
-		public function afterResolving(Closure|string $abstract, Closure|null $callback=null): void {
+		public function afterResolving(
+			Closure|string $abstract,
+			Closure|null $callback=null
+		): void {
 			if(is_string($abstract)) {
 				$abstract = $this->getAlias($abstract);
 			}
@@ -1051,7 +1095,10 @@
 		 * @param array $parameters
 		 * @return void
 		 */
-		protected function fireBeforeResolvingCallbacks(string $abstract, array $parameters=[]): void {
+		protected function fireBeforeResolvingCallbacks(
+			string $abstract,
+			array $parameters=[]
+		): void {
 			$this->fireBeforeCallbackArray($abstract, $parameters, $this->globalBeforeResolvingCallbacks);
 			
 			foreach($this->beforeResolvingCallbacks as $type => $callbacks) {
@@ -1069,8 +1116,12 @@
 		 * @param array $callbacks
 		 * @return void
 		 */
-		protected function fireBeforeCallbackArray(string $abstract, array $parameters, array $callbacks): void {
-			foreach ($callbacks as $callback) {
+		protected function fireBeforeCallbackArray(
+			string $abstract,
+			array $parameters,
+			array $callbacks
+		): void {
+			foreach($callbacks as $callback) {
 				$callback($abstract, $parameters, $this);
 			}
 		}
@@ -1117,7 +1168,11 @@
 		 * @param array $callbacksPerType
 		 * @return array
 		 */
-		protected function getCallbacksForType(string $abstract, mixed $object, array $callbacksPerType): array {
+		protected function getCallbacksForType(
+			string $abstract,
+			mixed $object,
+			array $callbacksPerType
+		): array {
 			$results = [];
 			
 			foreach($callbacksPerType as $type => $callbacks) {
@@ -1260,32 +1315,35 @@
 		/**
 		 * Determine if a given offset exists.
 		 *
-		 * @param string $key
+		 * @param mixed $key
 		 * @return bool
 		 */
-		public function offsetExists($key): bool {
+		public function offsetExists(mixed $key): bool {
 			return $this->bound($key);
 		}
 		
 		/**
 		 * Get the value at a given offset.
 		 *
-		 * @param string $key
+		 * @param mixed $key
 		 * @return mixed
 		 */
-		public function offsetGet($key): mixed {
+		public function offsetGet(mixed $key): mixed {
 			return $this->make($key);
 		}
 		
 		/**
 		 * Set the value at a given offset.
 		 *
-		 * @param string $key
+		 * @param mixed $key
 		 * @param mixed $value
 		 * @return void
 		 */
-		public function offsetSet($key, $value): void {
-			$this->bind($key, $value instanceof Closure ? $value : fn () => $value);
+		public function offsetSet(mixed $key, mixed $value): void {
+			$this->bind(
+				$key,
+				(($value instanceof Closure) ? $value : fn () => $value)
+			);
 		}
 		
 		/**
@@ -1295,7 +1353,11 @@
 		 * @return void
 		 */
 		public function offsetUnset($key): void {
-			unset($this->bindings[$key], $this->instances[$key], $this->resolved[$key]);
+			unset(
+				$this->bindings[ $key ],
+				$this->instances[ $key ],
+				$this->resolved[ $key ]
+			);
 		}
 		
 		/**

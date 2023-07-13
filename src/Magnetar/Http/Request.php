@@ -3,6 +3,7 @@
 	
 	namespace Magnetar\Http;
 	
+	use Magnetar\Container\Container;
 	use Magnetar\Router\Route;
 	
 	class Request {
@@ -16,7 +17,10 @@
 		 * Create a new Request object
 		 * @param string $path The requested path (without query string)
 		 */
-		public function __construct(string|null $path=null) {
+		public function __construct(
+			protected Container $container,
+			string|null $path=null
+		) {
 			if(is_null($path)) {
 				$path = $_SERVER['REQUEST_URI'];
 			}

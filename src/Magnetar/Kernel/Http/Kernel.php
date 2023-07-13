@@ -15,24 +15,17 @@
 	class Kernel extends BaseKernel {
 		protected Application $app;
 		
-		protected Request $request;
-		protected Response $response;
-		protected Router $router;
-		
 		public function __construct(
 			Application $app
 		) {
 			$this->app = $app;
 			
 			// prep request and response objects
-			$this->request = new Request();
-			$this->response = new Response();
+			$this->app->instance('request', new Request($this->app));
+			$this->app->instance('response', new Response());
 			
 			// prep router
-			$this->router = new Router($this->request);
-			
-			// preprocess
-			$this->preprocess();
+			$this->app->instance('router', new Router($this->app));
 		}
 		
 		/**
@@ -66,8 +59,6 @@
 		 * @return void
 		 */
 		protected function preprocess(): void {
-			// currently does nothing
-			
 			$this->bootstrap();
 		}
 		
@@ -87,7 +78,7 @@
 			// initialize template engine
 			$tpl = new Template();
 			
-			$this->response->status(503)->send($tpl->render('errors/503', [
+			$this->app['response']->status(503)->send($tpl->render('errors/503', [
 				'message' => $e->getMessage(),
 			]));
 		}
@@ -101,9 +92,9 @@
 		 */
 		public function get(string $pattern, null|callable|array $callback=null): void {
 			// GET request method?
-			if($this->router->get($pattern)) {
+			if($this->app['router']->get($pattern)) {
 				// serve request
-				//$this->execute($callback, $this->request, $this->response);
+				//$this->execute($callback, $this->app['request'], $this->app['response']);
 				
 				// attempt to execute without specifying request/response
 				$this->execute($callback);
@@ -119,9 +110,9 @@
 		 */
 		public function post(string $pattern, null|callable|array $callback): void {
 			// POST request method?
-			if($this->router->post($pattern)) {
+			if($this->app['router']->post($pattern)) {
 				// serve request
-				$this->execute($callback, $this->request, $this->response);
+				$this->execute($callback, $this->app['request'], $this->app['response']);
 			}
 		}
 		
@@ -134,9 +125,9 @@
 		 */
 		public function any(string $pattern, null|callable|array $callback): void {
 			// any request method
-			if($this->router->any($pattern)) {
+			if($this->app['router']->any($pattern)) {
 				// serve request
-				$this->execute($callback, $this->request, $this->response);
+				$this->execute($callback, $this->app['request'], $this->app['response']);
 			}
 		}
 		
@@ -158,7 +149,7 @@
 			// initialize template engine
 			$tpl = new Template();
 			
-			$this->response->status(404)->send($tpl->render('errors/404', [
+			$this->app['response']->status(404)->send($tpl->render('errors/404', [
 				'message' => $message
 			]));
 		}

@@ -40,6 +40,7 @@
 		 * @param bool $httponly Whether the cookie should only be accessible over HTTP
 		 * @return Response
 		 * @note This method is a wrapper for PHP's setcookie() function
+		 * 
 		 * @TODO
 		 */
 		public function setCookie($name, $value=null, $expires=0, $path="", $domain="", $secure=false, $httponly=false): Response {

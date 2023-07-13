@@ -6,6 +6,7 @@
 	use \Exception;
 	
 	use Magnetar\Container\Container;
+	use Magnetar\Database\DatabaseAdapterException;
 	
 	abstract class AbstractDatabaseAdapter implements DatabaseInterface {
 		/**
@@ -20,4 +21,32 @@
 		}
 		
 		abstract protected function wireUp(Container $container): void;
+		
+		/**
+		 * Throws an exception if configuration for this adapter is invalid
+		 * @param array $config_data
+		 * 
+		 * @throws DatabaseAdapterException
+		 */
+		protected function throwIfInvalidConfig(array $config_data): void {
+			if(!isset($config_data['host'])) {
+				throw new DatabaseAdapterException("Database configuration is missing host");
+			}
+			
+			if(!isset($config_data['port'])) {
+				throw new DatabaseAdapterException("Database configuration is missing port");
+			}
+			
+			if(!isset($config_data['user'])) {
+				throw new DatabaseAdapterException("Database configuration is missing user");
+			}
+			
+			if(!isset($config_data['password'])) {
+				throw new DatabaseAdapterException("Database configuration is missing password");
+			}
+			
+			if(!isset($config_data['database'])) {
+				throw new DatabaseAdapterException("Database configuration is missing database");
+			}
+		}
 	}

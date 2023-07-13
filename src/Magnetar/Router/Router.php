@@ -3,16 +3,15 @@
 	
 	namespace Magnetar\Router;
 	
-	use Magnetar\Http\Request;
+	use Magnetar\Container\Container;
 	
 	class Router {
-		protected Request $request;
 		protected bool $served = false;
-		protected string $prefixPath;
 		
-		public function __construct(Request $request, string $prefixPath="") {
-			$this->request = $request;
-			$this->prefixPath = $prefixPath;
+		public function __construct(
+			protected Container $container,
+			protected string $prefixPath="") {
+			
 		}
 		
 		/**
@@ -114,17 +113,17 @@
 				return false;
 			}
 			
-			if(!preg_match($pattern, $this->request->getPath(), $raw_matches)) {
+			if(!preg_match($pattern, $this->container['request']->getPath(), $raw_matches)) {
 				return false;
 			}
 			
 			$this->served = true;
 			
-			$this->request->setRoute(
+			$this->container['request']->setRoute(
 				new Route(
 					$pattern,
 					$raw_matches,
-					$this->request
+					$this->container['request']
 				)
 			);
 			
