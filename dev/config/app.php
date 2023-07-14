@@ -8,7 +8,7 @@
 		// internal encoding charset (mb_insertnal_encoding)
 		'internal_encoding' => 'UTF-8',
 		
-		// environment ("dev" or "production")
+		// environment ("dev" or "prod")
 		'env' => 'dev',
 		
 		// aliases to load

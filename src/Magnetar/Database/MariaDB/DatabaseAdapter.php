@@ -185,11 +185,16 @@
 		 * Run a query and return an array of a single column. Generally used for SELECT statements. Returns false on failure
 		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
 		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
-		 * @param string $assoc_key The column to use as the array key for the results
-		 * @param string|int $column_key The column to use as the array value for the results
+		 * @param string|int $assoc_key The column to use as the array key for the results. Defaults to first column
+		 * @param string|int $column_key The column to use as the array value for the results. Defaults to second column
 		 * @return array|false
 		 */
-		public function get_col_assoc(string $sql_query, array $params=[], string $assoc_key, string|int $column_key=0): array|false {
+		public function get_col_assoc(
+			string $sql_query,
+			array $params=[],
+			string|int $assoc_key=0,
+			string|int $column_key=1
+		): array|false {
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			

@@ -20,6 +20,10 @@
 			$this->wireUp($container);
 		}
 		
+		/**
+		 * Wire up to the DB instance
+		 * @param Container $container
+		 */
 		abstract protected function wireUp(Container $container): void;
 		
 		/**

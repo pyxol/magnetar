@@ -14,7 +14,7 @@
 		public function get_col(string $sql_query, array $params=[], string|int $column_key=0): array|false;
 		
 		// get assoc column
-		public function get_col_assoc(string $sql_query, array $params=[], string $assoc_key, string|int $column_key=0): array|false;
+		public function get_col_assoc(string $sql_query, array $params=[], string|int $assoc_key=0, string|int $column_key=1): array|false;
 		
 		// get var
 		public function get_var(string $sql_query, array $params=[], string|int|false $column_key=false): string|int|false;

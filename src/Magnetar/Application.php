@@ -113,4 +113,36 @@
 				}
 			}
 		}
+		
+		/**
+		 * Set the environment ("dev", "prod", etc)
+		 * @param string $env
+		 * @return void
+		 */
+		public function setEnvironment(string $env): void {
+			$this['env'] = $env;
+		}
+		
+		/**
+		 * Get the environment ("dev", "prod", etc)
+		 * @return string
+		 */
+		public function environment(): string {
+			return $this['env'];
+		}
+		
+		/**
+		 * Is this the development environment?
+		 */
+		public function isDev(): bool {
+			return ('dev' === $this['env']);
+		}
+		
+		/**
+		 * Is this the production environment?
+		 * @return bool
+		 */
+		public function isProd(): bool {
+			return ('prod' === $this['env']);
+		}
 	}

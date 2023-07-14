@@ -30,6 +30,7 @@
 			"Magnetar\\": "src/Magnetar/"
 		},
 		"files": [
+			"src/Magnetar/_autoload.php",
 			"src/Magnetar/Template/_autoload.php"
 		]
 	},

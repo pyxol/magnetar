@@ -14,6 +14,9 @@
 			
 			$this->loadConfigFiles($app, $config);
 			
+			// set the application environment
+			$app->setEnvironment($config->get('app.env', 'prod'));
+			
 			// default PHP settings
 			date_default_timezone_set($config->get('app.timezone', 'UTC'));
 			
