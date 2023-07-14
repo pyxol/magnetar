@@ -8,7 +8,7 @@
 	use Magnetar\Container\Container;
 	use Magnetar\Database\DatabaseAdapterException;
 	
-	abstract class AbstractDatabaseAdapter implements DatabaseInterface {
+	abstract class AbstractDatabaseAdapter implements DatabaseAdapterInterface {
 		/**
 		 * Connect to a MariaDB database
 		 * @param array $configuration Configuration to pass to the database adapter

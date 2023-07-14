@@ -5,8 +5,6 @@
 	
 	use BadMethodCallException;
 	
-	use Magnetar\Kernel\Kernel;
-	
 	class Controller {
 		/**
 		 * Catch any undefined methods

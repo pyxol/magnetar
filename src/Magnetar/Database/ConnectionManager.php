@@ -6,7 +6,7 @@
 	use Exception;
 	
 	use Magnetar\Application;
-	use Magnetar\Database\DatabaseAdapterInterface;
+	use Magnetar\Database\AbstractDatabaseAdapter;
 	
 	class ConnectionManager {
 		protected array $connections = [];
@@ -20,11 +20,11 @@
 		/**
 		 * Returns the active database adapter for the specified driver
 		 * @param string|null $driver_name
-		 * @return DatabaseAdapterInterface
+		 * @return AbstractDatabaseAdapter
 		 * 
 		 * @throws Exception
 		 */
-		public function connection(string|null $driver_name=null): DatabaseAdapterInterface {
+		public function connection(string|null $driver_name=null): AbstractDatabaseAdapter {
 			// interfaces with the app's configuration to create the default database connection
 			// unless overwritten by driver_name
 			

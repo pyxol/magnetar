@@ -120,7 +120,7 @@
 		 * @param array|string $concrete
 		 * @return Magnetar\Container\ContextualBindingBuilder
 		 */
-		public function when($concrete) {
+		public function when($concrete): ContextualBindingBuilder {
 			$aliases = [];
 			
 			foreach (Helper::arrayWrap($concrete) as $c) {

@@ -11,7 +11,6 @@
 	use Magnetar\Database\QuickQueryInterface;
 	use Magnetar\Database\DatabaseAdapterException;
 	
-	
 	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {
 		// PDO instance
 		protected PDO|null $pdo = null;
@@ -25,13 +24,11 @@
 		 * @throws DatabaseAdapterException
 		 */
 		protected function wireUp(Container $container): void {
-			//if(!extension_loaded('pdo_mysql')) {
-			//	throw new RuntimeException("The PDO MySQL extension is not loaded");
-			//}
+			if(!extension_loaded('pdo_mysql')) {
+				throw new RuntimeException("The PDO MySQL extension is not loaded");
+			}
 			
-			// get the configuration data
-			
-			// check if the configuration data is valid
+			// pull the configuration and check if it is valid
 			$this->throwIfInvalidConfig(
 				$config = $container['config']->get('database.connections.mariadb', [])
 			);
@@ -56,8 +53,10 @@
 		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
 		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
 		 * @return int|false
+		 * 
 		 * @see https://www.php.net/manual/en/pdo.exec.php
 		 * @see https://www.php.net/manual/en/pdo.prepare.php
+		 * 
 		 * @example $db->query("INSERT INTO `table` (`column`) VALUES (:value)", [':value' => 'test']);
 		 * @example $db->query("INSERT INTO `table` (`column`) VALUES (?)", ['test']);
 		 * @example $db->query("INSERT INTO `table` (`column`) VALUES ('test')");
@@ -88,8 +87,10 @@
 		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
 		 * @param string|false $column_key The column to use as the array key for the results. If false, use an incrementing integer
 		 * @return array|false
+		 * 
 		 * @see https://www.php.net/manual/en/pdo.query.php
 		 * @see https://www.php.net/manual/en/pdo.prepare.php
+		 * 
 		 * @example $db->select("SELECT * FROM `table` WHERE `column` = :value", [':value' => 'test']);
 		 * @example $db->select("SELECT * FROM `table` WHERE `column` = ?", ['test']);
 		 * @example $db->select("SELECT * FROM `table` WHERE `column` = 'test'");
