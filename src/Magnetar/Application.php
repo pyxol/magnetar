@@ -89,6 +89,9 @@
 					self::class,
 					\Magnetar\Application::class
 				],
+				'cache' => [
+					\Magnetar\Cache\StoreManager::class
+				],
 				'config' => [
 					\Magnetar\Config\Config::class
 				],
@@ -97,6 +100,9 @@
 				],
 				'files' => [
 					\Magnetar\Filesystem\Filesystem::class
+				],
+				'logger' => [
+					\Magnetar\Log\Logger::class
 				],
 				'request' => [
 					\Magnetar\Http\Request::class

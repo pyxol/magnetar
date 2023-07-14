@@ -3,6 +3,7 @@
 	
 	namespace Magnetar\Cache;
 	
+	use Magnetar\Container\Container;
 	use Magnetar\Config\Config;
 	
 	/**
@@ -17,14 +18,16 @@
 		 * AbstractCacheStore constructor
 		 * @param Config $config
 		 */
-		public function __construct(protected Config $config) {
-			if("" !== ($this->prefix = $config->get('cache.prefix', ''))) {
+		public function __construct(
+			Container $container
+		) {
+			if('' !== ($this->prefix = $container['config']->get('cache.prefix', ''))) {
 				$this->prefix .= ':';
 			}
 			
-			$this->connect($config);
+			$this->wireUp($container['config']);
 		}
 		
 		// connection
-		abstract protected function connect(Config $config): void;
+		abstract protected function wireUp(Config $config): void;
 	}

@@ -47,6 +47,8 @@
 		 * Creates a new database connection
 		 * @param string $driver_name
 		 * @return void
+		 * 
+		 * @throws Exception
 		 */
 		protected function makeConnection(string $driver_name): void {
 			match($driver_name) {

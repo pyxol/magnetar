@@ -1,6 +1,6 @@
 <?php
 	return [
-		'default' => env('CACHE_TYPE', 'memcached'),
+		'default' => env('CACHE_TYPE', 'inmemory'),
 		
 		'connections' => [
 			'memcached' => [

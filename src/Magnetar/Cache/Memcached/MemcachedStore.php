@@ -1,10 +1,12 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Cache;
+	namespace Magnetar\Cache\Memcached;
 	
-	use Magnetar\Config\Config;
 	use Memcached;
+	
+	use Magnetar\Cache\AbstractCacheStore;
+	use Magnetar\Config\Config;
 	
 	class MemcachedStore extends AbstractCacheStore {
 		protected $memcached;
@@ -14,11 +16,11 @@
 		 * @param Config $config
 		 * @return void
 		 */
-		protected function connect(Config $config): void {
+		protected function wireUp(Config $config): void {
 			$this->memcached = new Memcached();
 			$this->memcached->addServer(
-				$config->get('cache.memcached.host', 'localhost'),
-				$config->get('cache.memcached.port', 11211)
+				$config->get('cache.connections.memcached.host', 'localhost'),
+				(int)$config->get('cache.connections.memcached.port', 11211)
 			);
 		}
 		
@@ -150,6 +152,8 @@
 		 * @return mixed
 		 */
 		public function set(string $key, $value, int $ttl=0): mixed {
+			\Magnetar\Helpers\Facades\Log::debug("Setting $key to $value");
+			
 			$result = $this->memcached->set(
 				$this->prefix . $key,
 				$value,

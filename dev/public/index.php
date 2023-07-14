@@ -30,17 +30,22 @@
 	
 	// routes
 	$kernel->get(
-		'/^dev\/?/i',
-		[DevController::class, 'devpage']
+		'/^set_cache\/?$/i',
+		[DevController::class, 'set_cache']
 	);
 	
 	$kernel->get(
-		'/^db\/?/i',
+		'/^get_cache\/?$/i',
+		[DevController::class, 'get_cache']
+	);
+	
+	$kernel->get(
+		'/^db\/?$/i',
 		[DevController::class, 'db']
 	);
 	
 	$kernel->get(
-		'/^\/?/i',
+		'/^\/?$/i',
 		[DevController::class, 'index']
 	);
 	

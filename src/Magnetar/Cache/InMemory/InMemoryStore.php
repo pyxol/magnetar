@@ -1,8 +1,9 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Cache;
+	namespace Magnetar\Cache\InMemory;
 	
+	use Magnetar\Cache\AbstractCacheStore;
 	use Magnetar\Config\Config;
 	
 	class InMemoryStore extends AbstractCacheStore {
@@ -13,7 +14,7 @@
 		 * @param Config $config
 		 * @return void
 		 */
-		protected function connect(Config $config): void {
+		protected function wireUp(Config $config): void {
 			// nothing needed for this method in this class
 		}
 		

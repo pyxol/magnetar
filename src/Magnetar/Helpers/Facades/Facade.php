@@ -119,9 +119,11 @@
 		public static function defaultAliases(): array {
 			return [
 				'App' => App::class,
+				'Cache' => Cache::class,
 				'Config' => Config::class,
 				'DB' => DB::class,
 				'File' => File::class,
+				'Log' => Log::class,
 				'Request' => Request::class,
 				'Response' => Response::class,
 				'Router' => Router::class,
