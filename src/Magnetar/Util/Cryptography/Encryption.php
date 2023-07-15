@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Utilities\Cryptography;
+	namespace Magnetar\Util\Cryptography;
 	
 	class Encryption {
 		protected string $salt;

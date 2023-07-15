@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Utilities;
+	namespace Magnetar\Util;
 	
 	class Number {
 		/**

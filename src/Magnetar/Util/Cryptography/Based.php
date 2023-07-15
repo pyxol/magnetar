@@ -1,9 +1,9 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Utilities\Cryptography;
+	namespace Magnetar\Util\Cryptography;
 	
-	use Magnetar\Utilities\Str;
+	use Magnetar\Util\Str;
 	
 	class Based {
 		/**
