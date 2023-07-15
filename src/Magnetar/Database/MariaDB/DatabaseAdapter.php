@@ -12,6 +12,8 @@
 	use Magnetar\Database\DatabaseAdapterException;
 	
 	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {
+		protected string $driver_name = 'mariadb';
+		
 		// PDO instance
 		protected PDO|null $pdo = null;
 		

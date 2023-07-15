@@ -9,6 +9,8 @@
 	use Magnetar\Database\DatabaseAdapterException;
 	
 	abstract class AbstractDatabaseAdapter implements DatabaseAdapterInterface {
+		protected string $driver_name = '';
+		
 		/**
 		 * Connect to a MariaDB database
 		 * @param array $configuration Configuration to pass to the database adapter
@@ -52,5 +54,13 @@
 			if(!isset($config_data['database'])) {
 				throw new DatabaseAdapterException("Database configuration is missing database");
 			}
+		}
+		
+		/**
+		 * Returns the name of the driver
+		 * @return string
+		 */
+		public function getDriverName(): string {
+			return $this->driver_name;
 		}
 	}
