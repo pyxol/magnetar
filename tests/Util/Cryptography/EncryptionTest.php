@@ -1,11 +1,11 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Tests\Utilities\Cryptography;
+	namespace Magnetar\Tests\Util\Cryptography;
 	
 	use PHPUnit\Framework\TestCase;
 	
-	use Magnetar\Utilities\Cryptography\Encryption;
+	use Magnetar\Util\Cryptography\Encryption;
 	
 	class EncryptionTest extends TestCase {
 		public function testDefaultCryptography() {
