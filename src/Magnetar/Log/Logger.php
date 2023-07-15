@@ -65,11 +65,15 @@
 		 * @return mixed
 		 */
 		public function dump(int $minLevel=0, bool $return=false): mixed {
-			if($print) {
+			if($return) {
 				ob_start();
 			}
 			
-			jbdump($this->getLogs($minLevel), false, 'Logger::dump');
+			if(function_exists('jbdump')) {
+				jbdump($this->getLogs($minLevel), false, 'Logger::dump');
+			} else {
+				print "<pre>". print_r($this->getLogs($minLevel), true) ."</pre>";
+			}
 			
 			if($return) {
 				return ob_get_clean();

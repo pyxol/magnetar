@@ -1,0 +1,48 @@
+<?php
+	declare(strict_types=1);
+	
+	namespace Magnetar\Helpers;
+	
+	use Magnetar\Application;
+	use Magnetar\Helpers\DeferredServiceInterface;
+	use Magnetar\Helpers\DefaultServiceProviders;
+	
+	class ServiceProvider {
+		public function __construct(
+			protected Application $app
+		) {
+			
+		}
+		
+		/**
+		 * Get the services provided by the provider
+		 * @return array
+		 */
+		public function provides(): array {
+			return [];
+		}
+		
+		/**
+		 * Register the service provider with the application
+		 * @return void
+		 */
+		public function register(): void {
+			
+		}
+		
+		/**
+		 * Determine if the service provider is deferred
+		 * @return bool
+		 */
+		public function isDeferred(): bool {
+			return ($this instanceof DeferredServiceInterface);
+		}
+		
+		/**
+		 * Get the default service providers
+		 * @return DefaultServiceProviders
+		 */
+		public static function defaultProviders(): DefaultServiceProviders {
+			return new DefaultServiceProviders;
+		}
+	}

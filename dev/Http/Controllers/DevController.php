@@ -41,7 +41,7 @@
 		public function set_cache() {
 			// in lieu of service providers
 			App::bind('cache', fn () => new Magnetar\Cache\StoreManager(App::getInstance()));
-			App::bind('logger', fn () => new Magnetar\Log\Logger(App::getInstance()));
+			//App::bind('logger', fn () => new Magnetar\Log\Logger(App::getInstance()));
 			
 			$cached_val = date('r');
 			$cache_set = Cache::set('cached_val', $cached_val, 15);
@@ -52,7 +52,7 @@
 		public function get_cache() {
 			// in lieu of service providers
 			App::bind('cache', fn () => new Magnetar\Cache\StoreManager(App::getInstance()));
-			App::bind('logger', fn () => new Magnetar\Log\Logger(App::getInstance()));
+			//App::bind('logger', fn () => new Magnetar\Log\Logger(App::getInstance()));
 			
 			$cached_val = Cache::get('cached_val') ?? "NOT SET";
 			

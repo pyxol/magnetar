@@ -35,6 +35,8 @@
 		protected array $bootstrappers = [
 			\Magnetar\Bootstrap\LoadConfigs::class,
 			\Magnetar\Bootstrap\RegisterFacades::class,
+			\Magnetar\Bootstrap\RegisterServiceProviders::class,
+			\Magnetar\Bootstrap\BootServiceProviders::class,
 		];
 		
 		/**

@@ -1,5 +1,6 @@
 <?php
 	use Magnetar\Helpers\Facades\Facade;
+	use Magnetar\Helpers\ServiceProvider;
 	
 	return [
 		// timezone
@@ -13,4 +14,7 @@
 		
 		// aliases to load
 		'aliases' => Facade::defaultAliases(),
+		
+		// service providers to load
+		'providers' => ServiceProvider::defaultProviders()->toArray(),
 	];

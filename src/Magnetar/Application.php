@@ -4,12 +4,16 @@
 	namespace Magnetar;
 	
 	use Magnetar\Container\Container;
+	use Magnetar\Helpers\ServiceProvider;
+	use Magnetar\Log\LogServiceProvider;
 	
 	class Application extends Container {
 		protected string|null $base_path = null;
 		
 		protected bool $bootstrapped = false;
-		protected bool $booted = false;
+		protected bool $bootedProviders = false;
+		
+		protected array $serviceProviders = [];
 		
 		/**
 		 * Application constructor
@@ -22,6 +26,7 @@
 			}
 			
 			$this->registerBaseBindings();
+			$this->registerBaseServiceProviders();
 			$this->registerCoreContainerAliases();
 		}
 		
@@ -65,11 +70,126 @@
 		}
 		
 		/**
-		 * Register the basic bindings into the container.
+		 * Has the application booted up it's service providers?
+		 * @return bool
+		 */
+		public function hasBootedServiceProviders(): bool {
+			return $this->bootedProviders;
+		}
+		
+		/**
+		 * Register all of the configured service providers
+		 * @return void
+		 */
+		public function registerConfiguredServiceProviders(): void {
+			$providers = $this['config']['app.providers'];
+			
+			foreach($providers as $provider) {
+				// @TODO if provider instanceof DeferredServiceProvider, defer it here
+				
+				$this->registerProvider($provider);
+			}
+		}
+		
+		/**
+		 * Boot up the application's service providers
+		 * @return void
+		 */
+		public function bootServiceProviders(): void {
+			if($this->hasBootedServiceProviders()) {
+				return;
+			}
+			
+			$this->bootedProviders = true;
+			
+			foreach($this['config']['app.providers'] as $provider) {
+				$this->bootServiceProvider($provider);
+			}
+		}
+		
+		/**
+		 * Boot up a service provider if necessary
+		 * @param ServiceProvider|string $provider
+		 * @return void
+		 */
+		public function bootServiceProvider(ServiceProvider|string $provider): void {
+			if(method_exists($provider, 'boot')) {
+				$this->call([$provider, 'boot']);
+			}
+		}
+		
+		/**
+		 * Register a service provider with the application
+		 * @param ServiceProvider|string $provider
+		 * @return ServiceProvider
+		 */
+		public function registerProvider(ServiceProvider|string $provider): ServiceProvider {
+			if($registered = $this->getServiceProvider($provider)) {
+				return $registered;
+			}
+			
+			//jbdump($provider, true, 'registering provider');
+			
+			if(is_string($provider)) {
+				$provider = $this->resolveServiceProvider($provider);
+			}
+			
+			// call the service provider's register method
+			$provider->register();
+			
+			// @TODO bindings property on ServiceWorker instance
+			// @TODO singletons property on ServiceWorker instance
+			
+			$this->markAsRegisteredServiceProvider($provider);
+			
+			if($this->hasBootedServiceProviders()) {
+				$this->bootServiceProvider($provider);
+			}
+			
+			return $provider;
+		}
+		
+		/**
+		 * Resolve a service provider instance from the class name
+		 * @param string $provider
+		 * @return ServiceProvider
+		 */
+		public function resolveServiceProvider(string $provider): ServiceProvider {
+			return new $provider($this);
+		}
+		
+		/**
+		 * Get the registered service provider instance if it exists
+		 * @param ServiceProvider|string $provider
+		 * @return ServiceProvider|null
+		 */
+		public function getServiceProvider(ServiceProvider|string $provider): ServiceProvider|null {
+			return array_values($this->getServiceProviders($provider))[0] ?? null;
+		}
+		
+		/**
+		 * Get the registered service provider instances if they exist
+		 * @param ServiceProvider|string $provider
+		 * @return array
+		 */
+		public function getServiceProviders(ServiceProvider|string $provider): array {
+			$name = is_string($provider) ? $provider : get_class($provider);
+			
+			return array_filter($this->serviceProviders, function($value) use ($name) {
+				return ($value instanceof $name);
+			});
+		}
+		
+		protected function markAsRegisteredServiceProvider(ServiceProvider $provider): void {
+			$this->serviceProviders[] = $provider;
+		}
+		
+		/**
+		 * Register the container's basic bindings
 		 *
 		 * @return void
 		 */
-		protected function registerBaseBindings() {
+		protected function registerBaseBindings(): void {
 			static::setInstance($this);
 			
 			$this->instance('app', $this);
@@ -78,7 +198,15 @@
 		}
 		
 		/**
-		 * Register a core list of container aliases
+		 * Register the container's basic service providers
+		 * @return void
+		 */
+		protected function registerBaseServiceProviders(): void {
+			$this->registerProvider(new LogServiceProvider($this));
+		}
+		
+		/**
+		 * Register the container's core list of aliases
 		 * @return void
 		 * 
 		 * @see Magnetar\Helpers\Facades\Facade::defaultAliases()
@@ -118,6 +246,56 @@
 					$this->alias($key, $alias);
 				}
 			}
+		}
+		
+		
+		/**
+		 * Extend the container's make method with service provider functionality
+		 * @param string|callable $abstract
+		 * @param array $parameters
+		 * @return mixed
+		 */
+		public function make(string|callable $abstract, array $parameters=[]): mixed {
+			$abstract = $this->getAlias($abstract);
+			
+			// @TODO check if deferred and load if necessary
+			
+			return parent::make($abstract, $parameters);
+		}
+		
+		/**
+		 * Extend the container's resolve method with service provider functionality
+		 * @param string|callable $abstract
+		 * @param array $parameters
+		 * @param bool $raiseEvents
+		 * @return mixed
+		 */
+		protected function resolve(
+			string|callable $abstract,
+			array $parameters=[],
+			bool $raiseEvents=true
+		): mixed {
+			$abstract = $this->getAlias($abstract);
+			
+			// @TODO check if deferred and load if necessary
+			
+			return parent::resolve($abstract, $parameters, $raiseEvents);
+		}
+		
+		
+		public function bound(string $abstract): bool {
+			$abstract = $this->getAlias($abstract);
+			
+			// @TODO check if deferred
+			
+			return parent::bound($abstract);
+		}
+		
+		
+		public function flush(): void {
+			parent::flush();
+			
+			$this->serviceProviders = [];
 		}
 		
 		/**
