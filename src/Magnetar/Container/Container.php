@@ -581,7 +581,7 @@
 		 * @throws InvalidArgumentException
 		 */
 		public function call(
-			callable|string $callback,
+			callable|array|string $callback,
 			array $parameters=[],
 			string|null $defaultMethod=null
 		): mixed {
@@ -617,7 +617,7 @@
 		 * @param callable|string $callback
 		 * @return string|false
 		 */
-		protected function getClassForCallable(callable|string $callback): string|false {
+		protected function getClassForCallable(callable|array|string $callback): string|false {
 			if(PHP_VERSION_ID >= 80200) {
 				if(
 					is_callable($callback)
