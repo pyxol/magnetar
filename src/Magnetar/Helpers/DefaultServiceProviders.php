@@ -18,6 +18,17 @@
 		}
 		
 		/**
+		 * Add more service providers to the default list
+		 * @param array $providers
+		 * @return self
+		 */
+		public function merge(array $providers): self {
+			$this->providers = array_merge($this->providers, $providers);
+			
+			return new static($this->providers);
+		}
+		
+		/**
 		 * Get an array of default service providers
 		 */
 		public function toArray(): array {
