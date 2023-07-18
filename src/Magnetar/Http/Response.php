@@ -7,9 +7,9 @@
 		/**
 		 * Set the HTTP Response Code
 		 * @param int $code The HTTP Response Code. Defaults to 200
-		 * @return Response
+		 * @return self
 		 */
-		public function status($code=200): Response {
+		public function status($code=200): self {
 			http_response_code($code);
 			
 			return $this;
@@ -20,7 +20,7 @@
 		 * @param string $header The header to set
 		 * @return Response
 		 */
-		public function header(string $header, bool|int $replace=true, int|null $response_code=0): Response {
+		public function header(string $header, bool|int $replace=true, int|null $response_code=0): self {
 			header($header, $replace, $response_code);
 			
 			return $this;
@@ -43,7 +43,15 @@
 		 * 
 		 * @TODO
 		 */
-		public function setCookie($name, $value=null, $expires=0, $path="", $domain="", $secure=false, $httponly=false): Response {
+		public function setCookie(
+			$name,
+			$value=null,
+			$expires=0,
+			$path="",
+			$domain="",
+			$secure=false,
+			$httponly=false
+		): self {
 			setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
 			
 			return $this;

@@ -3,50 +3,49 @@
 	
 	namespace Magnetar\Object;
 	
-	use Magnetar\Database\AbstractDatabase;
-	
-	abstract class AbstractObject {
-		protected ?AbstractDatabase $db = null;
+	abstract class AbstractObject implements ArrayAccess {
 		public ?array $object = null;
 		
 		public function __construct(
-			int|null $id=null,
-			?AbstractDatabase $db=null
+			int|null $id=null
 		) {
-			if(!is_null($db)) {
-				$this->setDb($db);
-			}
-			
 			// pull object
 			$this->pullObject($id);
-			
-			return $this;
 		}
 		
-		/**
-		 * Set the database connection
-		 * @param AbstractDatabase $db
-		 */
-		public function setDb(AbstractDatabase $db): void {
-			$this->db = $db;
+		// get the object from storage
+		abstract protected function pullObject(int|null $id): void;
+		
+		
+		public function offsetExists(mixed $offset): bool {
+			return isset($this->object[ $offset ]);
 		}
 		
-		// getter
+		public function offsetGet(mixed $offset): mixed {
+			return $this->object[ $offset ] ?? null;
+		}
+		
+		public function offsetSet(mixed $offset, mixed $value): void {
+			$this->object[ $offset ] = $value;
+		}
+		
+		public function offsetUnset(mixed $offset): void {
+			unset($this->object[ $offset ]);
+		}
+		
 		public function __get(string $key): mixed {
 			return $this->object[ $key ] ?? null;
 		}
 		
-		// setter
 		public function __set(string $key, mixed $value): void {
 			$this->object[ $key ] = $value;
 		}
 		
-		// isseter
 		public function __isset(string $key): bool {
 			return isset($this->object[ $key ]);
 		}
 		
-		
-		// get the object from storage
-		abstract protected function pullObject(int|null $id): void;
+		public function __unset(string $key): void {
+			unset($this->object[ $key ]);
+		}
 	}

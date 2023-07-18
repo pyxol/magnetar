@@ -3,8 +3,9 @@
 	
 	namespace Magnetar\Object\NullObject;
 	
-	use Magnetar\Object\AbstractObject;
 	use Exception;
+	
+	use Magnetar\Object\AbstractObject;
 	
 	class NullObject extends AbstractObject {
 		/**
