@@ -8,6 +8,7 @@
 	use RuntimeException;
 	
 	use Magnetar\Application;
+	use Magnetar\Helpers\DefaultFacadeAliases;
 	
 	class Facade {
 		/**
@@ -112,22 +113,12 @@
 		
 		/**
 		 * Get a list of default Facade aliases to register
-		 * @return array
+		 * @return \Magnetar\Helpers\DefaultFacadeAliases
 		 * 
 		 * @see \Magnetar\Application::registerCoreContainerAliases()
 		 */
-		public static function defaultAliases(): array {
-			return [
-				'App' => App::class,
-				'Cache' => Cache::class,
-				'Config' => Config::class,
-				'DB' => DB::class,
-				'File' => File::class,
-				'Log' => Log::class,
-				'Request' => Request::class,
-				'Response' => Response::class,
-				'Router' => Router::class,
-			];
+		public static function defaultAliases(): DefaultFacadeAliases {
+			return new DefaultFacadeAliases;
 		}
 		
 		/**

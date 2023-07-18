@@ -13,7 +13,7 @@
 		{
 			"name": "Don Wilson",
 			"email": "don@pyxol.com",
-			"homepage": "http://pyxol.com/",
+			"homepage": "https://pyxol.com/",
 			"role": "Lead Developer"
 		}
 	],
@@ -26,13 +26,13 @@
 		"phpunit/phpunit": "^10.2"
 	},
 	"autoload": {
-		"psr-4": {
-			"Magnetar\\": "src/Magnetar/"
-		},
 		"files": [
 			"src/Magnetar/_autoload.php",
 			"src/Magnetar/Template/_autoload.php"
-		]
+		],
+		"psr-4": {
+			"Magnetar\\": "src/Magnetar/"
+		}
 	},
 	"autoload-dev": {
 		"psr-4": {
@@ -46,8 +46,6 @@
 		"phpunit/phpunit": "Required for running unit tests"
 	},
 	"config": {
-		"optimize-autoloader": true,
-		"preferred-install": "dist",
 		"sort-packages": true
 	},
 	"minimum-stability": "stable",

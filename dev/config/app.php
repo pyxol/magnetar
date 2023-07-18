@@ -13,8 +13,12 @@
 		'env' => 'dev',
 		
 		// aliases to load
-		'aliases' => Facade::defaultAliases(),
+		'aliases' => Facade::defaultAliases()->merge([
+			
+		])->toArray(),
 		
 		// service providers to load
-		'providers' => ServiceProvider::defaultProviders()->toArray(),
+		'providers' => ServiceProvider::defaultProviders()->merge([
+			
+		])->toArray(),
 	];
