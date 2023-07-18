@@ -573,7 +573,7 @@
 		
 		/**
 		 * Call the given Closure / class@method and inject its dependencies
-		 * @param callable|string $callback
+		 * @param callable|array|string $callback
 		 * @param array $parameters array<string, mixed>
 		 * @param string|null $defaultMethod
 		 * @return mixed
@@ -587,11 +587,7 @@
 		): mixed {
 			$pushedToBuildStack = false;
 			
-			if(($className = $this->getClassForCallable($callback)) && !in_array(
-				$className,
-				$this->buildStack,
-				true
-			)) {
+			if(($className = $this->getClassForCallable($callback)) && !in_array($className, $this->buildStack, true)) {
 				$this->buildStack[] = $className;
 				
 				$pushedToBuildStack = true;
@@ -614,7 +610,7 @@
 		/**
 		 * Get the class name for the given callback, if one can be determined.
 		 *
-		 * @param callable|string $callback
+		 * @param callable|array|string $callback
 		 * @return string|false
 		 */
 		protected function getClassForCallable(callable|array|string $callback): string|false {

@@ -15,7 +15,7 @@
 		/**
 		 * Call the given Closure / class@method and inject its dependencies
 		 * @param Magnetar\Container\Container $container
-		 * @param callable|string $callback
+		 * @param callable|array|string $callback
 		 * @param array $parameters
 		 * @param string|null $defaultMethod
 		 * @return mixed
@@ -25,7 +25,7 @@
 		 */
 		public static function call(
 			Container $container,
-			callable|string $callback,
+			callable|array|string $callback,
 			array $parameters = [],
 			string|null $defaultMethod=null
 		): mixed {
