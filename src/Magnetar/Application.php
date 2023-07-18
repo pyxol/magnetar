@@ -91,7 +91,7 @@
 				
 				// @TODO if provider instanceof DeferredServiceProvider, defer it here
 				
-				$this->registerProvider($provider);
+				$this->registerServiceProvider($provider);
 			}
 		}
 		
@@ -117,6 +117,8 @@
 		 * @return void
 		 */
 		public function bootServiceProvider(ServiceProvider|string $provider): void {
+			// @TODO fix this
+			
 			if(method_exists($provider, 'boot')) {
 				$this->call([$provider, 'boot']);
 			}
@@ -127,12 +129,14 @@
 		 * @param ServiceProvider|string $provider
 		 * @return ServiceProvider
 		 */
-		public function registerProvider(ServiceProvider|string $provider): ServiceProvider {
+		public function registerServiceProvider(ServiceProvider|string $provider): ServiceProvider {
 			if($registered = $this->getServiceProvider($provider)) {
 				return $registered;
 			}
 			
 			if(is_string($provider)) {
+				$provider_before = $provider;
+				
 				$provider = $this->resolveServiceProvider($provider);
 			}
 			
@@ -204,7 +208,7 @@
 		 * @return void
 		 */
 		protected function registerBaseServiceProviders(): void {
-			$this->registerProvider(new LogServiceProvider($this));
+			$this->registerServiceProvider(new LogServiceProvider($this));
 		}
 		
 		/**

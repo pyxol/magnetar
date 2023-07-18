@@ -21,6 +21,7 @@
 				'Request' => Facades\Request::class,
 				'Response' => Facades\Response::class,
 				'Router' => Facades\Router::class,
+				'Theme' => Facades\Theme::class,
 			];
 		}
 		

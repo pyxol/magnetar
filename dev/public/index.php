@@ -11,7 +11,7 @@
 	use Magnetar\Kernel\Http\Kernel;
 	
 	// @TODO remove after composer-based project for this is created and PSR-4 autoload
-	require_once(__DIR__ .'/../Http/Controllers/DevController.php');
+	require_once(__DIR__ .'/../Http/Controllers/HomeController.php');
 	
 	// test-specific stuff
 	try {
@@ -30,23 +30,23 @@
 	
 	// routes
 	$kernel->get(
-		'/^set_cache\/?$/i',
-		[DevController::class, 'set_cache']
+		'/^cache\/set\/?$/i',
+		[HomeController::class, 'set_cache']
 	);
 	
 	$kernel->get(
-		'/^get_cache\/?$/i',
-		[DevController::class, 'get_cache']
+		'/^cache\/get\/?$/i',
+		[HomeController::class, 'get_cache']
 	);
 	
 	$kernel->get(
 		'/^db\/?$/i',
-		[DevController::class, 'db']
+		[HomeController::class, 'db']
 	);
 	
 	$kernel->get(
 		'/^\/?$/i',
-		[DevController::class, 'index']
+		[HomeController::class, 'index']
 	);
 	
 	$kernel->serve();

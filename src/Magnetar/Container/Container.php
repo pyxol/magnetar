@@ -10,6 +10,7 @@
 	use InvalidArgumentException;
 	use ReflectionClass;
 	use ReflectionException;
+	use ReflectionFunction;
 	use ReflectionParameter;
 	
 	use Magnetar\Container\ContainerInterface;
@@ -959,10 +960,6 @@
 					? $this->resolveVariadicClass($parameter)
 					: $this->make(Helper::getParameterClassName($parameter));
 			} catch(InstanceNotFoundException $e) {
-				//if($dependency->isOptional()) {
-				//	return $dependency->getDefaultValue();
-				//}
-				
 				if($parameter->isDefaultValueAvailable()) {
 					array_pop($this->with);
 					
@@ -975,9 +972,7 @@
 					return [];
 				}
 				
-				throw new ResolvingDependenciesException(
-					'Unresolvable dependency resolving [' . $dependency->getType() . '] in class ' . $dependency->getDeclaringClass()->getName()
-				);
+				throw $e;
 			}
 		}
 		
@@ -1027,7 +1022,7 @@
 		protected function unresolvablePrimitive(ReflectionParameter $parameter): void {
 			$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
 			
-			throw new BindingResolutionException($message);
+			throw new BuildResolutionException($message);
 		}
 		
 		/**

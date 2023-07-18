@@ -5,16 +5,15 @@
 	
 	use Closure;
 	use InvalidArgumentException;
+	use ReflectionFunctionAbstract;
 	use ReflectionFunction;
 	use ReflectionMethod;
-	
-	use Magnetar\Container\BindingResolutionException;
-	use Magnetar\Container\Helper;
+	use ReflectionParameter;
 	
 	class BoundMethod {
 		/**
 		 * Call the given Closure / class@method and inject its dependencies
-		 * @param Magnetar\Container\Container $container
+		 * @param Container $container
 		 * @param callable|array|string $callback
 		 * @param array $parameters
 		 * @param string|null $defaultMethod
@@ -44,7 +43,7 @@
 		
 		/**
 		 * Call a string reference to a class using Class@method syntax
-		 * @param Magnetar\Container\Container $container
+		 * @param Container $container
 		 * @param string $target
 		 * @param array $parameters
 		 * @param string|null $defaultMethod
@@ -78,7 +77,7 @@
 		
 		/**
 		 * Call a method that has been bound to the container
-		 * @param Magnetar\Container\Container $container
+		 * @param Container $container
 		 * @param callable $callback
 		 * @param mixed $default
 		 * @return mixed
@@ -118,7 +117,7 @@
 		/**
 		 * Get all dependencies for a given method.
 		 *
-		 * @param Magnetar\Container\Container $container
+		 * @param Container $container
 		 * @param callable|string $callback
 		 * @param array $parameters
 		 * @return array
@@ -133,7 +132,12 @@
 			$dependencies = [];
 			
 			foreach (static::getCallReflector($callback)->getParameters() as $parameter) {
-				static::addDependencyForCallParameter($container, $parameter, $parameters, $dependencies);
+				static::addDependencyForCallParameter(
+					$container,
+					$parameter,
+					$parameters,
+					$dependencies
+				);
 			}
 			
 			return array_merge($dependencies, array_values($parameters));
@@ -161,13 +165,13 @@
 		
 		/**
 		 * Get the dependency for the given call parameter
-		 * @param Magnetar\Container\Container $container
+		 * @param Container $container
 		 * @param ReflectionParameter $parameter
 		 * @param array $parameters
 		 * @param array $dependencies
 		 * @return void
 		 *
-		 * @throws Magnetar\Container\BindingResolutionException
+		 * @throws BuildResolutionException
 		 */
 		protected static function addDependencyForCallParameter(
 			Container $container,
@@ -198,7 +202,7 @@
 			} elseif(!$parameter->isOptional() && !array_key_exists($paramName, $parameters)) {
 				$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 				
-				throw new BindingResolutionException($message);
+				throw new BuildResolutionException($message);
 			}
 		}
 		

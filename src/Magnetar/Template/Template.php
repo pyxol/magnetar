@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Template;
 	
+	use Magnetar\Application;
+	
 	class Template {
 		protected Data $data;
 		
@@ -14,14 +16,18 @@
 		 * @param string $template_folder The folder to load templates from
 		 * @param string $base_template_path The base path to the template folder
 		 */
-		public function __construct(string $template_folder=DEFAULT_PUBLIC_TEMPLATE, string $base_template_path=TEMPLATE_DIR) {
-			// bootstrap template utilities
-			//require_once(__DIR__ ."/globals.php");
-			// ^-- should be autoloaded by composer
-			
+		public function __construct(
+			protected Application $app,
+			string $template_folder
+		) {
 			// assign paths
+			
+			
 			$this->folder = $template_folder;
-			$this->base_path = $base_template_path . $this->folder .'/';
+			$this->base_path = $this->app->basePath(
+				$this->app->make('config')->get('theme.storage.base_path', 'themes')
+				.'/'. $this->folder .'/'
+			);
 			
 			// initialize the template data
 			$this->data = new Data();
