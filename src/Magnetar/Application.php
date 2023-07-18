@@ -7,6 +7,8 @@
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Log\LogServiceProvider;
 	
+	use Magnetar\Helpers\DeferrableServiceInterface;
+	
 	class Application extends Container {
 		protected string|null $base_path = null;
 		
@@ -85,6 +87,8 @@
 			$providers = $this['config']['app.providers'];
 			
 			foreach($providers as $provider) {
+				//die("registering provider: $provider");
+				
 				// @TODO if provider instanceof DeferredServiceProvider, defer it here
 				
 				$this->registerProvider($provider);
@@ -128,8 +132,6 @@
 				return $registered;
 			}
 			
-			//jbdump($provider, true, 'registering provider');
-			
 			if(is_string($provider)) {
 				$provider = $this->resolveServiceProvider($provider);
 			}
@@ -137,8 +139,8 @@
 			// call the service provider's register method
 			$provider->register();
 			
-			// @TODO bindings property on ServiceWorker instance
-			// @TODO singletons property on ServiceWorker instance
+			// @TODO bindings property on ServiceProvider instance
+			// @TODO singletons property on ServiceProvider instance
 			
 			$this->markAsRegisteredServiceProvider($provider);
 			

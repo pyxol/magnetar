@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"php-server": "cd ./dev/public/ && php -S localhost:8000",
+		"php-server": "cd ./dev/public/ && php -S localhost:8001",
 		"docker-compose": "docker-compose up"
 	}
 }

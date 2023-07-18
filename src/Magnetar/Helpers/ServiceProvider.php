@@ -4,7 +4,7 @@
 	namespace Magnetar\Helpers;
 	
 	use Magnetar\Application;
-	use Magnetar\Helpers\DeferredServiceInterface;
+	use Magnetar\Helpers\DeferrableServiceInterface;
 	use Magnetar\Helpers\DefaultServiceProviders;
 	
 	class ServiceProvider {
@@ -35,7 +35,7 @@
 		 * @return bool
 		 */
 		public function isDeferred(): bool {
-			return ($this instanceof DeferredServiceInterface);
+			return ($this instanceof DeferrableServiceInterface);
 		}
 		
 		/**

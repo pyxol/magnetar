@@ -5,6 +5,6 @@
 	
 	use Magnetar\Application;
 	
-	interface DeferredServiceInterface {
+	interface DeferrableServiceInterface {
 		
 	}

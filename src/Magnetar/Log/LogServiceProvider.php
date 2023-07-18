@@ -9,6 +9,6 @@
 	class LogServiceProvider extends ServiceProvider {
 		public function register(): void {
 			// register connection services
-			$this->app->singleton('log', fn () => new Logger($this->app));
+			$this->app->singleton('logger', fn ($app) => new Logger($app));
 		}
 	}

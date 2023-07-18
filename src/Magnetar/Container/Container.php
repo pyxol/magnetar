@@ -828,14 +828,6 @@
 				return $concrete($this, $this->getLastParameterOverride());
 			}
 			
-			//if(is_string($concrete) && ('logger' === $concrete)) {
-			//	jbdump([
-			//		'concrete' => $concrete,
-			//		'aliases' => $this->aliases,
-			//		'serviceProviders' => $this->serviceProviders,
-			//	], true, 'Container::build('. $concrete .') service providers');
-			//}
-			
 			try {
 				$reflector = new ReflectionClass($concrete);
 			} catch(ReflectionException $e) {

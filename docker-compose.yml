@@ -3,7 +3,7 @@ version: '3.9'
 services:
   web:
     image: nginx:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - 8001:80
     depends_on:
@@ -17,7 +17,7 @@ services:
     build:
       context: ./.docker/php-fpm
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     stop_grace_period: 1s
     volumes:
       - ./.docker/php-fpm/ini-overrides.ini:/usr/local/etc/php/conf.d/99-zzzoverrides.ini:ro
@@ -39,7 +39,7 @@ services:
       - memcached
   mariadb:
     image: mariadb
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./.docker/mariadb/.env
     environment:
@@ -51,4 +51,4 @@ services:
     ]
   memcached:
     image: memcached:latest
-    restart: always
+    restart: unless-stopped

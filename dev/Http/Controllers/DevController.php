@@ -27,9 +27,6 @@
 		}
 		
 		public function db() {
-			// in lieu of service providers
-			App::bind('database', fn () => new Magnetar\Database\ConnectionManager(App::getInstance()));
-			
 			// list tables
 			$tables = DB::get_rows("
 				SHOW TABLES
@@ -39,10 +36,6 @@
 		}
 		
 		public function set_cache() {
-			// in lieu of service providers
-			App::bind('cache', fn () => new Magnetar\Cache\StoreManager(App::getInstance()));
-			//App::bind('logger', fn () => new Magnetar\Log\Logger(App::getInstance()));
-			
 			$cached_val = date('r');
 			$cache_set = Cache::set('cached_val', $cached_val, 15);
 			
@@ -50,10 +43,6 @@
 		}
 		
 		public function get_cache() {
-			// in lieu of service providers
-			App::bind('cache', fn () => new Magnetar\Cache\StoreManager(App::getInstance()));
-			//App::bind('logger', fn () => new Magnetar\Log\Logger(App::getInstance()));
-			
 			$cached_val = Cache::get('cached_val') ?? "NOT SET";
 			
 			Response::send('Get Cache: '. $cached_val .' | <a href="/get_cache/">Refresh</a> | <a href="/set_cache/">Set Cache</a><hr>'. Log::dump(0, true));

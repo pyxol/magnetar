@@ -4,20 +4,17 @@
 	namespace Magnetar\Database;
 	
 	use Magnetar\Helpers\ServiceProvider;
+	use Magnetar\Helpers\DeferrableServiceInterface;
 	use Magnetar\Database\ConnectionManager;
 	
-	class DatabaseServiceProvider extends ServiceProvider {
+	class DatabaseServiceProvider extends ServiceProvider implements DeferrableServiceInterface {
 		/**
 		 * {@inheritDoc}
 		 */
 		public function register(): void {
 			// register connection services
-			$this->app->singleton('db', fn () => new ConnectionManager($this->app));
-			//$this->app->singleton('db', function() {
-			//	return new ConnectionManager($this->app);
-			//});
+			$this->app->singleton('database', fn ($app) => new ConnectionManager($app));
 		}
-		
 		
 		/**
 		 * {@inheritDoc}

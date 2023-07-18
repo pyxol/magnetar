@@ -12,6 +12,7 @@
 		 */
 		public function __construct(array|null $providers=null) {
 			$this->providers = $providers ?? [
+				\Magnetar\Cache\CacheServiceProvider::class,
 				\Magnetar\Database\DatabaseServiceProvider::class,
 			];
 		}

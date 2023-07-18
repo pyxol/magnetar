@@ -71,7 +71,7 @@
 		 * @return string
 		 */
 		protected static function getFacadeKey(): string {
-			throw new Exception("Base Facade class should not be used");
+			throw new Exception("Base Facade class should not be directly used");
 		}
 		
 		/**
