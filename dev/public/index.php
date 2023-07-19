@@ -9,6 +9,7 @@
 	require_once(__DIR__ ."/../../vendor/autoload.php");
 	
 	use Magnetar\Kernel\Http\Kernel;
+	//use App\Http\Kernel;
 	
 	// @TODO remove after composer-based project for this is created and PSR-4 autoload
 	require_once(__DIR__ .'/../Http/Controllers/HomeController.php');
