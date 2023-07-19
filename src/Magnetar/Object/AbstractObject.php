@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Object;
 	
+	use ArrayAccess;
+	
 	abstract class AbstractObject implements ArrayAccess {
 		public ?array $object = null;
 		

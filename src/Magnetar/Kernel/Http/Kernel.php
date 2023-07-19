@@ -77,12 +77,12 @@
 		 * @return void
 		 */
 		protected function handlePanic(KernelPanicException $e): void {
-			// initialize template engine
-			$tpl = new Template();
-			
-			$this->app['response']->status(503)->send($tpl->render('errors/503', [
-				'message' => $e->getMessage(),
-			]));
+			// send 503 response
+			$this->app['response']->status(503)->send(
+				$this->app->make('theme')->tpl('errors/503', [
+					'message' => $e->getMessage(),
+				])
+			);
 		}
 		
 		/**
@@ -148,11 +148,11 @@
 		 * @return void
 		 */
 		public function handle404(string $message=''): void {
-			// initialize template engine
-			$tpl = new Template();
-			
-			$this->app['response']->status(404)->send($tpl->render('errors/404', [
-				'message' => $message
-			]));
+			// send 404 response
+			$this->app['response']->status(404)->send(
+				$this->app->make('theme')->tpl('errors/404', [
+					'message' => $message
+				])
+			);
 		}
 	}

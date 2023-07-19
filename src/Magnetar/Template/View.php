@@ -52,7 +52,7 @@
 		 * @param array $data The data to pass to the template
 		 * @return string
 		 */
-		public function renderView(string $tpl_name, array $view_data=[]): string {
+		public function render_tpl(string $tpl_name, array $view_data=[]): string {
 			return $this->template->render($tpl_name, array_merge($this->data, $view_data));
 		}
 		
@@ -62,8 +62,8 @@
 		 * @param array $data The data to pass to the template
 		 * @return void
 		 */
-		public function view(string $tpl_name, array $view_data=[]): void {
-			print $this->renderView($tpl_name, $view_data);
+		public function display_tpl(string $tpl_name, array $view_data=[]): void {
+			print $this->render_tpl($tpl_name, $view_data);
 		}
 		
 		/**
@@ -117,10 +117,5 @@
 		 */
 		public function __unset(string $name): void {
 			unset($this->data[ $name ]);
-		}
-		
-		
-		public function debug__getData(): array {
-			return $this->data;
 		}
 	}
