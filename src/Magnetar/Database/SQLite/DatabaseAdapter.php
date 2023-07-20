@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Database\MariaDB;
+	namespace Magnetar\Database\SQLite;
 	
 	use PDO;
 	use RuntimeException;
@@ -12,35 +12,20 @@
 	use Magnetar\Database\DatabaseAdapterException;
 	
 	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {
-		protected string $adapter_name = 'mariadb';
+		protected string $adapter_name = 'sqlite';
 		
 		// PDO instance
 		protected PDO|null $pdo = null;
 		
 		/**
-		 * Validate configuration for MariaDB
-		 * @param array $config_data
+		 * Validate configuration for SQLite
+		 * @param array $config
+		 * @return void
 		 * 
 		 * @throws DatabaseAdapterException
 		 */
-		protected function throwIfInvalidConfig(array $config_data): void {
-			if(!isset($config_data['host'])) {
-				throw new DatabaseAdapterException("Database configuration is missing host");
-			}
-			
-			if(!isset($config_data['port'])) {
-				throw new DatabaseAdapterException("Database configuration is missing port");
-			}
-			
-			if(!isset($config_data['user'])) {
-				throw new DatabaseAdapterException("Database configuration is missing user");
-			}
-			
-			if(!isset($config_data['password'])) {
-				throw new DatabaseAdapterException("Database configuration is missing password");
-			}
-			
-			if(!isset($config_data['database'])) {
+		protected function throwIfInvalidConfig(array $config): void {
+			if(!isset($config['database'])) {
 				throw new DatabaseAdapterException("Database configuration is missing database");
 			}
 		}
@@ -54,8 +39,8 @@
 		 * @throws DatabaseAdapterException
 		 */
 		protected function wireUp(Container $container): void {
-			if(!extension_loaded('pdo_mysql')) {
-				throw new RuntimeException("The PDO MySQL extension is not loaded");
+			if(!extension_loaded('pdo_sqlite')) {
+				throw new RuntimeException("The PDO SQLite extension is not loaded");
 			}
 			
 			// pull the configuration and check if it is valid
@@ -65,11 +50,17 @@
 			
 			// PDO options
 			$default_options = [
-				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				//PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::SQLITE_ATTR_OPEN_FLAGS => PDO::SQLITE_OPEN_READWRITE,
 			];
 			
 			// connect to the database
-			$this->pdo = new PDO("mysql:host=". $config['host'] .";dbname=". $config['database'], $config['user'], $config['password'], $default_options);
+			$this->pdo = new PDO(
+				'sqlite:'. $config['database'],
+				null,   // $config['user'] ?? null,
+				null,   // $config['password'] ?? null,
+				$default_options
+			);
 			
 			// optional charset settings
 			if(isset($config['charset'])) {

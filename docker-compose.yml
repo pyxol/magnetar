@@ -26,8 +26,10 @@ services:
       - ./.docker/.env
     environment:
       PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
-      DB_HOST: "${COMPOSE_PROJECT_NAME}-mariadb-1"
+      #DB_HOST: "${COMPOSE_PROJECT_NAME}-mariadb-1"
       CACHE_HOST: "${COMPOSE_PROJECT_NAME}-memcached-1"
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /magnetar/dev/data/test-database.sqlite3
     ports:
       #- 9000:9000
       - 9003:9003

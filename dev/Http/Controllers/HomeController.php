@@ -2,6 +2,7 @@
 	declare(strict_types=1);
 	
 	use Magnetar\Http\Controller\Controller;
+	use Magnetar\Helpers\Facades\Config;
 	use Magnetar\Helpers\Facades\DB;
 	use Magnetar\Helpers\Facades\Response;
 	use Magnetar\Helpers\Facades\Cache;
@@ -16,9 +17,21 @@
 		
 		public function db(): void {
 			// list tables
-			$tables = DB::get_rows("
-				SHOW TABLES
-			");
+			if(Config::get('database.default') === 'sqlite') {
+				$tables = DB::get_rows("
+					SELECT
+						name
+					FROM
+						sqlite_schema
+					WHERE
+						type = 'table' AND
+						name NOT LIKE 'sqlite_%'
+				");
+			} else {
+				$tables = DB::get_rows("
+					SHOW TABLES
+				");
+			}
 			
 			Response::send(
 				tpl('database/tables', [

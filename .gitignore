@@ -12,6 +12,8 @@ vendor/
 # database files
 *.sql
 *.sql.gz
+*.sqlite
+*.sqlite3
 
 # log files
 *.log

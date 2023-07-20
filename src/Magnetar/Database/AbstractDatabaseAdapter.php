@@ -9,7 +9,7 @@
 	use Magnetar\Database\DatabaseAdapterException;
 	
 	abstract class AbstractDatabaseAdapter implements DatabaseAdapterInterface {
-		protected string $driver_name = '';
+		protected string $adapter_name = '';
 		
 		/**
 		 * Connect to a MariaDB database
@@ -17,7 +17,10 @@
 		 * 
 		 * @throws Exception
 		 */
-		public function __construct(Container $container) {
+		public function __construct(
+			protected string $connection_name,
+			Container $container
+		) {
 			// wire up to DB instance
 			$this->wireUp($container);
 		}
@@ -29,38 +32,10 @@
 		abstract protected function wireUp(Container $container): void;
 		
 		/**
-		 * Throws an exception if configuration for this adapter is invalid
-		 * @param array $config_data
-		 * 
-		 * @throws DatabaseAdapterException
-		 */
-		protected function throwIfInvalidConfig(array $config_data): void {
-			if(!isset($config_data['host'])) {
-				throw new DatabaseAdapterException("Database configuration is missing host");
-			}
-			
-			if(!isset($config_data['port'])) {
-				throw new DatabaseAdapterException("Database configuration is missing port");
-			}
-			
-			if(!isset($config_data['user'])) {
-				throw new DatabaseAdapterException("Database configuration is missing user");
-			}
-			
-			if(!isset($config_data['password'])) {
-				throw new DatabaseAdapterException("Database configuration is missing password");
-			}
-			
-			if(!isset($config_data['database'])) {
-				throw new DatabaseAdapterException("Database configuration is missing database");
-			}
-		}
-		
-		/**
-		 * Returns the name of the driver
+		 * Returns the name of the adapter
 		 * @return string
 		 */
-		public function getDriverName(): string {
-			return $this->driver_name;
+		public function getAdapterName(): string {
+			return $this->adapter_name;
 		}
 	}
