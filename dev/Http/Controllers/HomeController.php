@@ -2,8 +2,10 @@
 	declare(strict_types=1);
 	
 	use Magnetar\Http\Controller\Controller;
+	
 	use Magnetar\Helpers\Facades\Config;
 	use Magnetar\Helpers\Facades\DB;
+	use Magnetar\Helpers\Facades\Request;
 	use Magnetar\Helpers\Facades\Response;
 	use Magnetar\Helpers\Facades\Cache;
 	use Magnetar\Helpers\Facades\Log;
@@ -15,10 +17,20 @@
 			);
 		}
 		
+		public function phpinfo(): void {
+			ob_start();
+			
+			phpinfo();
+			
+			Response::send(
+				ob_get_clean()
+			);
+		}
+		
 		public function db(): void {
 			// list tables
 			if(Config::get('database.default') === 'sqlite') {
-				$tables = DB::get_rows("
+				$tables = DB::get_col("
 					SELECT
 						name
 					FROM
@@ -28,14 +40,31 @@
 						name NOT LIKE 'sqlite_%'
 				");
 			} else {
-				$tables = DB::get_rows("
+				$tables = DB::get_col("
 					SHOW TABLES
 				");
+			}
+			
+			$rows = [];
+			
+			if(('' !== ($table = Request::getParameter('table', ''))) && in_array($table, $tables)) {
+				$rows = DB::get_rows("
+					SELECT
+						*
+					FROM
+						`{$table}`
+					LIMIT
+						10
+				");
+			} else {
+				$table = '';
 			}
 			
 			Response::send(
 				tpl('database/tables', [
 					'tables' => $tables,
+					'table' => $table,
+					'rows' => $rows,
 				])
 			);
 		}

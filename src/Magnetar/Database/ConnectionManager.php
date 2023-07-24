@@ -60,7 +60,10 @@
 				throw new Exception('Invalid database driver');
 			}
 			
-			$this->connections[ $connection_name ] = new $adapter_class($connection_name, $this->app) ?? throw new Exception('Invalid database driver');
+			$this->connections[ $connection_name ] = new $adapter_class(
+				$connection_name,
+				$this->app['config']->get('database.connections.'. $connection_name, [])
+			) ?? throw new Exception('Invalid database driver');
 		}
 		
 		/**

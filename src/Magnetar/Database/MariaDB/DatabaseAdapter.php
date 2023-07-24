@@ -6,7 +6,6 @@
 	use PDO;
 	use RuntimeException;
 	
-	use Magnetar\Container\Container;
 	use Magnetar\Database\AbstractDatabaseAdapter;
 	use Magnetar\Database\QuickQueryInterface;
 	use Magnetar\Database\DatabaseAdapterException;
@@ -18,50 +17,50 @@
 		protected PDO|null $pdo = null;
 		
 		/**
-		 * Validate configuration for MariaDB
-		 * @param array $config_data
+		 * Validate configuration
+		 * @param array $configuration Configuration data to validate
 		 * 
 		 * @throws DatabaseAdapterException
 		 */
-		protected function throwIfInvalidConfig(array $config_data): void {
-			if(!isset($config_data['host'])) {
+		protected function validateConfig(array $configuration): void {
+			if(!isset($configuration['host'])) {
 				throw new DatabaseAdapterException("Database configuration is missing host");
 			}
 			
-			if(!isset($config_data['port'])) {
+			if(!isset($configuration['port'])) {
 				throw new DatabaseAdapterException("Database configuration is missing port");
 			}
 			
-			if(!isset($config_data['user'])) {
+			if(!isset($configuration['user'])) {
 				throw new DatabaseAdapterException("Database configuration is missing user");
 			}
 			
-			if(!isset($config_data['password'])) {
+			if(!isset($configuration['password'])) {
 				throw new DatabaseAdapterException("Database configuration is missing password");
 			}
 			
-			if(!isset($config_data['database'])) {
+			if(!isset($configuration['database'])) {
 				throw new DatabaseAdapterException("Database configuration is missing database");
 			}
 		}
 		
 		/**
 		 * Start the database-specific connection
-		 * @param Container $container The application container
+		 * @param array $configuration The application container
 		 * @return void
 		 * 
 		 * @throws RuntimeException
 		 * @throws DatabaseAdapterException
 		 */
-		protected function wireUp(Container $container): void {
+		protected function wireUp(
+			array $configuration=[]
+		): void {
 			if(!extension_loaded('pdo_mysql')) {
 				throw new RuntimeException("The PDO MySQL extension is not loaded");
 			}
 			
 			// pull the configuration and check if it is valid
-			$this->throwIfInvalidConfig(
-				$config = $container['config']->get('database.connections.'. $this->connection_name, [])
-			);
+			$this->validateConfig($configuration);
 			
 			// PDO options
 			$default_options = [
@@ -69,7 +68,12 @@
 			];
 			
 			// connect to the database
-			$this->pdo = new PDO("mysql:host=". $config['host'] .";dbname=". $config['database'], $config['user'], $config['password'], $default_options);
+			$this->pdo = new PDO(
+				"mysql:host=". $configuration['host'] .";dbname=". $configuration['database'],
+				$configuration['user'],
+				$configuration['password'],
+				$default_options
+			);
 			
 			// optional charset settings
 			if(isset($config['charset'])) {
@@ -80,18 +84,18 @@
 		
 		/**
 		 * Run a query. Generally used for anything besides SELECT statements. If an INSERT query, return the last insert ID, otherwise return the number of rows affected. Returns false on failure
-		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
-		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
+		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:var) or unnamed placeholders (?), not both
+		 * @param array $params The parameters to bind to the query. Named params (:var) require an assoc array, unnamed (?) require a consecutive array
 		 * @return int|false
 		 * 
 		 * @see https://www.php.net/manual/en/pdo.exec.php
 		 * @see https://www.php.net/manual/en/pdo.prepare.php
 		 * 
-		 * @example $db->query("INSERT INTO `table` (`column`) VALUES (:value)", [':value' => 'test']);
-		 * @example $db->query("INSERT INTO `table` (`column`) VALUES (?)", ['test']);
-		 * @example $db->query("INSERT INTO `table` (`column`) VALUES ('test')");
+		 * @example $db->query("INSERT INTO `table` (`column`, `column2`) VALUES (:value, :value2)", ['value' => 'test', 'value2' => 'test2']);
+		 * @example $db->query("INSERT INTO `table` (`column`, `column2`) VALUES (?, ?)", ['test', 'test2']);
+		 * @example $db->query("INSERT INTO `table` (`column`, `column2`) VALUES ('test', 'test2')");
 		 */
-		public function query(array $sql_query, array $params=[]): int|false {
+		public function query(string $sql_query, array $params=[]): int|false {
 			if(!empty($params)) {
 				// prepare the query
 				$statement = $this->pdo->prepare($sql_query);
@@ -113,19 +117,18 @@
 		
 		/**
 		 * Run a query and return an array of rows. Generally used for SELECT statements. Returns false on failure
-		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
-		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
+		 * @param string $sql_query The SQL query to run
+		 * @param array $params The parameters to bind to the query
 		 * @param string|false $column_key The column to use as the array key for the results. If false, use an incrementing integer
 		 * @return array|false
 		 * 
-		 * @see https://www.php.net/manual/en/pdo.query.php
-		 * @see https://www.php.net/manual/en/pdo.prepare.php
-		 * 
-		 * @example $db->select("SELECT * FROM `table` WHERE `column` = :value", [':value' => 'test']);
-		 * @example $db->select("SELECT * FROM `table` WHERE `column` = ?", ['test']);
-		 * @example $db->select("SELECT * FROM `table` WHERE `column` = 'test'");
+		 * @see \Magnetar\Database\MariaDB::query() for use of $sql_query and $params
 		 */
-		public function get_rows(string $sql_query, array $params=[], array|false $column_key=false): array|false {
+		public function get_rows(
+			string $sql_query,
+			array $params=[],
+			string|false $column_key=false
+		): array|false {
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			
@@ -154,9 +157,11 @@
 		
 		/**
 		 * Run a query and return a single row. Generally used for SELECT statements. Returns false on failure
-		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
-		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
+		 * @param string $sql_query The SQL query to run
+		 * @param array $params The parameters to bind to the query
 		 * @return array|false
+		 * 
+		 * @see \Magnetar\Database\MariaDB::query() for $params usage with $sql_query
 		 */
 		public function get_row(string $sql_query, array $params=[]): array|false {
 			// prepare the query
@@ -179,12 +184,18 @@
 		
 		/**
 		 * Run a query and return an array of a single column. Generally used for SELECT statements. Returns false on failure
-		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
-		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
+		 * @param string $sql_query The SQL query to run
+		 * @param array $params The parameters to bind to the query
 		 * @param string|int $column_key The column to use as the array key for the results
 		 * @return array|false
+		 * 
+		 * @see \Magnetar\Database\MariaDB::query() for $params usage with $sql_query
 		 */
-		public function get_col(string $sql_query, array $params=[], string|int $column_key=0): array|false {
+		public function get_col(
+			string $sql_query,
+			array $params=[],
+			string|int $column_key=0
+		): array|false {
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			
@@ -213,11 +224,13 @@
 		
 		/**
 		 * Run a query and return an array of a single column. Generally used for SELECT statements. Returns false on failure
-		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
-		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
+		 * @param string $sql_query The SQL query to run
+		 * @param array $params The parameters to bind to the query
 		 * @param string|int $assoc_key The column to use as the array key for the results. Defaults to first column
 		 * @param string|int $column_key The column to use as the array value for the results. Defaults to second column
 		 * @return array|false
+		 * 
+		 * @see \Magnetar\Database\MariaDB::query() for $params usage with $sql_query
 		 */
 		public function get_col_assoc(
 			string $sql_query,
@@ -278,12 +291,18 @@
 		
 		/**
 		 * Run a query and return a single value. Generally used for SELECT statements. Returns false on failure
-		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:variable) or unnamed placeholders (?), not both
-		 * @param array $params The parameters to bind to the query. See https://www.php.net/manual/en/pdo.prepare.php
-		 * @param string|false $column_key The column to use as the array key for the results. False uses the first column specified in the query
+		 * @param string $sql_query The SQL query to run
+		 * @param array $params The parameters to bind to the query
+		 * @param string|false $column_key The column to use as the array key for the results. Leaving this as False uses the first column specified in the query
 		 * @return string|int|false
+		 * 
+		 * @see \Magnetar\Database\MariaDB::query() for $params usage with $sql_query
 		 */
-		public function get_var(string $sql_query, array $params=[], string|int|false $column_key=false): string|int|false {
+		public function get_var(
+			string $sql_query,
+			array $params=[],
+			string|int|false $column_key=false
+		): string|int|false {
 			// prepare the query
 			$row = $this->get_row($sql_query, $params);
 			

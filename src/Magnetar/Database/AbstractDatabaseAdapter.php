@@ -5,31 +5,29 @@
 	
 	use \Exception;
 	
-	use Magnetar\Container\Container;
-	use Magnetar\Database\DatabaseAdapterException;
-	
 	abstract class AbstractDatabaseAdapter implements DatabaseAdapterInterface {
 		protected string $adapter_name = '';
 		
 		/**
-		 * Connect to a MariaDB database
-		 * @param array $configuration Configuration to pass to the database adapter
+		 * Adapter constructor
+		 * @param string $connection_name Name of the connection
+		 * @param array $configuration Configuration data to wire up the connection
 		 * 
 		 * @throws Exception
 		 */
 		public function __construct(
 			protected string $connection_name,
-			Container $container
+			array $configuration = []
 		) {
 			// wire up to DB instance
-			$this->wireUp($container);
+			$this->wireUp($configuration);
 		}
 		
 		/**
-		 * Wire up to the DB instance
-		 * @param Container $container
+		 * Wire up to the instance
+		 * @param array $connection_config Connection-specific configuration
 		 */
-		abstract protected function wireUp(Container $container): void;
+		abstract protected function wireUp(array $connection_config): void;
 		
 		/**
 		 * Returns the name of the adapter

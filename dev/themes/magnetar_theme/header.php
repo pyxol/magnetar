@@ -34,6 +34,9 @@
 								<li><a href="/cache/set/" class="dropdown-item">Set</a></li>
 							</ul>
 						</li>
+						<li class="nav-item">
+							<a href="/phpinfo/" class="nav-link">phpinfo()</a>
+						</li>
 					</ul>
 					<form class="d-flex" role="search">
 						<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

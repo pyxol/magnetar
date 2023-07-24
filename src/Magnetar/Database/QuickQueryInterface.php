@@ -5,7 +5,7 @@
 	
 	interface QuickQueryInterface {
 		// get rows
-		public function get_rows(string $sql_query, array $params=[], array|false $column_key=false): array|false;
+		public function get_rows(string $sql_query, array $params=[], string|false $column_key=false): array|false;
 		
 		// get row
 		public function get_row(string $sql_query, array $params=[]): array|false;

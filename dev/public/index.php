@@ -46,6 +46,11 @@
 	);
 	
 	$kernel->get(
+		'/^phpinfo\/?$/i',
+		[HomeController::class, 'phpinfo']
+	);
+	
+	$kernel->get(
 		'/^\/?$/i',
 		[HomeController::class, 'index']
 	);

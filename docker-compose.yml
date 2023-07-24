@@ -26,10 +26,10 @@ services:
       - ./.docker/.env
     environment:
       PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
-      #DB_HOST: "${COMPOSE_PROJECT_NAME}-mariadb-1"
+      DB_HOST: "${COMPOSE_PROJECT_NAME}-mariadb-1"
       CACHE_HOST: "${COMPOSE_PROJECT_NAME}-memcached-1"
-      DB_CONNECTION: sqlite
-      DB_DATABASE: /magnetar/dev/data/test-database.sqlite3
+      #DB_CONNECTION: sqlite
+      #DB_DATABASE: /magnetar/dev/data/test-database.sqlite3
     ports:
       #- 9000:9000
       - 9003:9003
@@ -51,6 +51,15 @@ services:
       '--character-set-server=utf8mb4',
       '--collation-server=utf8mb4_unicode_ci'
     ]
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    depends_on:
+      - mariadb
+    links:
+      - mariadb
   memcached:
     image: memcached:latest
     restart: unless-stopped
