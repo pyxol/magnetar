@@ -13,7 +13,7 @@
 		
 		protected array $adapters = [
 			'mariadb' => MariaDB\DatabaseAdapter::class,
-			//'mysql' => MySQL\DatabaseAdapter::class,
+			'mysql' => MySQL\DatabaseAdapter::class,
 			//'pgsql' => PostgreSQL\DatabaseAdapter::class,
 			'sqlite' => SQLite\DatabaseAdapter::class,
 		];
