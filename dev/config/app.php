@@ -4,15 +4,15 @@
 	
 	return [
 		// application name
-		'name' => env('APP_NAME', 'Pulsar App'),
+		'name' => env('APP_NAME', 'Magnetar Dev App'),
 		
 		// environment ("dev" or "production")
 		'env' => env('APP_ENV', 'production'),
 		
 		// timezone
-		'timezone' => 'US/Central',
+		'timezone' => 'UTC',
 		
-		// internal encoding charset (mb_insertnal_encoding)
+		// internal encoding charset (mb_internal_encoding)
 		'internal_encoding' => 'UTF-8',
 		
 		// aliases to load
