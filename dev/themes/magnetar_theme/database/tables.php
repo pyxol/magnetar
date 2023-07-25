@@ -22,30 +22,40 @@
 			<?php if($this->table): ?>
 				<h2><?=esc_html($this->table);?></h2>
 				
-				<?php $columns = array_keys($this->rows[0]); ?>
+				<?php if($this->debug_query): ?>
+					<pre><?=esc_html(print_r($this->debug_query, true));?></pre>
+				<?php endif; ?>
 				
-				<table class="table">
-					<thead>
-						<tr>
-							<?php foreach($columns as $column): ?>
-								<th><?=esc_html($column);?></th>
-							<?php endforeach; ?>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach($this->rows as $row): ?>
+				<?php if(!empty($this->rows)): ?>
+					<?php $columns = array_keys($this->rows[0]); ?>
+					
+					<table class="table">
+						<thead>
 							<tr>
-								<?php foreach($columns as $column): $value = $row[ $column ] ?? null; ?>
-									<?php if(null !== $value): ?>
-										<td><?=esc_html($value);?></td>
-									<?php else: ?>
-										<td class="text-muted"><em>NULL</em></td>
-									<?php endif; ?>
+								<?php foreach($columns as $column): ?>
+									<th><?=esc_html($column);?></th>
 								<?php endforeach; ?>
 							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							<?php foreach($this->rows as $row): ?>
+								<tr>
+									<?php foreach($columns as $column): $value = $row[ $column ] ?? null; ?>
+										<?php if(null !== $value): ?>
+											<td><?=esc_html($value);?></td>
+										<?php else: ?>
+											<td class="text-muted"><em>NULL</em></td>
+										<?php endif; ?>
+									<?php endforeach; ?>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				<?php else: ?>
+					<div class="alert alert-info text-center">
+						Did not find any rows
+					</div>
+				<?php endif; ?>
 			<?php else: ?>
 				<p><em>Select a table to preview rows</em></p>
 			<?php endif; ?>

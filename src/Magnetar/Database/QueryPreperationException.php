@@ -3,8 +3,8 @@
 	
 	namespace Magnetar\Database;
 	
-	use Exception;
-	
-	class QueryPreperationException extends Exception {
+	use Magnetar\Database\DatabaseAdapterException;
+
+	class QueryPreperationException extends DatabaseAdapterException {
 		
 	}

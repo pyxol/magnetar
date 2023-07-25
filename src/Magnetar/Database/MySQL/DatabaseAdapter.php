@@ -316,4 +316,13 @@
 			
 			return array_shift($row);
 		}
+		
+		/**
+		 * Start a SELECT query builder instance
+		 * @param string $table_name
+		 * @return SelectQueryBuilder
+		 */
+		public function table(string $table_name): SelectQueryBuilder {
+			return new SelectQueryBuilder($this, $table_name);
+		}
 	}

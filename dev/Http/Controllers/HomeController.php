@@ -56,6 +56,20 @@
 					LIMIT
 						10
 				");
+				
+				$qb = DB::table($table)
+				->select([
+					'city',
+					'addressLine1',
+					'state',
+				])
+				->selectRaw('COUNT(*)', 'num_items')
+				->where('addressLine2', NULL)
+				->limit(10);
+				
+				$debug_query = $qb->debugQueryParams();
+				
+				$rows = $qb->fetch();
 			} else {
 				$table = '';
 			}
@@ -65,6 +79,7 @@
 					'tables' => $tables,
 					'table' => $table,
 					'rows' => $rows,
+					'debug_query' => $debug_query,
 				])
 			);
 		}
