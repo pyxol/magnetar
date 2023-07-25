@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Database\MySQL;
+	namespace Magnetar\Database\PostgreSQL;
 	
 	use PDO;
 	use RuntimeException;
@@ -11,7 +11,7 @@
 	use Magnetar\Database\DatabaseAdapterException;
 	
 	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {
-		protected string $adapter_name = 'mysql';
+		protected string $adapter_name = 'postgresql';
 		
 		// PDO instance
 		protected ?PDO $pdo = null;
@@ -55,8 +55,8 @@
 		protected function wireUp(
 			array $configuration=[]
 		): void {
-			if(!extension_loaded('pdo_mysql')) {
-				throw new RuntimeException("The PDO MySQL extension (pdo_mysql) is not loaded");
+			if(!extension_loaded('pdo_pgsql')) {
+				throw new RuntimeException("The PDO PostgreSQL extension (pdo_pgsql) is not loaded");
 			}
 			
 			// pull the configuration and check if it is valid
@@ -69,7 +69,7 @@
 			
 			// connect to the database
 			$this->pdo = new PDO(
-				"mysql:host=". $configuration['host'] .";". ((!empty($configuration['port']) && is_numeric($configuration['port']))?"port=". $configuration['port'] .";":"") ."dbname=". $configuration['database'],
+				"pgsql:host=". $configuration['host'] .";". ((!empty($configuration['port']) && is_numeric($configuration['port']))?"port=". $configuration['port'] .";":"") ."dbname=". $configuration['database'],
 				$configuration['user'],
 				$configuration['password'],
 				$default_options
@@ -78,7 +78,6 @@
 			// optional charset settings
 			if(isset($config['charset'])) {
 				$this->pdo->exec("SET NAMES ". $config['charset']);
-				$this->pdo->exec("SET CHARACTER SET ". $config['charset']);
 			}
 		}
 		
@@ -122,7 +121,7 @@
 		 * @param string|false $column_key The column to use as the array key for the results. If false, use an incrementing integer
 		 * @return array|false
 		 * 
-		 * @see \Magnetar\Database\MySQL::query() for use of $sql_query and $params
+		 * @see \Magnetar\Database\PostgreSQL::query() for use of $sql_query and $params
 		 */
 		public function get_rows(
 			string $sql_query,
@@ -161,7 +160,7 @@
 		 * @param array $params The parameters to bind to the query
 		 * @return array|false
 		 * 
-		 * @see \Magnetar\Database\MySQL::query() for $params usage with $sql_query
+		 * @see \Magnetar\Database\PostgreSQL::query() for $params usage with $sql_query
 		 */
 		public function get_row(string $sql_query, array $params=[]): array|false {
 			// prepare the query
@@ -189,7 +188,7 @@
 		 * @param string|int $column_key The column to use as the array key for the results
 		 * @return array|false
 		 * 
-		 * @see \Magnetar\Database\MySQL::query() for $params usage with $sql_query
+		 * @see \Magnetar\Database\PostgreSQL::query() for $params usage with $sql_query
 		 */
 		public function get_col(
 			string $sql_query,
@@ -230,7 +229,7 @@
 		 * @param string|int $column_key The column to use as the array value for the results. Defaults to second column
 		 * @return array|false
 		 * 
-		 * @see \Magnetar\Database\MySQL::query() for $params usage with $sql_query
+		 * @see \Magnetar\Database\PostgreSQL::query() for $params usage with $sql_query
 		 */
 		public function get_col_assoc(
 			string $sql_query,
@@ -296,7 +295,7 @@
 		 * @param string|false $column_key The column to use as the array key for the results. Leaving this as False uses the first column specified in the query
 		 * @return string|int|false
 		 * 
-		 * @see \Magnetar\Database\MySQL::query() for $params usage with $sql_query
+		 * @see \Magnetar\Database\PostgreSQL::query() for $params usage with $sql_query
 		 */
 		public function get_var(
 			string $sql_query,
