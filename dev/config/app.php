@@ -4,7 +4,7 @@
 	
 	return [
 		// application name
-		'name' => env('APP_NAME', 'Magnetar Dev App'),
+		'name' => env('APP_NAME', 'Magnetar Dev'),
 		
 		// environment ("dev" or "production")
 		'env' => env('APP_ENV', 'production'),

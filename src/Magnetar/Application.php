@@ -6,6 +6,7 @@
 	use Magnetar\Container\Container;
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Log\LogServiceProvider;
+	use Magnetar\Router\RouterServiceProvider;
 	
 	use Magnetar\Helpers\DeferrableServiceInterface;
 	
@@ -135,8 +136,6 @@
 			}
 			
 			if(is_string($provider)) {
-				$provider_before = $provider;
-				
 				$provider = $this->resolveServiceProvider($provider);
 			}
 			
@@ -209,6 +208,7 @@
 		 */
 		protected function registerBaseServiceProviders(): void {
 			$this->registerServiceProvider(new LogServiceProvider($this));
+			$this->registerServiceProvider(new RouterServiceProvider($this));
 		}
 		
 		/**

@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Kernel;
+	namespace Magnetar\Http;
 	
 	use Exception;
 	

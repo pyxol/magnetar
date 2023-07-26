@@ -3,7 +3,7 @@
 	
 	namespace App\Http;
 	
-	use Magnetar\Kernel\Http\Kernel as HttpKernel;
+	use Magnetar\Http\Kernel as HttpKernel;
 	
 	class Kernel extends HttpKernel {
 		

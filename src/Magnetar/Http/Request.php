@@ -3,11 +3,10 @@
 	
 	namespace Magnetar\Http;
 	
-	use Magnetar\Container\Container;
-	use Magnetar\Router\Route;
+	//use Magnetar\Router\Route;
 	
 	class Request {
-		protected ?Route $route = null;
+		//protected ?Route $route = null;
 		
 		protected string $path = "";
 		protected ?string $matched_pattern = null;
@@ -17,13 +16,8 @@
 		 * Create a new Request object
 		 * @param string $path The requested path (without query string)
 		 */
-		public function __construct(
-			protected Container $container,
-			string|null $path=null
-		) {
-			if(is_null($path)) {
-				$path = $_SERVER['REQUEST_URI'];
-			}
+		public function __construct() {
+			$path = $_SERVER['REQUEST_URI'];
 			
 			// sanitize request path
 			$path = ltrim($path, "/");
@@ -60,6 +54,14 @@
 			//		$this->parameters[ $name ] = $value;
 			//	}
 			//}
+		}
+		
+		/**
+		 * Create a new Request object
+		 * @return Request
+		 */
+		public static function create(): Request {
+			return new static();
 		}
 		
 		/**
@@ -115,20 +117,20 @@
 		 * Get the route that was matched
 		 * @return Route|null
 		 */
-		public function getRoute(): ?Route {
+		/* public function getRoute(): ?Route {
 			return $this->route;
-		}
+		} */
 		
 		/**
 		 * Set the route that was matched
 		 * @param Route $route The route that was matched
 		 * @return void
 		 */
-		public function setRoute(Route $route): void {
+		/* public function setRoute(Route $route): void {
 			if(!is_null($this->route)) {
 				return;
 			}
 			
 			$this->route = $route;
-		}
+		} */
 	}

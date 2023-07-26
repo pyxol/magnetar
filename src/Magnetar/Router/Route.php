@@ -34,8 +34,8 @@
 		}
 		
 		/**
-		 * Get the request object
-		 * @return Request
+		 * Get the matched request pattern
+		 * @return string
 		 */
 		public function getPattern(): string {
 			return $this->pattern;

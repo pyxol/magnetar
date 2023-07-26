@@ -68,7 +68,8 @@
 			
 			// sanitize path
 			if(!preg_match("#^https?\://#si", $path)) {
-				$path = ABS_URI . $path;
+				//$path = ABS_URI . $path;
+				$path = config('app.url') . $path;
 			}
 			
 			// send location header

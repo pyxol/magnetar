@@ -8,7 +8,9 @@
 	
 	require_once(__DIR__ ."/../../vendor/autoload.php");
 	
-	use Magnetar\Kernel\Http\Kernel;
+	use Magnetar\Http\Kernel;
+	use Magnetar\Http\Request;
+	
 	//use App\Http\Kernel;
 	
 	// @TODO remove after composer-based project for this is created and PSR-4 autoload
@@ -29,30 +31,8 @@
 	
 	$kernel = $app->make(Kernel::class);
 	
-	// routes
-	$kernel->get(
-		'/^cache\/set\/?$/i',
-		[HomeController::class, 'set_cache']
+	$response = $kernel->process(
+		$request = Request::create()//$request = $app->make('request')
 	);
 	
-	$kernel->get(
-		'/^cache\/get\/?$/i',
-		[HomeController::class, 'get_cache']
-	);
-	
-	$kernel->get(
-		'/^db\/?$/i',
-		[HomeController::class, 'db']
-	);
-	
-	$kernel->get(
-		'/^phpinfo\/?$/i',
-		[HomeController::class, 'phpinfo']
-	);
-	
-	$kernel->get(
-		'/^\/?$/i',
-		[HomeController::class, 'index']
-	);
-	
-	$kernel->serve();
+	$kernel->terminate($request, $response);

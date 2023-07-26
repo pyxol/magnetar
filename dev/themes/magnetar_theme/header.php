@@ -12,7 +12,7 @@
 		<nav class="navbar navbar-expand-lg bg-light">
 			<div class="container-fluid">
 				<a href="/" class="navbar-brand">
-					Brand Name
+					<?=esc_html(config('app.name', 'Magnetar App'));?>
 				</a>
 				
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
