@@ -4,11 +4,11 @@
 	"description": "Magnetar is a web application framework that focuses on speed and ease of use.",
 	"keywords": ["magnetar", "framework"],
 	"license": "MIT",
-    "homepage": "https://pyxol.com",
-    "support": {
-        "issues": "https://github.com/pyxol/magnetar/issues",
-        "source": "https://github.com/pyxol/magnetar"
-    },
+	"homepage": "https://pyxol.com",
+	"support": {
+		"issues": "https://github.com/pyxol/magnetar/issues",
+		"source": "https://github.com/pyxol/magnetar"
+	},
 	"authors": [
 		{
 			"name": "Don Wilson",

@@ -40,8 +40,6 @@ In the template file, you have access to the contextualized variables passed to 
 
 We provide a few global functions to make rendering templates easier. Some of these functions include: `display_tpl()` to embed another template, `esc_attr()` to safely escape a string in an HTML attribute, and `esc_html()` to safely escape a string for use everywhere else in HTML.
 
-```php
-
 You can also render another template file from within a template file, with our without contextual variables.
 
 ```php
