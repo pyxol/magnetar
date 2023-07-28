@@ -6,5 +6,7 @@
 	use Magnetar\Http\Kernel as HttpKernel;
 	
 	class Kernel extends HttpKernel {
-		
+		protected array $middleware = [
+			// ...
+		];
 	}

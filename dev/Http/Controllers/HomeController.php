@@ -17,16 +17,6 @@
 			);
 		}
 		
-		public function phpinfo(): void {
-			ob_start();
-			
-			phpinfo();
-			
-			Response::send(
-				ob_get_clean()
-			);
-		}
-		
 		public function db(): void {
 			// list tables
 			if(Config::get('database.default') === 'sqlite') {

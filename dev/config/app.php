@@ -2,6 +2,9 @@
 	use Magnetar\Helpers\Facades\Facade;
 	use Magnetar\Helpers\ServiceProvider;
 	
+	// @TMP
+	require_once(__DIR__ .'/../app/ServiceProviders/AppServiceProvider.php');
+	
 	return [
 		// application name
 		'name' => env('APP_NAME', 'Magnetar Dev'),
@@ -21,9 +24,9 @@
 			// ...
 		])->toArray(),
 		
-		// service providers to load
+		// service providers
 		'providers' => ServiceProvider::defaultProviders()->merge([
 			// additional default Service Providers
-			//App\ServiceProviders\AppServiceProvider::class,
+			App\ServiceProviders\AppServiceProvider::class,
 		])->toArray(),
 	];

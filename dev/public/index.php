@@ -32,7 +32,7 @@
 	$kernel = $app->make(Kernel::class);
 	
 	$response = $kernel->process(
-		$request = Request::create()//$request = $app->make('request')
+		$request = Request::create()
 	);
 	
 	$kernel->terminate($request, $response);

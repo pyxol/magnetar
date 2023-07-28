@@ -34,13 +34,10 @@
 								<li><a href="/cache/set/" class="dropdown-item">Set</a></li>
 							</ul>
 						</li>
-						<li class="nav-item">
-							<a href="/phpinfo/" class="nav-link">phpinfo()</a>
-						</li>
 					</ul>
-					<form class="d-flex" role="search">
-						<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-						<button class="btn btn-outline-success" type="submit">Search</button>
+					<form method="get" action="/search/" class="d-flex" role="search">
+						<input type="search" name="q" value="" class="form-control me-2" placeholder="Search" aria-label="Search">
+						<button type="submit" class="btn btn-outline-success">Search</button>
 					</form>
 				</div>
 			</div>
