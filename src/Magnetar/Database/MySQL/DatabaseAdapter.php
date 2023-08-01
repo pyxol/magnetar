@@ -8,6 +8,7 @@
 	
 	use Magnetar\Database\AbstractDatabaseAdapter;
 	use Magnetar\Database\QuickQueryInterface;
+	use Magnetar\Database\MySQL\SelectQueryBuilder;
 	use Magnetar\Database\DatabaseAdapterException;
 	
 	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {

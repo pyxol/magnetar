@@ -3,8 +3,8 @@
 	
 	namespace Magnetar\Database\MariaDB;
 	
-	use Magnetar\Database\MariaDB\DatabaseAdapter;
 	use Magnetar\Database\MySQL\SelectQueryBuilder as MySQLSelectQueryBuilder;
+	use Magnetar\Database\MariaDB\DatabaseAdapter;
 	
 	/**
 	 * MariaDB select query builder
