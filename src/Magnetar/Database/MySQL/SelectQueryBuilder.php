@@ -12,7 +12,6 @@
 	 * @TODO Add support for joins
 	 * @TODO Add support for group by
 	 * @TODO Add support for having
-	 * @TODO Add support for order by
 	 */
 	class SelectQueryBuilder {
 		/**
@@ -40,16 +39,10 @@
 		protected array $whereParams = [];
 		
 		/**
-		 * Order by
-		 * @var string
+		 * Order by. Array of strings, like: ["`field1` ASC", "`field2` DESC"]
+		 * @var array
 		 */
-		protected string $orderBy = '';
-		
-		/**
-		 * Order
-		 * @var string
-		 */
-		protected string $order = 'ASC';
+		protected array $orders = [];
 		
 		/**
 		 * Limit
@@ -232,6 +225,32 @@
 		}
 		
 		/**
+		 * Define the order by clause
+		 * @param string $column_name Column name to order by
+		 * @param string $direction ASC or DESC
+		 * @return self
+		 */
+		public function orderBy(string $column_name, string $direction='ASC'): self {
+			if(!preg_match("#^(?:asc|desc)$#si", $direction)) {
+				throw new QueryBuilderException("Invalid direction param in orderBy method");
+			}
+			
+			$this->orders[] = "`". $column_name ."` ". strtoupper($direction);
+			
+			return $this;
+		}
+		
+		/**
+		 * Reset the order by clause(s)
+		 * @return self
+		 */
+		public function unsetOrderBy(): self {
+			$this->orders = [];
+			
+			return $this;
+		}
+		
+		/**
 		 * Set the limit
 		 * @param int $limit
 		 * @return self
@@ -325,6 +344,11 @@
 				if(!empty($this->whereParams)) {
 					$params = array_merge($params, $this->whereParams);
 				}
+			}
+			
+			// order by
+			if(!empty($this->orders)) {
+				$query .= ' ORDER BY '. implode(', ', $this->orders);
 			}
 			
 			// limit
