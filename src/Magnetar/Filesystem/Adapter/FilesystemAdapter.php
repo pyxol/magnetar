@@ -4,12 +4,12 @@
 	namespace Magnetar\Filesystem\Adapter;
 	
 	class FilesystemAdapter implements AdapterInterface {
-		protected string $rootDir = '/';
-		
 		public function __construct(
-			string $rootDir='/'
+			protected ?string $rootDir=null
 		) {
-			if(DIRECTORY_SEPARATOR !== substr($rootDir, -1)) {
+			if(null === $rootDir) {
+				$rootDir = getcwd();
+			} elseif(DIRECTORY_SEPARATOR !== substr($rootDir, -1)) {
 				$rootDir .= DIRECTORY_SEPARATOR;
 			}
 			
@@ -17,11 +17,24 @@
 		}
 		
 		/**
-		 * Get the full path to a file
-		 * @param string $path Path to file relative to root directory
+		 * Convert a path relative to the root directory to a full path
+		 * @param string $path Path relative to root directory
 		 * @return string
 		 */
 		public function path(string $path): string {
 			return $this->rootDir . ltrim($path, DIRECTORY_SEPARATOR);
+		}
+		
+		/**
+		 * Remove the leading root directory from a full path
+		 * @param string $path Full path to strip the root path from
+		 * @return string Path relative to root directory
+		 */
+		public function unrootPath(string $path): string {
+			if(str_starts_with($path, $this->rootDir)) {
+				$path = substr($path, strlen($this->rootDir));
+			}
+			
+			return ltrim($path, DIRECTORY_SEPARATOR);
 		}
 	}

@@ -18,5 +18,5 @@
 		public function move(string $source, string $destination, bool $overwrite=false): bool;
 		
 		// delete
-		public function delete(string $path): bool;
+		public function delete(string|array $path): bool;
 	}
