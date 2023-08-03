@@ -27,3 +27,4 @@
 			return Env::get($key, $default);
 		}
 	}
+	

@@ -109,6 +109,9 @@
 			$response->status(503)->send(
 				$this->app->make('theme')->tpl('errors/503', [
 					'message' => $e->getMessage(),
+					'file' => $e->getFile(),
+					'line' => $e->getLine(),
+					'trace' => $e->getTraceAsString()
 				])
 			);
 			

@@ -54,11 +54,11 @@
 		/**
 		 * Assign a route to the router
 		 * @param string $pattern The regex pattern to match against
-		 * @param callable $callback The callback to run if matched
+		 * @param callable|array|null $callback The callback to run if matched
 		 * @param string $method The HTTP method to match against. Defaults to psuedo-method 'ANY'
 		 * @return void
 		 */
-		protected function assignRoute(string $pattern, callable $callback, string $method='ANY'): void {
+		protected function assignRoute(string $pattern, callable|array|null $callback, string $method='ANY'): void {
 			if($this->served) {
 				return;
 			}
@@ -80,11 +80,11 @@
 		 * @throws RouteUnassignedException
 		 */
 		public function processRequest(Request $request): Response {
-			throw new RuntimeException("Router::processRequest() not yet fully implemented, routes are not read from APP/routing/website.php");
+			//throw new RuntimeException("Router::processRequest() not yet fully implemented, routes are not read from APP/routing/website.php");
 			
 			// run through registered routes, find a match, pass execute callback to response class
 			foreach($this->routeCallbacks as $pattern => $callback) {
-				if(!$this->attemptPathPattern($request->getPath(), $pattern)) {
+				if(!$this->attemptPathPattern($pattern)) {
 					continue;
 				}
 				
@@ -121,6 +121,10 @@
 					throw new CannotProcessRouteException('Kernel execution was provided an unprocessable callback');
 				}
 				
+				
+				// @TODO fix flow of Router and assigned route calling, ensure route generates some form of Response instance
+				
+				
 				// return response
 				return $this->container['response'];
 			}
@@ -136,8 +140,6 @@
 		 * @return bool
 		 */
 		protected function attemptPathPattern(string $pattern, string|null $http_method=null): bool {
-			print "testing pattern: $pattern<br>\n";
-			
 			if($this->served) {
 				return false;
 			}

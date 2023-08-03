@@ -14,6 +14,7 @@
 			$this->providers = $providers ?? [
 				\Magnetar\Cache\CacheServiceProvider::class,
 				\Magnetar\Database\DatabaseServiceProvider::class,
+				\Magnetar\Filesystem\FilesystemServiceProvider::class,
 				\Magnetar\Template\TemplateServiceProvider::class,
 			];
 		}

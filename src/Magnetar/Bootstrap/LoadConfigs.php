@@ -43,9 +43,7 @@
 		 * @return array
 		 */
 		protected function getConfigFiles(Application $app): array {
-			$config_dir = $app->basePath('config') . DIRECTORY_SEPARATOR .'*.php';
-			
-			if(false === ($raw_files = glob($app->basePath('config') . DIRECTORY_SEPARATOR .'*.php'))) {
+			if(false === ($raw_files = glob($app->pathConfig('*.php')))) {
 				return [];
 			}
 			

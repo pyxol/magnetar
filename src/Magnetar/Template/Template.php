@@ -24,7 +24,7 @@
 			
 			
 			$this->folder = $template_folder;
-			$this->base_path = $this->app->basePath(
+			$this->base_path = $this->app->pathBase(
 				$this->app->make('config')->get('theme.storage.base_path', 'themes')
 				.'/'. $this->folder .'/'
 			);

@@ -6,7 +6,8 @@
 	use ErrorException;
 	use FilesystemIterator;
 	
-	use Magnetar\Filesystem\Adapter\FilesystemAdapter;
+	use Magnetar\Filesystem\Adapter\Adapter;
+	use Magnetar\Filesystem\Driver\Driver;
 	use Magnetar\Filesystem\Exception\FileNotFoundException;
 	use Magnetar\Filesystem\Exception\SourceNotFoundException;
 	use Magnetar\Filesystem\Exception\DirectoryNotFoundException;
@@ -19,10 +20,11 @@
 	class Filesystem implements FilesystemInterface {
 		/**
 		 * Filesystem constructor
-		 * @param FilesystemAdapter $adapter
+		 * @param Adapter $adapter
 		 */
 		public function __construct(
-			protected FilesystemAdapter $adapter
+			protected Adapter $adapter,
+			protected Driver $driver
 		) {
 			
 		}

@@ -330,7 +330,7 @@
 		 * @param bool $padHours Optional. Set to true to pad the hours with a leading zero
 		 * @return string
 		 */
-		public static function human_readable_seconds_to_hhmmss(int $sec, bool $padHours=false): string {
+		public static function seconds_to_hhmmss(int $sec, bool $padHours=false): string {
 			$hms = "";
 			
 			//$hours = intval(intval($sec) / 3600);
