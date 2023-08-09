@@ -1,6 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
+	use Magnetar\Template\Template;
 	use Magnetar\Helpers\Facades\Theme;
 	
 	if(!function_exists('esc_attr')) {
@@ -76,6 +77,17 @@
 			$string = strtolower(preg_replace("#[^A-Za-z0-9_:]#i", '', $string));
 			
 			return $string;
+		}
+	}
+	
+	if(!function_exists('theme')) {
+		/**
+		 * Use a specific theme
+		 * @param string|null|null $theme_name
+		 * @return Theme
+		 */
+		function theme(string|null $theme_name=null): Template {
+			return Theme::theme($theme_name);
 		}
 	}
 	

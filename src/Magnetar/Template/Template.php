@@ -4,6 +4,7 @@
 	namespace Magnetar\Template;
 	
 	use Magnetar\Application;
+	use Magnetar\Http\Response;
 	
 	class Template {
 		protected Data $data;
@@ -59,6 +60,17 @@
 			
 			// render the template and return
 			return $tpl_view->render();
+		}
+		
+		/**
+		 * Return an HTTP response of a rendered template
+		 * @param string $tpl_name The template name to render
+		 * @param array $view_data The data to pass to the template
+		 * @return Response
+		 */
+		public function renderResponse(string $tpl_name, array $view_data=[]): Response {
+			// generate a response by generating a rendered template
+			return (new Response())->setBody($this->render($tpl_name, $view_data));
 		}
 		
 		/**

@@ -3,14 +3,28 @@
 	
 	namespace Magnetar\Http;
 	
+	use Magnetar\Http\HeaderCollection;
+	
 	class Response {
+		protected HeaderCollection $headers;
+		protected int $statusCode = 200;
+		protected string $body = '';
+		protected bool $sent = false;
+		
+		/**
+		 * Constructor method
+		 */
+		public function __construct() {
+			$this->headers = new HeaderCollection();
+		}
+		
 		/**
 		 * Set the HTTP Response Code
 		 * @param int $code The HTTP Response Code. Defaults to 200
 		 * @return self
 		 */
 		public function status($code=200): self {
-			http_response_code($code);
+			$this->statusCode = $code;
 			
 			return $this;
 		}
@@ -21,7 +35,7 @@
 		 * @return Response
 		 */
 		public function header(string $header, bool|int $replace=true, int|null $response_code=0): self {
-			header($header, $replace, $response_code);
+			$this->headers->add($header, $replace, $response_code);
 			
 			return $this;
 		}
@@ -62,7 +76,7 @@
 		 */
 		public function redirect(string $path, int $response_code=302): void {
 			// sanitize response code
-			if(!in_array($response_code, [301, 302, 307])) {
+			if(!in_array($response_code, [300, 301, 302, 303, 304, 307, 308])) {
 				$response_code = 302;
 			}
 			
@@ -77,14 +91,14 @@
 		}
 		
 		/**
-		 * Set HTML header and prints HTML response
-		 * @param string $body The HTML body to print
-		 * @return void
+		 * Set the response body
+		 * @param string $body
+		 * @return self
 		 */
-		public function send($body=""): void {
-			$this->header("Content-Type: text/html; charset=UTF-8");
+		public function setBody(string $body=''): self {
+			$this->body = $body;
 			
-			print $body;
+			return $this;
 		}
 		
 		/**
@@ -92,9 +106,61 @@
 		 * @param array $body The JSON body to print
 		 * @return void
 		 */
-		public function json(array $body): void {
-			$this->header("Content-Type: application/json");
+		public function json(array $body): self {
+			// @TODO turn into a factory method
 			
-			print json_encode($body);
+			$this->header("Content-Type: application/json", true);
+			
+			$this->setBody(json_encode($body));
+			
+			return $this;
+		}
+		
+		/**
+		 * Send the response to the client
+		 * @return self
+		 */
+		public function send(): self {
+			if($this->sent) {
+				return $this;
+			}
+			
+			$this->header("Content-Type: text/html; charset=UTF-8", true);
+			
+			$this->sendHeaders();
+			$this->sendBody();
+			
+			return $this;
+		}
+		
+		/**
+		 * Send all headers
+		 * @return self
+		 */
+		public function sendHeaders(): self {
+			if(headers_sent()) {
+				// too late to send headers now
+				return $this;
+			}
+			
+			// send status code
+			http_response_code($this->statusCode);
+			
+			// send headers
+			$this->headers->send();
+			
+			return $this;
+		}
+		
+		/**
+		 * Print the response body to the output buffer
+		 * @return self
+		 */
+		public function sendBody(): self {
+			print $this->body;
+			
+			$this->sent = true;
+			
+			return $this;
 		}
 	}

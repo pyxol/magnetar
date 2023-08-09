@@ -111,22 +111,17 @@
 					//$instance->$method($this->request, $this->response);
 					
 					// call instance method and reference params
-					call_user_func([$instance, $method]);
+					//call_user_func([$instance, $method]);
+					return $this->container->instance('response', call_user_func([$instance, $method]));
 				} elseif(is_callable($callback)) {
 					// closure
 					//call_user_func_array($callback, $params);
-					call_user_func($callback);
+					//call_user_func($callback);
+					return $this->container->instance('response', call_user_func($callback));
 				} else {
 					// unknown callback method
 					throw new CannotProcessRouteException('Kernel execution was provided an unprocessable callback');
 				}
-				
-				
-				// @TODO fix flow of Router and assigned route calling, ensure route generates some form of Response instance
-				
-				
-				// return response
-				return $this->container['response'];
 			}
 			
 			// no route has triggered an execution, send out a 404

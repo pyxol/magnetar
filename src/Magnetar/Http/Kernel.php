@@ -4,15 +4,12 @@
 	namespace Magnetar\Http;
 	
 	use Exception;
-	use RuntimeException;
 	
 	use Magnetar\Application;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
 	use Magnetar\Router\Router;
 	use Magnetar\Helpers\Facades\Facade;
-	
-	use Magnetar\Http\KernelPanicException;
 	use Magnetar\Router\RouteUnassignedException;
 	use Magnetar\Router\CannotProcessRouteException;
 
@@ -93,9 +90,9 @@
 		 * @return void
 		 */
 		public function terminate(Request $request, Response $response): void {
-			// @TODO
+			// @TODO process middleware against response instance
 			
-			//throw new RuntimeException("Kernel::terminate() not yet implemented");
+			$response->send();
 		}
 		
 		/**
@@ -104,9 +101,7 @@
 		 */
 		protected function panic(Exception $e): Response {
 			// send 503 response
-			$response = new Response();
-			
-			$response->status(503)->send(
+			$response = (new Response())->status(503)->setBody(
 				$this->app->make('theme')->tpl('errors/503', [
 					'message' => $e->getMessage(),
 					'file' => $e->getFile(),
@@ -125,9 +120,7 @@
 		 */
 		public function handle404(string $message=''): Response {
 			// send 404 response
-			$response = new Response();
-			
-			$response->status(404)->send(
+			$response = (new Response())->status(404)->setBody(
 				$this->app->make('theme')->tpl('errors/404', [
 					'message' => $message
 				])
