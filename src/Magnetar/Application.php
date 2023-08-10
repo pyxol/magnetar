@@ -44,6 +44,12 @@
 		protected array $serviceProviders = [];
 		
 		/**
+		 * An array of registered callbacks that run during application termination
+		 * @var array
+		 */
+		protected array $terminateCallbacks = [];
+		
+		/**
 		 * Path to the application's app directory
 		 * @var string
 		 */
@@ -573,7 +579,9 @@
 			return parent::resolve($abstract, $parameters, $raiseEvents);
 		}
 		
-		
+		/**
+		 * {@inheritDoc}
+		 */
 		public function bound(string $abstract): bool {
 			$abstract = $this->getAlias($abstract);
 			
@@ -582,12 +590,48 @@
 			return parent::bound($abstract);
 		}
 		
-		
+		/**
+		 * Empty out the container's bindings and resolved instances
+		 * @return void
+		 */
 		public function flush(): void {
 			parent::flush();
 			
-			$this->serviceProviders = [];
+			$this->buildStack = [];
 			$this->loadedServiceProviders = [];
+			$this->serviceProviders = [];
+			$this->terminateCallbacks = [];
+			$this->reboundCallbacks = [];
+			$this->beforeResolvingCallbacks = [];
+			$this->resolvingCallbacks = [];
+			$this->afterResolvingCallbacks = [];
+			$this->globalBeforeResolvingCallbacks = [];
+			$this->globalResolvingCallbacks = [];
+			$this->globalAfterResolvingCallbacks = [];
+		}
+		
+		/**
+		 * Register a callback to run during application termination
+		 * @param callable|array|string $callback The callback to run
+		 * @return void
+		 */
+		public function registerTerminateCallback(callable|array|string $callback): void {
+			$this->terminateCallbacks[] = $callback;
+		}
+		
+		/**
+		 * Terminate the application by calling any registerd termination callbacks
+		 * @return void
+		 */
+		public function terminate(): void {
+			// allow for terminating callbacks to produce their own terminating callbacks
+			$i = 0;
+			
+			while($i < count($this->terminateCallbacks)) {
+				$this->call($this->terminateCallbacks[ $i ]);
+				
+				$i++;
+			}
 		}
 		
 		/**

@@ -14,8 +14,7 @@
 			Facade::setFacadeApplication($app);
 			
 			AliasLoader::getInstance(
-				//$app->make('config')->get('app.aliases', [])
-				$app['config']->get('app.aliases', [])
+				$app->make('config')->get('app.aliases', [])
 			)->register();
 		}
 	}

@@ -63,7 +63,7 @@
 				return;
 			}
 			
-			// @TODO likely rearrange routeCallbacks to store pattern+method+callback
+			// @TODO likely rearrange routeCallbacks to store pattern+method+callback or convert routeCallbacks into a Routes collection class
 			if(($this->requestMethod !== $method) && ('ANY' !== $method)) {
 				return;
 			}
@@ -84,6 +84,7 @@
 			
 			// run through registered routes, find a match, pass execute callback to response class
 			foreach($this->routeCallbacks as $pattern => $callback) {
+				// @TODO attemptPathPattern() should use $request
 				if(!$this->attemptPathPattern($pattern)) {
 					continue;
 				}

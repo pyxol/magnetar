@@ -18,7 +18,6 @@
 	use Magnetar\Container\BoundMethod;
 	use Magnetar\Container\RewindableGenerator;
 	
-	use Magnetar\Container\BindingResolutionException;
 	use Magnetar\Container\BuildResolutionException;
 	use Magnetar\Container\ContextualBindingBuilder;
 	use Magnetar\Container\InstanceNotFoundException;
@@ -81,6 +80,11 @@
 		 */
 		protected array $extenders = [];
 		
+		/**
+		 * Tags for a binding
+		 *
+		 * @var array
+		 */
 		protected array $tags = [];
 		
 		/**
@@ -107,17 +111,44 @@
 		 */
 		protected array $reboundCallbacks = [];
 		
-		
+		/**
+		 * The container's global before resolving callbacks
+		 * @var array
+		 */
 		protected array $globalBeforeResolvingCallbacks = [];
+		
+		/**
+		 * The container's before resolving callbacks
+		 * @var array
+		 */
 		protected array $globalResolvingCallbacks = [];
+		
+		/**
+		 * The container's after resolving callbacks
+		 * @var array
+		 */
 		protected array $globalAfterResolvingCallbacks = [];
+		
+		/**
+		 * The container's before resolving callbacks
+		 * @var array
+		 */
 		protected array $beforeResolvingCallbacks = [];
+		
+		/**
+		 * The container's resolving callbacks
+		 * @var array
+		 */
 		protected array $resolvingCallbacks = [];
+		
+		/**
+		 * The container's after resolving callbacks
+		 * @var array
+		 */
 		protected array $afterResolvingCallbacks = [];
 		
 		/**
-		 * Define a contextual binding.
-		 *
+		 * Define a contextual binding
 		 * @param array|string $concrete
 		 * @return Magnetar\Container\ContextualBindingBuilder
 		 */
@@ -146,7 +177,6 @@
 		
 		/**
 		 * {@inheritdoc}
-		 * 
 		 * @return bool
 		 */
 		public function has(string $id): bool {
@@ -327,7 +357,6 @@
 		
 		/**
 		 * Register a shared binding in the container
-		 *
 		 * @param string $abstract
 		 * @param Closure|string|null $concrete
 		 * @return void
@@ -341,7 +370,6 @@
 		
 		/**
 		 * Register a shared binding if it hasn't already been registered
-		 *
 		 * @param string $abstract
 		 * @param Closure|string|null $concrete
 		 * @return void
@@ -410,8 +438,7 @@
 		}
 		
 		/**
-		 * Register an existing instance as shared in the container.
-		 *
+		 * Register an existing instance as shared in the container
 		 * @param string $abstract
 		 * @param mixed $instance
 		 * @return mixed
@@ -423,9 +450,7 @@
 			
 			unset($this->aliases[ $abstract ]);
 			
-			// We'll check to determine if this type has been bound before, and if it has
-			// we will fire the rebound callbacks registered with the container and it
-			// can be updated with consuming classes that have gotten resolved here.
+			// if the abstract was already bound, fire rebound callbacks for it
 			$this->instances[ $abstract ] = $instance;
 			
 			if($isBound) {
@@ -437,7 +462,6 @@
 		
 		/**
 		 * Remove an alias from the contextual binding alias cache
-		 *
 		 * @param string $searched
 		 * @return void
 		 */
@@ -510,8 +534,7 @@
 		}
 		
 		/**
-		 * Bind a new callback to an abstract's rebind event.
-		 *
+		 * Bind a new callback to an abstract's rebind event
 		 * @param string $abstract
 		 * @param Closure $callback
 		 * @return mixed
@@ -525,8 +548,7 @@
 		}
 		
 		/**
-		 * Refresh an instance on the given target and method.
-		 *
+		 * Refresh an instance on the given target and method
 		 * @param string $abstract
 		 * @param mixed $target
 		 * @param string $method
@@ -539,8 +561,7 @@
 		}
 		
 		/**
-		 * Fire the "rebound" callbacks for the given abstract type.
-		 *
+		 * Fire the rebound callbacks for the given abstract type
 		 * @param string $abstract
 		 * @return void
 		 */
@@ -553,8 +574,7 @@
 		}
 		
 		/**
-		 * Get the rebound callbacks for a given type.
-		 *
+		 * Get the rebound callbacks for a given type
 		 * @param string $abstract
 		 * @return array
 		 */
@@ -609,8 +629,7 @@
 		}
 		
 		/**
-		 * Get the class name for the given callback, if one can be determined.
-		 *
+		 * Get the class name for the given callback, if one can be determined
 		 * @param callable|array|string $callback
 		 * @return string|false
 		 */
@@ -648,7 +667,7 @@
 		 * @param array $parameters
 		 * @return mixed
 		 *
-		 * @throws Magnetar\Container\BindingResolutionException
+		 * @throws Magnetar\Container\BuildResolutionException
 		 */
 		public function makeWith(string|callable $abstract, array $parameters=[]): mixed {
 			return $this->make($abstract, $parameters);
@@ -666,10 +685,6 @@
 		
 		/**
 		 * {@inheritdoc}
-		 * 
-		 * @return mixed
-		 * 
-		 * @throws InstanceNotFoundException
 		 */
 		public function get(string $id): mixed {
 			try {
@@ -696,7 +711,7 @@
 		 * @param bool $raiseEvents
 		 * @return mixed
 		 * 
-		 * @throws Magnetar\Container\BindingResolutionException
+		 * @throws Magnetar\Container\BuildResolutionException
 		 */
 		protected function resolve(
 			string|callable $abstract,
@@ -1017,7 +1032,7 @@
 		 * @param ReflectionParameter $parameter
 		 * @return void
 		 *
-		 * @throws Magnetar\Container\BindingResolutionException
+		 * @throws Magnetar\Container\BuildResolutionException
 		 */
 		protected function unresolvablePrimitive(ReflectionParameter $parameter): void {
 			$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
@@ -1026,8 +1041,7 @@
 		}
 		
 		/**
-		 * Register a new before resolving callback for all types.
-		 *
+		 * Register a new before resolving callback for all types
 		 * @param Closure|string $abstract
 		 * @param Closure|null $callback
 		 * @return void
@@ -1048,8 +1062,7 @@
 		}
 		
 		/**
-		 * Register a new resolving callback.
-		 *
+		 * Register a new resolving callback
 		 * @param Closure|string $abstract
 		 * @param Closure|null $callback
 		 * @return void
@@ -1070,8 +1083,7 @@
 		}
 		
 		/**
-		 * Register a new after resolving callback for all types.
-		 *
+		 * Register a new after resolving callback for all types
 		 * @param Closure|string $abstract
 		 * @param Closure|null $callback
 		 * @return void
@@ -1092,8 +1104,7 @@
 		}
 		
 		/**
-		 * Fire all of the before resolving callbacks.
-		 *
+		 * Fire all of the before resolving callbacks
 		 * @param string $abstract
 		 * @param array $parameters
 		 * @return void
@@ -1113,7 +1124,6 @@
 		
 		/**
 		 * Fire an array of callbacks with an object
-		 *
 		 * @param string $abstract
 		 * @param array $parameters
 		 * @param array $callbacks
@@ -1131,7 +1141,6 @@
 		
 		/**
 		 * Fire all of the resolving callbacks
-		 *
 		 * @param string $abstract
 		 * @param mixed $object
 		 * @return void
@@ -1149,7 +1158,6 @@
 		
 		/**
 		 * Fire all of the after resolving callbacks
-		 *
 		 * @param string $abstract
 		 * @param mixed $object
 		 * @return void
@@ -1164,8 +1172,7 @@
 		}
 		
 		/**
-		 * Get all callbacks for a given type.
-		 *
+		 * Get all callbacks for a given type
 		 * @param string $abstract
 		 * @param mixed $object
 		 * @param array $callbacksPerType
@@ -1189,7 +1196,6 @@
 		
 		/**
 		 * Fire an array of callbacks with an object
-		 *
 		 * @param mixed $object
 		 * @param array $callbacks
 		 * @return void
@@ -1201,8 +1207,7 @@
 		}
 		
 		/**
-		 * Get the container's bindings.
-		 *
+		 * Get the container's bindings
 		 * @return array
 		 */
 		public function getBindings(): array {
@@ -1221,8 +1226,7 @@
 		}
 		
 		/**
-		 * Get the extender callbacks for a given type.
-		 *
+		 * Get the extender callbacks for a given type
 		 * @param string $abstract
 		 * @return array
 		 */
@@ -1231,8 +1235,7 @@
 		}
 		
 		/**
-		 * Remove all of the extender callbacks for a given type.
-		 *
+		 * Remove all of the extender callbacks for a given type
 		 * @param string $abstract
 		 * @return void
 		 */
@@ -1251,7 +1254,6 @@
 		
 		/**
 		 * Remove a resolved instance from the instance cache
-		 *
 		 * @param string $abstract
 		 * @return void
 		 */
@@ -1261,7 +1263,6 @@
 		
 		/**
 		 * Clear all of the instances from the container
-		 *
 		 * @return void
 		 */
 		public function forgetInstances(): void {
@@ -1269,8 +1270,7 @@
 		}
 		
 		/**
-		 * Clear all of the scoped instances from the container.
-		 *
+		 * Clear all of the scoped instances from the container
 		 * @return void
 		 */
 		public function forgetScopedInstances(): void {
@@ -1293,8 +1293,7 @@
 		}
 		
 		/**
-		 * Get the globally available instance of the container.
-		 *
+		 * Get the globally available instance of the container
 		 * @return static
 		 */
 		public static function getInstance(): static {
@@ -1306,8 +1305,7 @@
 		}
 		
 		/**
-		 * Set the shared instance of the container.
-		 *
+		 * Set the shared instance of the container
 		 * @param Container|null $container
 		 * @return Container|static
 		 */
@@ -1316,8 +1314,7 @@
 		}
 		
 		/**
-		 * Determine if a given offset exists.
-		 *
+		 * Determine if a given offset exists
 		 * @param mixed $key
 		 * @return bool
 		 */
@@ -1326,8 +1323,7 @@
 		}
 		
 		/**
-		 * Get the value at a given offset.
-		 *
+		 * Get the value at a given offset
 		 * @param mixed $key
 		 * @return mixed
 		 */
@@ -1336,8 +1332,7 @@
 		}
 		
 		/**
-		 * Set the value at a given offset.
-		 *
+		 * Set the value at a given offset
 		 * @param mixed $key
 		 * @param mixed $value
 		 * @return void
@@ -1350,8 +1345,7 @@
 		}
 		
 		/**
-		 * Unset the value at a given offset.
-		 *
+		 * Unset the value at a given offset
 		 * @param string $key
 		 * @return void
 		 */
@@ -1364,8 +1358,7 @@
 		}
 		
 		/**
-		 * Dynamically access container services.
-		 *
+		 * Dynamically access container services
 		 * @param string $key
 		 * @return mixed
 		 */
@@ -1374,8 +1367,7 @@
 		}
 		
 		/**
-		 * Dynamically set container services.
-		 *
+		 * Dynamically set container services
 		 * @param string $key
 		 * @param mixed $value
 		 * @return void

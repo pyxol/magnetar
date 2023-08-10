@@ -20,17 +20,6 @@
 		 */
 		protected array $middleware = [];
 		
-		public function __construct(
-			protected Application $app,
-			protected Router $router
-		) {
-			// prep request and response objects
-			//$this->app->instance('request', new Request($this->app));
-			
-			// prep router
-			//$this->app->instance('router', new Router($this->app));
-		}
-		
 		/**
 		 * Array of classes to instantiate and call using kernel->bootstrap()
 		 * @var array
@@ -41,6 +30,13 @@
 			\Magnetar\Bootstrap\RegisterServiceProviders::class,
 			\Magnetar\Bootstrap\BootServiceProviders::class,
 		];
+		
+		public function __construct(
+			protected Application $app,
+			protected Router $router
+		) {
+			// @TODO router middleware
+		}
 		
 		/**
 		 * Bootstrap the application using the kernel's bootstrappers
@@ -73,7 +69,7 @@
 			$this->bootstrap();
 			
 			try {
-				return $this->router->processRequest($request);
+				return $this->sendRequestToRouter($request);
 			} catch(CannotProcessRouteException $e) {
 				return $this->panic($e);
 			} catch(RouteUnassignedException $e) {
@@ -81,6 +77,15 @@
 			} catch(Exception $e) {
 				return $this->panic($e);
 			}
+		}
+		
+		/**
+		 * Send a request to the router and return the response
+		 * @param Request $request
+		 * @return Response
+		 */
+		protected function sendRequestToRouter(Request $request): Response {
+			return $this->router->processRequest($request);
 		}
 		
 		/**
@@ -93,6 +98,9 @@
 			// @TODO process middleware against response instance
 			
 			$response->send();
+			
+			// terminate app
+			$this->app->terminate();
 		}
 		
 		/**
@@ -127,5 +135,24 @@
 			);
 			
 			return $response;
+		}
+		
+		/**
+		 * Get the application instance
+		 * @return Application The kernel's application instance
+		 */
+		public function getApplication(): Application {
+			return $this->app;
+		}
+		
+		/**
+		 * Set the application instance
+		 * @param Application $app The application instance
+		 * @return self
+		 */
+		public function setApplication(Application $app): self {
+			$this->app = $app;
+			
+			return $this;
 		}
 	}
