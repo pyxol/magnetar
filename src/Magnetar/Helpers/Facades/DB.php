@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * @method connection(string|null $driver_name=null): Magnetar\Database\AbstractDatabaseAdapter
 	 * @method query(array $sql_query, array $params=[]): int|false;

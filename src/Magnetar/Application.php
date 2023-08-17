@@ -164,7 +164,7 @@
 		/**
 		 * Set the path to the application's config directory
 		 * @param string $path
-		 * @return $this
+		 * @return self
 		 */
 		public function setConfigPath(string $path): self {
 			$this->path_config = $path;

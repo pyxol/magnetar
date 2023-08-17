@@ -39,7 +39,7 @@
 		/**
 		 * Define the abstract target that depends on the context
 		 * @param string $abstract
-		 * @return $this
+		 * @return self
 		 */
 		public function needs(string $abstract): self {
 			$this->needs = $abstract;

@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * @method status($code=200): Magnetar\Http\Response
 	 * @method header(string $header, bool|int $replace=true, int|null $response_code=0): Magnetar\Http\Response

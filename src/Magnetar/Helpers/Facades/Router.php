@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * __construct(
 	 * @method group(string $prefixPath, callable $callback): void

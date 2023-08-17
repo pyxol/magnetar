@@ -6,16 +6,17 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
+	 * @method to(string $path, array $params=[]): string
+	 * @method from(string $url): Magnetar\Router\URLBuilder
 	 * 
-	 * 
-	 * @see Magnetar\Cache\CacheStoreInterface
+	 * @see Magnetar\Router\URLGenerator
 	 */
-	class Log extends Facade {
+	class URL extends Facade {
 		/**
 		 * Get the named key that this facade represents
 		 * @return string
 		 */
 		protected static function getFacadeKey(): string {
-			return 'logger';
+			return 'urlgenerator';
 		}
 	}

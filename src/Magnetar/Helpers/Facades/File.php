@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * @method write(string $path, string $contents, bool $overwrite=false): bool
 	 * @method copy(string $path, string $destination, bool $overwrite=false): bool

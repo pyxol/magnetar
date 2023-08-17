@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * @method getPath(): string
 	 * @method assignOverrideParameters(array $parameters): void

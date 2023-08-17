@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * @method setBasePath(string $base_path): void
 	 * @method basePath(string $rel_path=''): string

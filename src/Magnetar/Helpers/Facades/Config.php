@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Helpers\Facades;
 	
+	use Magnetar\Helpers\Facades\Facade;
+	
 	/**
 	 * @method set(string $key, mixed $value): void
 	 * @method get(string $key, mixed $default=null): mixed
