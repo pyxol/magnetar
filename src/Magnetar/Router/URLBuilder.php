@@ -210,7 +210,9 @@
 		 */
 		public function getCachedScheme(): string {
 			if(null === static::$cachedScheme) {
-				if(false === ($scheme = parse_url($this->app['config']->get('app.url'), PHP_URL_SCHEME))) {
+				$scheme = parse_url($this->app['config']->get('app.url', ''), PHP_URL_SCHEME);
+				
+				if((false === $scheme) || (null === $scheme)) {
 					// default to http
 					$scheme = $_SERVER['REQUEST_SCHEME'] ?? $_SERVER['SERVER_PROTOCOL'] ?? 'http';
 				}
@@ -227,7 +229,9 @@
 		 */
 		public function getCachedHostname(): string {
 			if(null === static::$cachedHostname) {
-				if(false === ($hostname = parse_url($this->app['config']->get('app.url'), PHP_URL_HOST))) {
+				$hostname = parse_url($this->app['config']->get('app.url', ''), PHP_URL_HOST);
+				
+				if((false === $hostname) || (null === $hostname)) {
 					// default to http
 					$hostname = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
 				}
