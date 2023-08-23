@@ -7,16 +7,28 @@
 	
 	class URLBuilder {
 		/**
-		 * Schema (http, https, ftp, s3, etc)
-		 * @var string
+		 * Scheme (http, https, ftp, s3, etc)
+		 * @var string|null
 		 */
-		protected string $schema = 'https';
+		protected string|null $scheme = null;
+		
+		/**
+		 * Cached scheme pulled from app.url that is used when no scheme is set (http, https)
+		 * @var string|null
+		 */
+		protected static string|null $cachedScheme = null;
 		
 		/**
 		 * Hostname (example.com, www.example.com, etc)
 		 * @var string|null
 		 */
 		protected string|null $hostname = null;
+		
+		/**
+		 * Cached hostname pulled from app.url that is used when no hostname is set (eg: example.com))
+		 * @var string|null
+		 */
+		protected static string|null $cachedHostname = null;
 		
 		/**
 		 * Port (80, 443, 21, etc)
@@ -63,9 +75,9 @@
 			// parse the URL
 			$parts = parse_url($url);
 			
-			// set the schema
+			// set the scheme
 			if(isset($parts['scheme'])) {
-				$builder->schema($parts['scheme']);
+				$builder->scheme($parts['scheme']);
 			}
 			
 			// set the hostname
@@ -109,12 +121,12 @@
 		}
 		
 		/**
-		 * Set the schema
-		 * @param string $schema The schema to use. Example: http, https, ftp, s3, etc
+		 * Set the scheme
+		 * @param string $scheme The scheme to use. Example: http, https, ftp, s3, etc
 		 * @return self
 		 */
-		public function schema(string $schema): self {
-			$this->schema = strtolower($schema);
+		public function scheme(string $scheme): self {
+			$this->scheme = strtolower($scheme);
 			
 			return $this;
 		}
@@ -193,28 +205,61 @@
 		}
 		
 		/**
+		 * Get the cached scheme
+		 * @return string
+		 */
+		public function getCachedScheme(): string {
+			if(null === static::$cachedScheme) {
+				if(false === ($scheme = parse_url($this->app['config']->get('app.url'), PHP_URL_SCHEME))) {
+					// default to http
+					$scheme = $_SERVER['REQUEST_SCHEME'] ?? $_SERVER['SERVER_PROTOCOL'] ?? 'http';
+				}
+				
+				static::$cachedScheme = $scheme;
+			}
+			
+			return static::$cachedScheme;
+		}
+		
+		/**
+		 * Get the cached hostname
+		 * @return string
+		 */
+		public function getCachedHostname(): string {
+			if(null === static::$cachedHostname) {
+				if(false === ($hostname = parse_url($this->app['config']->get('app.url'), PHP_URL_HOST))) {
+					// default to http
+					$hostname = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+				}
+				
+				static::$cachedHostname = $hostname;
+			}
+			
+			return static::$cachedHostname;
+		}
+		
+		/**
 		 * Build the URL
 		 * @return string
 		 */
 		public function build(): string {
-			// start with the schema
-			$url = $this->schema . '://';
+			$url = '';
+			
+			// start with the scheme
+			$url .= $this->scheme ?? $this->getCachedScheme();
+			$url .= '://';
 			
 			// add the hostname
-			if(null === $this->hostname) {
-				$this->hostname($this->app['config']->get('app.hostname') ?? $_SERVER['HTTP_HOST']);
-			}
-			
-			$url .= $this->hostname;
+			$url .= $this->hostname ?? $this->getCachedHostname();
 			
 			// add the port (if necessary)
 			if(null !== $this->port) {
 				if(80 === $this->port) {
-					if('http' !== $this->schema) {
+					if('http' !== $this->scheme) {
 						$url .= ':'. $this->port;
 					}
 				} elseif(443 === $this->port) {
-					if('https' !== $this->schema) {
+					if('https' !== $this->scheme) {
 						$url .= ':'. $this->port;
 					}
 				} else {
