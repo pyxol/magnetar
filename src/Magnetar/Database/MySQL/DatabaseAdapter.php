@@ -10,7 +10,8 @@
 	use Magnetar\Database\QuickQueryInterface;
 	use Magnetar\Database\MySQL\SelectQueryBuilder;
 	use Magnetar\Database\DatabaseAdapterException;
-	
+use PDOStatement;
+
 	class DatabaseAdapter extends AbstractDatabaseAdapter implements QuickQueryInterface {
 		protected string $adapter_name = 'mysql';
 		
@@ -84,6 +85,50 @@
 		}
 		
 		/**
+		 * Bind parameters to a PDOStatement
+		 * @param PDOStatement $statement The PDOStatement to bind the parameters to
+		 * @param array $params The parameters to bind to the statement. Either an assoc array or a consecutive array
+		 * @return void
+		 */
+		protected function bindStatementParams(
+			PDOStatement $statement,
+			array $params,
+			bool $prepend_param_key_with_colon=false
+		) {
+			$is_list = array_is_list($params);
+			
+			foreach($params as $param_key => $param_value) {
+				if($is_list) {
+					$param_key++;   // increment the key by 1 to match the PDOStatement bindParam() method which starts at 1
+				} else {
+					if($prepend_param_key_with_colon) {
+						// prepend the param key with a colon
+						$param_key = ":". $param_key;
+					}
+				}
+				
+				$statement->bindParam(
+					$param_key,
+					$param_value,
+					match(gettype($param_value)) {
+						'boolean' => PDO::PARAM_BOOL,
+						'integer' => PDO::PARAM_INT,
+						'double' => PDO::PARAM_STR,
+						'string' => PDO::PARAM_STR,
+						'array' => PDO::PARAM_STR,
+						'object' => PDO::PARAM_STR,
+						'resource' => PDO::PARAM_STR,
+						'resource (closed)' => PDO::PARAM_STR,
+						'NULL' => PDO::PARAM_NULL,
+						'unknown type' => PDO::PARAM_STR,
+					}
+				);
+			}
+			
+			return $statement;
+		}
+		
+		/**
 		 * Run a query. Generally used for anything besides SELECT statements. If an INSERT query, return the last insert ID, otherwise return the number of rows affected. Returns false on failure
 		 * @param string $sql_query The SQL query to run. If used in conjunction with $params, use either named (:var) or unnamed placeholders (?), not both
 		 * @param array $params The parameters to bind to the query. Named params (:var) require an assoc array, unnamed (?) require a consecutive array
@@ -101,8 +146,13 @@
 				// prepare the query
 				$statement = $this->pdo->prepare($sql_query);
 				
+				// bind any params to the statement
+				if(!empty($params)) {
+					$statement = $this->bindStatementParams($statement, $params);
+				}
+				
 				// execute the query
-				$result = $statement->execute($params);
+				$result = $statement->execute();
 			} else {
 				// execute the query
 				$result = $this->pdo->exec($sql_query);
@@ -133,12 +183,16 @@
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			
+			// bind any params to the statement
 			if(!empty($params)) {
-				// execute the query with params
-				$statement->execute($params);
-			} else {
-				// execute the query
-				$statement->execute();
+				$statement = $this->bindStatementParams($statement, $params);
+			}
+			
+			// execute the query
+			if(false === $statement->execute()) {
+				// @TODO log error
+				
+				return false;
 			}
 			
 			$rows = [];
@@ -168,15 +222,19 @@
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			
+			// bind any params to the statement
 			if(!empty($params)) {
-				// execute the query with params
-				$statement->execute($params);
-			} else {
-				// execute the query
-				$statement->execute();
+				$statement = $this->bindStatementParams($statement, $params);
+			}
+			
+			// execute the query
+			if(false === $statement->execute()) {
+				return false;
 			}
 			
 			if(!$statement->rowCount()) {
+				// @TODO log error
+				
 				return false;
 			}
 			
@@ -200,12 +258,16 @@
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			
+			// bind any params to the statement
 			if(!empty($params)) {
-				// execute the query with params
-				$statement->execute($params);
-			} else {
-				// execute the query
-				$statement->execute();
+				$statement = $this->bindStatementParams($statement, $params);
+			}
+			
+			// execute the query
+			if(false === $statement->execute()) {
+				// @TODO log error
+				
+				return false;
 			}
 			
 			$rows = [];
@@ -242,12 +304,16 @@
 			// prepare the query
 			$statement = $this->pdo->prepare($sql_query);
 			
+			// bind any params to the statement
 			if(!empty($params)) {
-				// execute the query with params
-				$statement->execute($params);
-			} else {
-				// execute the query
-				$statement->execute();
+				$statement = $this->bindStatementParams($statement, $params);
+			}
+			
+			// execute the query
+			if(false === $statement->execute()) {
+				// @TODO log error
+				
+				return false;
 			}
 			
 			$rows = [];
@@ -305,7 +371,9 @@
 			string|int|false $column_key=false
 		): string|int|false {
 			// prepare the query
-			$row = $this->get_row($sql_query, $params);
+			if(false === ($row = $this->get_row($sql_query, $params))) {
+				return false;
+			}
 			
 			if(false !== $column_key) {
 				if(isset($row[ $column_key ])) {
