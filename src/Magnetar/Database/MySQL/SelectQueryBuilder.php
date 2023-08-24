@@ -210,7 +210,11 @@
 				throw new QueryBuilderException("Invalid value type, raw arrays cannot be used");
 			}
 			
+			// add where clause
 			$this->wheres[] = "`". $column_name ."` ". $comparison_operator ." ?";
+			
+			// assign value to params
+			$this->whereParams[] = $value;
 			
 			return $this;
 		}
