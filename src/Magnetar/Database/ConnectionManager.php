@@ -6,18 +6,27 @@
 	use Exception;
 	
 	use Magnetar\Application;
-	use Magnetar\Database\AbstractDatabaseAdapter;
+	use Magnetar\Database\DatabaseAdapter;
 	
 	class ConnectionManager {
+		/**
+		 * Array of database connection instances
+		 * @var array<string, DatabaseAdapter>
+		 */
 		protected array $connections = [];
 		
 		protected array $adapters = [
 			'mariadb' => MariaDB\DatabaseAdapter::class,
 			'mysql' => MySQL\DatabaseAdapter::class,
 			'pgsql' => PostgreSQL\DatabaseAdapter::class,
-			'sqlite' => SQLite\DatabaseAdapter::class,
+			'sqlite3' => SQLite\DatabaseAdapter::class,
+			'sqlserver' => SQLServer\DatabaseAdapter::class,
 		];
 		
+		/**
+		 * ConnectionManager constructor
+		 * @param Application $app
+		 */
 		public function __construct(
 			protected Application $app
 		) {
@@ -27,11 +36,11 @@
 		/**
 		 * Returns the active database adapter for the specified driver
 		 * @param string|null $connection_name Connection name from the database config file. If no connection name is specified, the default connection is used
-		 * @return AbstractDatabaseAdapter
+		 * @return DatabaseAdapter
 		 * 
 		 * @throws Exception
 		 */
-		public function connection(string|null $connection_name=null): AbstractDatabaseAdapter {
+		public function connection(string|null $connection_name=null): DatabaseAdapter {
 			// interfaces with the app's configuration to create a database connection
 			if(null === $connection_name) {
 				$connection_name = $this->getDefaultConnectionName() ?? throw new Exception('No default database connection specified');
@@ -63,7 +72,7 @@
 			$this->connections[ $connection_name ] = new $adapter_class(
 				$connection_name,
 				$this->app['config']->get('database.connections.'. $connection_name, [])
-			) ?? throw new Exception('Invalid database driver');
+			) ?? throw new Exception('Unable to start database driver');
 		}
 		
 		/**
@@ -94,11 +103,11 @@
 		/**
 		 * Returns the database adapter for the specified driver
 		 * @param string $connection_name
-		 * @return AbstractDatabaseAdapter
+		 * @return DatabaseAdapter
 		 * 
 		 * @throws Exception
 		 */
-		public function adapter(string $connection_name): string|null {
+		public function adapter(string $connection_name): DatabaseAdapter {
 			return $this->connections[ $connection_name ] ?? throw new Exception('Specified database driver is not connected');
 		}
 		
@@ -106,9 +115,9 @@
 		 * Passes method calls to the default database adapter
 		 * @param string $method
 		 * @param array $args
-		 * @return void
+		 * @return mixed
 		 */
-		public function __call(string $method, array $args) {
+		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);
 		}
 	}

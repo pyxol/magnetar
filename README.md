@@ -71,7 +71,7 @@ Drivers for **MySQL** / **MariaDB**, **PostgreSQL**, and **SQLite** are included
 
 **Query Builder:**
 ```php
-$results = DB::table('table')->where('id', 1)->get();
+$results = DB::table('table')->where('id', 1)->fetch();
 ```
 
 **Quick query methods:**

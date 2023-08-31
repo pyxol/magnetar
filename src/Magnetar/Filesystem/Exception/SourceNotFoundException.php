@@ -3,7 +3,7 @@
 	
 	namespace Magnetar\Filesystem\Exception;
 	
-	use \Exception;
+	use Exception;
 	
 	class SourceNotFoundException extends Exception {
 		

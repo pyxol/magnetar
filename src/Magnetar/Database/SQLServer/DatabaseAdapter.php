@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Database\MySQL;
+	namespace Magnetar\Database\SQLServer;
 	
 	use RuntimeException;
 	use PDO;
@@ -17,7 +17,7 @@
 			HasQuickQueryTrait,
 			HasQueryBuilderTrait;
 		
-		const ADAPTER_NAME = 'mysql';
+		const ADAPTER_NAME = 'sqlserver';
 		
 		/**
 		 * {@inheritDoc}
@@ -27,10 +27,6 @@
 			
 			if(!isset($this->connection_config['host'])) {
 				throw new DatabaseAdapterException("Database configuration is missing host");
-			}
-			
-			if(!isset($this->connection_config['port'])) {
-				throw new DatabaseAdapterException("Database configuration is missing port");
 			}
 			
 			//if(!isset($this->connection_config['user'])) {
@@ -45,9 +41,9 @@
 				throw new DatabaseAdapterException("Database configuration is missing database");
 			}
 			
-			// check if the PDO MySQL extension is loaded
-			if(!extension_loaded('pdo_mysql')) {
-				throw new RuntimeException("The PDO MySQL extension (pdo_mysql) is not loaded");
+			// check if the PDO SQLSRV extension is loaded
+			if(!extension_loaded('pdo_sqlsrv')) {
+				throw new RuntimeException("The PDO SQLServer extension (pdo_sqlsrv) is not loaded");
 			}
 		}
 		
@@ -55,7 +51,7 @@
 		 * {@inheritDoc}
 		 */
 		protected function generateDSN(): string {
-			return 'mysql:host='. $this->connection_config['host'] .';'. ((!empty($this->connection_config['port']) && is_numeric($this->connection_config['port']))?'port='. $this->connection_config['port'] .';':'') .'dbname='. $this->connection_config['database'];
+			return 'sqlsrv:server='. $this->connection_config['host'] .';Database='. $this->connection_config['database'];
 		}
 		
 		/**
@@ -65,12 +61,9 @@
 			parent::postConnection();
 			
 			// optional charset settings
-			if(isset($this->connection_config['charset'])) {
-				//$this->dbh->exec("SET NAMES ". $this->connection_config['charset']);
-				//$this->dbh->exec("SET CHARACTER SET ". $this->connection_config['charset']);
-				
-				$this->dbh->prepare("SET NAMES ?")->execute([$this->connection_config['charset']]);
-				$this->dbh->prepare("SET CHARACTER SET ?")->execute([$this->connection_config['charset']]);
+			if(isset($config['charset'])) {
+				//$this->dbh->exec("SET NAMES ". $config['charset']);
+				$this->dbh->prepare("SET NAMES ?")->execute([$config['charset']]);
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method connection(string|null $driver_name=null): Magnetar\Database\AbstractDatabaseAdapter
+	 * @method connection(string|null $driver_name=null): Magnetar\Database\DatabaseAdapter
 	 * @method query(array $sql_query, array $params=[]): int|false;
 	 * @method get_rows(string $sql_query, array $params=[], array|false $column_key=false): array|false;
 	 * @method get_row(string $sql_query, array $params=[]): array|false;

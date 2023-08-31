@@ -3,7 +3,7 @@
 	
 	namespace Magnetar\Filesystem\Exception;
 	
-	use \Exception;
+	use Exception;
 	
 	class DestinationExistsException extends Exception {
 		

@@ -1,21 +1,27 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Database\MySQL;
+	namespace Magnetar\Database;
 	
-	use Magnetar\Database\AbstractDatabaseAdapter;
-	use Magnetar\Database\QueryBuilderException;
+	use Magnetar\Database\DatabaseAdapter;
+	use Magnetar\Database\Exceptions\QueryBuilderException;
 	
 	/**
-	 * MySQL select query builder
+	 * Query Builder
 	 * 
 	 * @TODO Add support for joins
 	 * @TODO Add support for group by
 	 * @TODO Add support for having
 	 * 
 	 * @TODO split off into a separate QueryBuilder, implement fetch() and fetchOne() in adapter-specific classes
+	 * 
+	 * @TODO Add support for insert/update/delete
+	 * 
+	 * @TODO buildQueryAndParams implies MySQL usage, need to make it adapter-agnostic
+	 * 
+	 * @TODO fetch and fetchOne should be rewritten to not rely on use of HasQuickQueryTrait methods
 	 */
-	class SelectQueryBuilder {
+	class QueryBuilder {
 		/**
 		 * Table name
 		 * @var string
@@ -60,13 +66,13 @@
 		
 		/**
 		 * Constructor
-		 * @param AbstractDatabaseAdapter $db Database adapter
+		 * @param DatabaseAdapter $adapter Database adapter
 		 * @param string $table_name Table name. Invalid names will throw an exception
 		 * 
 		 * @throws QueryBuilderException
 		 */
 		public function __construct(
-			protected AbstractDatabaseAdapter $db,
+			protected DatabaseAdapter $adapter,
 			string $table_name
 		) {
 			$this->table($table_name);
@@ -381,7 +387,7 @@
 			$this->reset();
 			
 			// get all rows
-			return $this->db->get_rows($query, $params);
+			return $this->adapter->get_rows($query, $params);
 		}
 		
 		/**
@@ -395,7 +401,7 @@
 			$this->reset();
 			
 			// get a single row
-			return $this->db->get_row($query, $params);
+			return $this->adapter->get_row($query, $params);
 		}
 		
 		/**

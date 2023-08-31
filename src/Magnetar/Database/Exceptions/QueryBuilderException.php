@@ -1,9 +1,9 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Database;
+	namespace Magnetar\Database\Exceptions;
 	
-	use Magnetar\Database\QueryPreperationException;
+	use Magnetar\Database\Exceptions\QueryPreperationException;
 	
 	class QueryBuilderException extends QueryPreperationException {
 		
