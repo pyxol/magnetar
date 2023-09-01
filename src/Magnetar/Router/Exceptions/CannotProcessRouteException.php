@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Router;
+	namespace Magnetar\Router\Exceptions;
 	
 	use Exception;
 	

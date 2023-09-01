@@ -9,7 +9,7 @@
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
 	use Magnetar\Router\RouteUnassignedException;
-	use Magnetar\Router\CannotProcessRouteException;
+	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 	
 	class Router {
 		/**

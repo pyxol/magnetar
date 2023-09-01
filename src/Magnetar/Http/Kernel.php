@@ -11,7 +11,7 @@
 	use Magnetar\Router\Router;
 	use Magnetar\Helpers\Facades\Facade;
 	use Magnetar\Router\RouteUnassignedException;
-	use Magnetar\Router\CannotProcessRouteException;
+	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 
 	class Kernel {
 		/**
