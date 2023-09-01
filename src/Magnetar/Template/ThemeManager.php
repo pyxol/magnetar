@@ -12,6 +12,10 @@
 		protected array $themes = [];
 		
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app
 		) {
 			
@@ -55,9 +59,9 @@
 		 * Passes method calls to the active cache store
 		 * @param string $method
 		 * @param array $args
-		 * @return void
+		 * @return mixed
 		 */
-		public function __call(string $method, array $args) {
+		public function __call(string $method, array $args): mixed {
 			return $this->theme()->$method(...$args);
 		}
 	}

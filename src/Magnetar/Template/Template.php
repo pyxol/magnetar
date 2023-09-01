@@ -9,7 +9,6 @@
 	class Template {
 		protected Data $data;
 		
-		protected string $folder = "";
 		protected string $base_path = "";
 		
 		/**
@@ -18,16 +17,22 @@
 		 * @param string $base_template_path The base path to the template folder
 		 */
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app,
-			string $template_folder
+			
+			/**
+			 * The folder to load templates from
+			 * @var string
+			 */
+			protected string $folder
 		) {
-			// assign paths
-			
-			
-			$this->folder = $template_folder;
+			// assign the base path
 			$this->base_path = $this->app->pathBase(
 				$this->app->make('config')->get('theme.storage.base_path', 'themes')
-				.'/'. $this->folder .'/'
+				. DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR
 			);
 			
 			// initialize the template data

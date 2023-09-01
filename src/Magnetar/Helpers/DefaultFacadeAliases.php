@@ -10,7 +10,9 @@
 		 * Constructor method
 		 * @param array|null $aliases
 		 */
-		public function __construct(array|null $aliases=null) {
+		public function __construct(
+			?array $aliases=null
+		) {
 			$this->aliases = $aliases ?? [
 				'App' => Facades\App::class,
 				'Cache' => Facades\Cache::class,

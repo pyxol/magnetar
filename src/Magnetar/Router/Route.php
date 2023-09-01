@@ -6,29 +6,21 @@
 	use Magnetar\Http\Request;
 	
 	class Route {
-		/**
-		 * The request object
-		 * @var Request
-		 */
-		protected Request $request;
-		
-		/**
-		 * The pattern to match against
-		 * @var string
-		 */
-		protected string $pattern = '';
-		
 		public function __construct(
-			string $pattern,
+			/**
+			 * The pattern to match against
+			 * @var string
+			 */
+			protected string $pattern='',
+			
 			array $raw_matches,
-			Request $request
+			
+			/**
+			 * The request object
+			 * @var Request
+			 */
+			protected Request $request
 		) {
-			// assign pattern
-			$this->pattern = $pattern;
-			
-			// assign request
-			$this->request = $request;
-			
 			// parse pattern
 			$this->parsePathMatches($raw_matches);
 		}

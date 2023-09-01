@@ -23,7 +23,9 @@
 		
 		//protected static ?Logger $logger = null;
 		
-		public function __construct(Container $container) {
+		public function __construct(
+			protected Container $container
+		) {
 			//if(null === static::$logger) {
 			//	static::$logger = $container->instance('logger', $this);
 			//}
@@ -86,7 +88,7 @@
 		 * @param array $args
 		 * @return void
 		 * 
-		 * @throws BadMethodCallException
+		 * @throws \BadMethodCallException
 		 */
 		public function __call(string $method, array $args): void {
 			if(isset($this->logLevels[ $method ])) {

@@ -65,9 +65,9 @@
 		 * Passes method calls to the active cache store
 		 * @param string $method
 		 * @param array $args
-		 * @return void
+		 * @return mixed
 		 */
-		public function __call(string $method, array $args) {
+		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);
 		}
 	}

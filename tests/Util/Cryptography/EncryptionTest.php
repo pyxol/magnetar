@@ -8,7 +8,7 @@
 	use Magnetar\Util\Cryptography\Encryption;
 	
 	class EncryptionTest extends TestCase {
-		public function testDefaultCryptography() {
+		public function testDefaultCryptography(): void {
 			$encryption_engine = new Encryption(
 				md5('another_random_salt_'. microtime(true))
 			);
@@ -24,7 +24,7 @@
 			$this->assertSame($starting_str, $decrypted_str);
 		}
 		
-		public function testSpecificCryptography() {
+		public function testSpecificCryptography(): void {
 			$encryption_engine = new Encryption(
 				'salt_'. time(),
 				'SHA256',
@@ -42,7 +42,7 @@
 			$this->assertSame($starting_str, $decrypted_str);
 		}
 		
-		public function testMultipleEncryptions() {
+		public function testMultipleEncryptions(): void {
 			$encryption_engine = new Encryption(
 				md5('random_salt_'. microtime(true))
 			);
@@ -60,7 +60,7 @@
 			$this->assertNotFalse($encrypted_str2);
 		}
 		
-		public function testMultipleDecryptions() {
+		public function testMultipleDecryptions(): void {
 			$encryption_engine = new Encryption(
 				md5('random_salt_'. microtime(true))
 			);
@@ -83,7 +83,7 @@
 			$this->assertSame($decrypted_str1, $decrypted_str2);
 		}
 		
-		public function testDifferentEncryptedValues() {
+		public function testDifferentEncryptedValues(): void {
 			$encryption_engine = new Encryption(
 				md5('random_salt_'. microtime(true))
 			);

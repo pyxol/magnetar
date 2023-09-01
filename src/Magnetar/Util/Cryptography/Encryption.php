@@ -4,7 +4,6 @@
 	namespace Magnetar\Util\Cryptography;
 	
 	class Encryption {
-		protected string $salt;
 		protected string $digest_method = 'SHA256';   // a value from openssl_get_md_methods()
 		protected string $cipher_method = 'aes-128-ctr';   // a value from openssl_get_cipher_methods()
 		
@@ -17,13 +16,15 @@
 		 * @see https://www.php.net/manual/en/function.openssl-get-cipher-methods.php
 		 */
 		public function __construct(
-			string $salt,
+			/**
+			 * Effectively a 'password' to an encrypted block of text. Encrypting with one salt and decrypting with another will result in garbage data.
+			 * @var string
+			 */
+			protected string $salt,
+			
 			string|null $digest_method=null,
 			string|null $cipher_method=null
 		) {
-			//$this->salt = php_uname() . $salt;   // unable to remember why php_uname is desirable here, will look into
-			$this->salt = $salt;
-			
 			if(!is_null($digest_method)) {
 				$this->digest_method = $digest_method;
 			}

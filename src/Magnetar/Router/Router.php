@@ -31,7 +31,16 @@
 		protected array $routeCallbacks = [];
 		
 		public function __construct(
+			/**
+			 * The container instance
+			 * @var Container
+			 */
 			protected Container $container,
+			
+			/**
+			 * The path's prefix
+			 * @var Request
+			 */
 			protected string $prefixPath=''
 		) {
 			$this->requestMethod = $_SERVER['REQUEST_METHOD'] ?? null;

@@ -7,6 +7,9 @@
 	use Magnetar\Application;
 	
 	class TemplateServiceProvider extends ServiceProvider {
+		/**
+		 * {@inheritDoc}
+		 */
 		public function register(): void {
 			$this->app->singleton('theme', function(Application $app) {
 				return new ThemeManager($app);

@@ -12,7 +12,7 @@
 	use Magnetar\Helpers\Facades\Facade;
 	use Magnetar\Router\RouteUnassignedException;
 	use Magnetar\Router\Exceptions\CannotProcessRouteException;
-
+	
 	class Kernel {
 		/**
 		 * Middleware stack
@@ -35,7 +35,7 @@
 			protected Application $app,
 			protected Router $router
 		) {
-			// @TODO router middleware
+			
 		}
 		
 		/**
@@ -51,7 +51,7 @@
 		 * Get the bootstrap classes for the application.
 		 * @return array
 		 */
-		protected function bootstrappers() {
+		protected function bootstrappers(): array {
 			return $this->bootstrappers;
 		}
 		
@@ -70,6 +70,13 @@
 			
 			try {
 				return $this->sendRequestToRouter($request);
+				
+				// @TODO replace above with:
+				//return new Pipeline($this->app)
+				//	->send($request)
+				//	->through($this->middleware)
+				//	->then($this->sendRequestToRouter());
+				// & convert sendRequestToRouter() to a Closure
 			} catch(CannotProcessRouteException $e) {
 				return $this->panic($e);
 			} catch(RouteUnassignedException $e) {
@@ -86,6 +93,14 @@
 		 */
 		protected function sendRequestToRouter(Request $request): Response {
 			return $this->router->processRequest($request);
+			
+			// @TODO replace above with:
+			//return function($request) {
+			//	// request processed through middleware, refresh instance in container
+			//	$this->app->instance('request', $request);
+			//	
+			//	return $this->router->processRequest($request);
+			//};
 		}
 		
 		/**

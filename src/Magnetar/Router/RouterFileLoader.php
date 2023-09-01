@@ -11,6 +11,10 @@
 		 * @param Router $router
 		 */
 		public function __construct(
+			/**
+			 * The router instance
+			 * @var Router
+			 */
 			protected Router $router
 		) {
 			

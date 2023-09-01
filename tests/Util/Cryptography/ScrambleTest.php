@@ -8,7 +8,7 @@
 	use Magnetar\Util\Cryptography\Scramble;
 	
 	class ScrambleTest extends TestCase {
-		public function testEncryptionMatch() {
+		public function testEncryptionMatch(): void {
 			$encoded_str1 = Scramble::encode('Magnetar');
 			
 			usleep(300);   // sleep for 300ms to ensure the time is different
@@ -18,14 +18,14 @@
 			$this->assertSame($encoded_str1, $encoded_str2);
 		}
 		
-		public function testEncryptionDifferent() {
+		public function testEncryptionDifferent(): void {
 			$encoded_str1 = Scramble::encode('Magnetar');
 			$encoded_str2 = Scramble::encode('Magnetar2');
 			
 			$this->assertNotSame($encoded_str1, $encoded_str2);
 		}
 		
-		public function testDecryptionMatch() {
+		public function testDecryptionMatch(): void {
 			$starting_str = "Magnetar";
 			
 			$encoded_str = Scramble::encode($starting_str);
@@ -34,7 +34,7 @@
 			$this->assertSame($starting_str, $decoded_str);
 		}
 		
-		public function testDecryptionDifferent() {
+		public function testDecryptionDifferent(): void {
 			// 'twfNBMv0yxi' is from a previous run of Scramble::encode('Magnetar') should convert to 'Magnetar'
 			$decoded_str = Scramble::decode('twfNBMv0yxi');
 			

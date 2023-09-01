@@ -8,6 +8,10 @@
 	
 	class URLGenerator {
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app
 		) {
 			

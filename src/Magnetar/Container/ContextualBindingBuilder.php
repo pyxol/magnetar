@@ -3,22 +3,12 @@
 	
 	namespace Magnetar\Container;
 	
+	use Closure;
+	
 	use Magnetar\Container\Container;
 	use Magnetar\Container\Helper;
 	
 	class ContextualBindingBuilder {
-		/**
-		 * The underlying container instance
-		 * @var Magnetar\Container\Container
-		 */
-		protected $container;
-		
-		/**
-		 * The concrete instance
-		 * @var string|array
-		 */
-		protected $concrete;
-		
 		/**
 		 * The abstract target
 		 * @var string
@@ -31,9 +21,11 @@
 		 * @param string|array $concrete
 		 * @return void
 		 */
-		public function __construct(Container $container, string|array $concrete) {
-			$this->concrete = $concrete;
-			$this->container = $container;
+		public function __construct(
+			protected Container $container,
+			protected string|array $concrete
+		) {
+			
 		}
 		
 		/**

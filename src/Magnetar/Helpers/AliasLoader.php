@@ -5,12 +5,6 @@
 	
 	class AliasLoader {
 		/**
-		 * The array of class aliases
-		 * @var array
-		 */
-		protected $aliases = [];
-		
-		/**
 		 * Indicates if a loader has been registered
 		 * @var bool
 		 */
@@ -29,8 +23,14 @@
 		 * Set the aliases to be loaded
 		 * @param array $aliases
 		 */
-		public function __construct(array $aliases=[]) {
-			$this->aliases = $aliases;
+		public function __construct(
+			/**
+			 * The aliases to be loaded
+			 * @var array
+			 */
+			protected array $aliases=[]
+		) {
+			
 		}
 		
 		/**
@@ -164,7 +164,7 @@
 		 * Clone method
 		 * @return void
 		 */
-		private function __clone() {
+		private function __clone(): void {
 			
 		}
 	}

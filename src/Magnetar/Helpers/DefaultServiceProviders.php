@@ -10,7 +10,9 @@
 		 * Constructor method
 		 * @param array|null $providers
 		 */
-		public function __construct(array|null $providers=null) {
+		public function __construct(
+			?array $providers=null
+		) {
 			$this->providers = $providers ?? [
 				\Magnetar\Cache\CacheServiceProvider::class,
 				\Magnetar\Database\DatabaseServiceProvider::class,

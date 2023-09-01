@@ -49,7 +49,7 @@
 		protected array $params = [];
 		
 		/**
-		 * Fragment (#...)
+		 * Fragment or hash (#...)
 		 * @var string|null
 		 */
 		protected string|null $fragment = null;
@@ -59,6 +59,10 @@
 		 * @param Application $app
 		 */
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app
 		) {
 			

@@ -6,9 +6,6 @@
 	// a class to encapsulate a template that's being rendered
 	// holds data via magic methods
 	class View {
-		protected Template $template;
-		protected string $template_path;
-		
 		/**
 		 * Data stored specifically in this View, overrides data from the Template
 		 * @var array
@@ -22,13 +19,24 @@
 		 * @param array $view_data The data to pass to the template
 		 */
 		public function __construct(
-			Template $template,
-			string $template_path,
+			/**
+			 * The template instance
+			 * @var Template
+			 */
+			protected Template $template,
+			
+			/**
+			 * The path to the template file
+			 * @var string
+			 */
+			protected string $template_path,
+			
+			/**
+			 * The data to pass to the template view
+			 * @var array
+			 */
 			array $view_data=[]
 		) {
-			$this->template = $template;
-			$this->template_path = $template_path;
-			
 			// set the view data
 			$this->data = array_merge($this->template->getData(), $view_data);
 		}

@@ -61,7 +61,7 @@
 		public function terminate(
 			Input $input,
 			int $status
-		) {
+		): void {
 			$this->app->terminate();
 		}
 		
