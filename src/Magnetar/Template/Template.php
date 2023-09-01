@@ -44,7 +44,7 @@
 		 * @param string $tpl_name The template name to get the path for
 		 * @return string
 		 */
-		public function getPath(string $tpl_name): string {
+		public function getViewPath(string $tpl_name): string {
 			// sanitize the template name
 			if(!preg_match("#\.php$#si", $tpl_name)) {
 				$tpl_name .= '.php';
@@ -61,7 +61,11 @@
 		 */
 		public function render(string $tpl_name, array $view_data=[]): string {
 			// create a TemplateView instance
-			$tpl_view = new View($this, $this->getPath($tpl_name), $view_data);
+			$tpl_view = new View(
+				$this,
+				$this->getViewPath($tpl_name),
+				$view_data
+			);
 			
 			// render the template and return
 			return $tpl_view->render();

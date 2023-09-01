@@ -8,15 +8,52 @@
 	class Request {
 		//protected ?Route $route = null;
 		
+		/**
+		 * The requested path (without query string)
+		 * @var string
+		 */
 		protected string $path = "";
+		
+		/**
+		 * The pattern that was matched
+		 * @var string|null
+		 */
 		protected ?string $matched_pattern = null;
+		
+		/**
+		 * Request parameters
+		 * @var array
+		 */
 		protected array $parameters = [];
+		
+		/**
+		 * The request method
+		 * @var string|null
+		 */
+		protected ?string $method = null;
+		
+		/**
+		 * Request headers
+		 * @var HeaderCollection|null
+		 */
+		protected ?HeaderCollection $headers = null;
 		
 		/**
 		 * Create a new Request object
 		 * @param string $path The requested path (without query string)
 		 */
 		public function __construct() {
+			
+			
+			
+			
+			// @TODO massive cleanup
+			
+			
+			
+			
+			
+			
 			$path = $_SERVER['REQUEST_URI'];
 			
 			// sanitize request path
@@ -24,6 +61,9 @@
 			$path = rtrim($path, '?&');
 			
 			$this->path = $path;
+			
+			// set request method
+			$this->method = $_SERVER['REQUEST_METHOD'] ?? null;
 			
 			if(false !== ($q_pos = strpos($this->path, '?'))) {
 				// request has ?, save to request and parse parameters
@@ -35,6 +75,10 @@
 				// chop off query string from request path
 				$this->path = substr($this->path, 0, $q_pos);
 			}
+			
+			
+			// record request headers
+			$this->recordHeaders();
 			
 			//// set base parameters (any created with URI arguments)
 			//$this->parameters = $_REQUEST;
@@ -65,11 +109,72 @@
 		}
 		
 		/**
+		 * Record request headers
+		 * @return void
+		 */
+		protected function recordHeaders(): void {
+			$this->headers = new HeaderCollection();
+			
+			$headers = getallheaders();
+			
+			if(empty($headers)) {
+				return;
+			}
+			
+			foreach($headers as $key => $value) {
+				$this->headers->add($key, $value);
+			}
+			
+			//// record request headers
+			//foreach($_SERVER as $key => $value) {
+			//	if(!str_starts_with($key, 'HTTP_')) {
+			//		continue;
+			//	}
+			//	
+			//	$this->headers[ $key ] = $value;
+			//}
+		}
+		
+		/**
+		 * Get the response headers
+		 * @return array
+		 */
+		public function headers(): array {
+			return $this->headers->all();
+		}
+		
+		/**
+		 * Get a response header by name
+		 * @param string $name The header name
+		 * @return string|null
+		 */
+		public function header(string $name): ?string {
+			return $this->headers->get($name);
+		}
+		
+		/**
+		 * Check if a response header exists
+		 * @param string $name The header name
+		 * @return bool
+		 */
+		public function hasHeader(string $name): bool {
+			return $this->headers->has($name);
+		}
+		
+		/**
 		 * Get the requested path
 		 * @return string
 		 */
-		public function getPath(): string {
+		public function path(): string {
 			return $this->path;
+		}
+		
+		/**
+		 * Get the request method
+		 * @return string|null
+		 */
+		public function getMethod(): ?string {
+			return $this->method;
 		}
 		
 		/**
@@ -111,6 +216,14 @@
 		 */
 		public function getParameters(): array {
 			return $this->parameters;
+		}
+		
+		/**
+		 * Get the raw request body
+		 * @return string
+		 */
+		public function body(): string {
+			return file_get_contents('php://input') ?: '';
 		}
 		
 		/**

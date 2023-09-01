@@ -29,7 +29,7 @@
 		}
 		
 		public function send(): self {
-			$this->header("Content-Type: application/json; charset=UTF-8", true);
+			$this->header('Content-Type', 'application/json; charset=UTF-8', true);
 			
 			$this->sendHeaders();
 			$this->sendBody();

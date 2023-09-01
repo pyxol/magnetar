@@ -39,7 +39,7 @@
 			
 			/**
 			 * The path's prefix
-			 * @var Request
+			 * @var string
 			 */
 			protected string $prefixPath=''
 		) {
@@ -153,7 +153,7 @@
 				return false;
 			}
 			
-			if(!preg_match($pattern, $this->container['request']->getPath(), $raw_matches)) {
+			if(!preg_match($pattern, $this->container['request']->path(), $raw_matches)) {
 				return false;
 			}
 			

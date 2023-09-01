@@ -6,7 +6,7 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method getPath(): string
+	 * @method path(): string
 	 * @method assignOverrideParameters(array $parameters): void
 	 * @method getParameter(string $name, mixed $default=null): mixed
 	 * @method getParameters(): array

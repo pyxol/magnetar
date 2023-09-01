@@ -9,6 +9,7 @@
 		protected HeaderCollection $headers;
 		protected int $statusCode = 200;
 		protected string $body = '';
+		protected bool $headersSent = false;
 		protected bool $sent = false;
 		
 		/**
@@ -23,19 +24,8 @@
 		 * @param int $code The HTTP Response Code. Defaults to 200
 		 * @return self
 		 */
-		public function status($code=200): self {
+		public function status(int $code=200): self {
 			$this->statusCode = $code;
-			
-			return $this;
-		}
-		
-		/**
-		 * Set a single header
-		 * @param string $header The header to set
-		 * @return Response
-		 */
-		public function header(string $header, bool|int $replace=true, int|null $response_code=0): self {
-			$this->headers->add($header, $replace, $response_code);
 			
 			return $this;
 		}
@@ -55,16 +45,16 @@
 		 * @return Response
 		 * @note This method is a wrapper for PHP's setcookie() function
 		 * 
-		 * @TODO
+		 * @TODO needs a cookie management class
 		 */
 		public function setCookie(
-			$name,
-			$value=null,
-			$expires=0,
-			$path="",
-			$domain="",
-			$secure=false,
-			$httponly=false
+			string $name,
+			string|null $value=null,
+			int $expires=0,
+			string $path='',
+			string $domain='',
+			bool $secure=false,
+			bool $httponly=false
 		): self {
 			setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
 			
@@ -87,7 +77,12 @@
 			}
 			
 			// send location header
-			$this->header("Location: ". $path, true, $response_code);
+			$this->header(
+				'Location',
+				$path,
+				true,
+				$response_code
+			);
 		}
 		
 		/**
@@ -109,7 +104,7 @@
 		public function json(array $body): self {
 			// @TODO turn into a factory method
 			
-			$this->header("Content-Type: application/json", true);
+			$this->header('Content-Type', 'application/json');
 			
 			$this->setBody(json_encode($body));
 			
@@ -125,7 +120,7 @@
 				return $this;
 			}
 			
-			$this->header("Content-Type: text/html; charset=UTF-8", true);
+			$this->header('Content-Type', 'text/html; charset=UTF-8');
 			
 			$this->sendHeaders();
 			$this->sendBody();
@@ -149,6 +144,9 @@
 			// send headers
 			$this->headers->send();
 			
+			// mark headers as sent
+			$this->headersSent = true;
+			
 			return $this;
 		}
 		
@@ -162,5 +160,106 @@
 			$this->sent = true;
 			
 			return $this;
+		}
+		
+		
+		/**
+		 * Get the response body
+		 * @return string
+		 */
+		public function body(): string {
+			return $this->body;
+		}
+		
+		/**
+		 * Get the response status code
+		 * @return int
+		 */
+		public function statusCode(): int {
+			return $this->statusCode;
+		}
+		
+		/**
+		 * Get or set a single header
+		 * @param string $header The header to set
+		 * @return string|Response
+		 */
+		public function header(
+			string $header,
+			string|null $value=null,
+			bool|int $replace=true,
+			int|null $response_code=0
+		): string|self {
+			if(null === $value) {
+				// no value provided, get header instead
+				return $this->getHeader($header);
+			}
+			
+			// add header
+			$this->headers->add(
+				$header,
+				$value,
+				$replace,
+				$response_code
+			);
+			
+			return $this;
+		}
+		
+		/**
+		 * Get the response headers
+		 * @return array
+		 */
+		public function headers(): array {
+			return $this->headers->all();
+		}
+		
+		/**
+		 * Get a response header by name
+		 * @param string $name The header name
+		 * @return string|null
+		 */
+		public function getHeader(string $name): ?string {
+			return $this->headers->get($name);
+		}
+		
+		/**
+		 * Check if a response header exists
+		 * @param string $name The header name
+		 * @return bool
+		 */
+		public function hasHeader(string $name): bool {
+			return $this->headers->has($name);
+		}
+		
+		/**
+		 * Remove a response header by name
+		 * @param string $name The header name
+		 * @return self
+		 */
+		public function removeHeader(string $name): self {
+			if($this->headersSent) {
+				return $this;
+			}
+			
+			$this->headers->remove($name);
+			
+			return $this;
+		}
+		
+		/**
+		 * Check if the response headers have been sent
+		 * @return bool
+		 */
+		public function headersSent(): bool {
+			return $this->headersSent;
+		}
+		
+		/**
+		 * Check if the response has been sent
+		 * @return bool
+		 */
+		public function sent(): bool {
+			return $this->sent;
 		}
 	}
