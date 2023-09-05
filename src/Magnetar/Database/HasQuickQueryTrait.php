@@ -7,6 +7,7 @@
 	
 	/**
 	 * @TODO replace PDO-specific code with a more generic solution
+	 * @TODO bindStatementParams is in HasPDOTrait
 	 */
 	trait HasQuickQueryTrait {
 		/**

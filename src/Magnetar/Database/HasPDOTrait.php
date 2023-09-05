@@ -69,7 +69,7 @@
 			
 			foreach($params as $param_key => $param_value) {
 				if($is_list) {
-					$param_key++;   // increment the key by 1 to match the PDOStatement bindParam() method which starts at 1
+					$param_key++;   // increment the key by 1 to match the PDOStatement bindValue() method which starts at 1
 				} else {
 					if($prepend_param_key_with_colon) {
 						// prepend the param key with a colon
@@ -77,7 +77,7 @@
 					}
 				}
 				
-				$statement->bindParam(
+				$statement->bindValue(
 					$param_key,
 					$param_value,
 					match(gettype($param_value)) {
