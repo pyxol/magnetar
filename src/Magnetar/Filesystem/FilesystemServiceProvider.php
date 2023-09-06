@@ -6,9 +6,12 @@
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Filesystem\FilesystemManager;
 	
+	/**
+	 * Filesystem service provider
+	 */
 	class FilesystemServiceProvider extends ServiceProvider {
 		/**
-		 * Register the service provider
+		 * {@inheritDoc}
 		 */
 		public function register(): void {
 			$this->registerFilesystemManager();

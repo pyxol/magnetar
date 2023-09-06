@@ -17,14 +17,16 @@
 	use Magnetar\Container\Helper;
 	use Magnetar\Container\BoundMethod;
 	use Magnetar\Container\RewindableGenerator;
-	
-	use Magnetar\Container\BuildResolutionException;
 	use Magnetar\Container\ContextualBindingBuilder;
-	use Magnetar\Container\InstanceNotFoundException;
-	use Magnetar\Container\ResolvingDependenciesException;
-	use Magnetar\Container\SelfAliasException;
-	use Magnetar\Container\UninstantiableException;
+	use Magnetar\Container\Exceptions\InstanceNotFoundException;
+	use Magnetar\Container\Exceptions\ResolvingDependenciesException;
+	use Magnetar\Container\Exceptions\SelfAliasException;
+	use Magnetar\Container\Exceptions\UninstantiableException;
+	use Magnetar\Container\Exceptions\BuildResolutionException;
 	
+	/**
+	 * A dependency injection container
+	 */
 	class Container implements ArrayAccess, ContainerInterface {
 		/**
 		 * Currently available global container instance (if any)
@@ -357,8 +359,8 @@
 		
 		/**
 		 * Register a shared binding in the container
-		 * @param string $abstract
-		 * @param Closure|string|null $concrete
+		 * @param string $abstract The abstract type to bind
+		 * @param Closure|string|null $concrete The concrete to bind
 		 * @return void
 		 */
 		public function singleton(
@@ -370,8 +372,8 @@
 		
 		/**
 		 * Register a shared binding if it hasn't already been registered
-		 * @param string $abstract
-		 * @param Closure|string|null $concrete
+		 * @param string $abstract The abstract type to bind
+		 * @param Closure|string|null $concrete The concrete to bind
 		 * @return void
 		 */
 		public function singletonIf(
@@ -385,8 +387,8 @@
 		
 		/**
 		 * Register a scoped binding in the container
-		 * @param string $abstract
-		 * @param Closure|string|null $concrete
+		 * @param string $abstract The abstract type to bind
+		 * @param Closure|string|null $concrete The concrete to bind
 		 * @return void
 		 */
 		public function scoped(
@@ -400,8 +402,8 @@
 		
 		/**
 		 * Register a scoped binding if it hasn't already been registered
-		 * @param string $abstract
-		 * @param Closure|string|null $concrete
+		 * @param string $abstract The abstract type to bind
+		 * @param Closure|string|null $concrete The concrete to bind
 		 * @return void
 		 */
 		public function scopedIf(
@@ -415,8 +417,8 @@
 		
 		/**
 		 * "Extend" an abstract type in the container
-		 * @param string $abstract
-		 * @param Closure $closure
+		 * @param string $abstract The abstract type to extend
+		 * @param Closure $closure The closure to use to extend the type
 		 * @return void
 		 * 
 		 * @throws InvalidArgumentException
@@ -439,8 +441,8 @@
 		
 		/**
 		 * Register an existing instance as shared in the container
-		 * @param string $abstract
-		 * @param mixed $instance
+		 * @param string $abstract The abstract type to bind
+		 * @param mixed $instance The instance to bind
 		 * @return mixed
 		 */
 		public function instance(string $abstract, mixed $instance): mixed {
@@ -462,7 +464,7 @@
 		
 		/**
 		 * Remove an alias from the contextual binding alias cache
-		 * @param string $searched
+		 * @param string $searched The alias to remove
 		 * @return void
 		 */
 		protected function removeAbstractAlias(string $searched): void {
@@ -481,8 +483,8 @@
 		
 		/**
 		 * Assign a set of tags to a given binding
-		 * @param array|string $abstracts
-		 * @param mixed ...$tags
+		 * @param array|string $abstracts The abstracts to tag
+		 * @param mixed ...$tags The tags to assign
 		 * @return void
 		 */
 		public function tag(array|string $abstracts, mixed $tags): void {
@@ -501,8 +503,8 @@
 		
 		/**
 		 * Resolve all of the bindings for a given tag
-		 * @param string $tag
-		 * @return iterable
+		 * @param string $tag The tag to resolve
+		 * @return iterable An iterable of the resolved bindings
 		 */
 		public function tagged(string $tag): iterable {
 			if(!isset($this->tags[ $tag ])) {
@@ -518,8 +520,8 @@
 		
 		/**
 		 * Alias a type to a different name
-		 * @param string $abstract
-		 * @param string $alias
+		 * @param string $abstract The abstract type to alias
+		 * @param string $alias The alias to use
 		 * @return void
 		 * 
 		 * @throws SelfAliasException
@@ -535,8 +537,8 @@
 		
 		/**
 		 * Bind a new callback to an abstract's rebind event
-		 * @param string $abstract
-		 * @param Closure $callback
+		 * @param string $abstract The abstract type to bind
+		 * @param Closure $callback The callback to bind
 		 * @return mixed
 		 */
 		public function rebinding(string $abstract, Closure $callback): mixed {
@@ -549,12 +551,16 @@
 		
 		/**
 		 * Refresh an instance on the given target and method
-		 * @param string $abstract
-		 * @param mixed $target
-		 * @param string $method
+		 * @param string $abstract The abstract type to refresh
+		 * @param mixed $target The target to refresh
+		 * @param string $method The method to refresh
 		 * @return mixed
 		 */
-		public function refresh($abstract, $target, $method) {
+		public function refresh(
+			string $abstract,
+			mixed $target,
+			string $method
+		): mixed {
 			return $this->rebinding($abstract, function ($app, $instance) use ($target, $method) {
 				$target->{$method}($instance);
 			});
@@ -562,7 +568,7 @@
 		
 		/**
 		 * Fire the rebound callbacks for the given abstract type
-		 * @param string $abstract
+		 * @param string $abstract The abstract type to rebound
 		 * @return void
 		 */
 		protected function rebound(string $abstract): void {
@@ -575,8 +581,8 @@
 		
 		/**
 		 * Get the rebound callbacks for a given type
-		 * @param string $abstract
-		 * @return array
+		 * @param string $abstract The abstract type to get callbacks for
+		 * @return array The callbacks
 		 */
 		protected function getReboundCallbacks(string $abstract): array {
 			return $this->reboundCallbacks[ $abstract ] ?? [];
@@ -584,9 +590,9 @@
 		
 		 /**
 		 * Wrap the given closure such that its dependencies will be injected when executed
-		 * @param Closure $callback
-		 * @param array $parameters
-		 * @return Closure
+		 * @param Closure $callback The callback to wrap
+		 * @param array $parameters The parameters to inject
+		 * @return Closure The wrapped callback
 		 */
 		public function wrap(Closure $callback, array $parameters=[]): Closure {
 			return fn () => $this->call($callback, $parameters);
@@ -594,10 +600,10 @@
 		
 		/**
 		 * Call the given Closure / class@method and inject its dependencies
-		 * @param callable|array|string $callback
-		 * @param array $parameters array<string, mixed>
-		 * @param string|null $defaultMethod
-		 * @return mixed
+		 * @param callable|array|string $callback The callback to call
+		 * @param array<string, mixed> $parameters The parameters to inject
+		 * @param string|null $defaultMethod The default method to call
+		 * @return mixed The result of the callback
 		 *
 		 * @throws InvalidArgumentException
 		 */
@@ -630,8 +636,8 @@
 		
 		/**
 		 * Get the class name for the given callback, if one can be determined
-		 * @param callable|array|string $callback
-		 * @return string|false
+		 * @param callable|array|string $callback The callback to get the class name for
+		 * @return string|false The class name, or false if one cannot be determined
 		 */
 		protected function getClassForCallable(callable|array|string $callback): string|false {
 			if(PHP_VERSION_ID >= 80200) {
@@ -654,8 +660,8 @@
 		
 		/**
 		 * Get a closure to resolve the given type from the container
-		 * @param string $abstract
-		 * @return Closure
+		 * @param string $abstract The abstract type to resolve
+		 * @return Closure The closure to resolve the type
 		 */
 		public function factory(string $abstract): Closure {
 			return fn () => $this->make($abstract);
@@ -663,11 +669,11 @@
 		
 		/**
 		 * An alias function name for make()
-		 * @param string|callable $abstract
-		 * @param array $parameters
-		 * @return mixed
+		 * @param string|callable $abstract The abstract type to resolve
+		 * @param array $parameters The parameters to inject
+		 * @return mixed The resolved instance
 		 *
-		 * @throws Magnetar\Container\BuildResolutionException
+		 * @throws BuildResolutionException
 		 */
 		public function makeWith(string|callable $abstract, array $parameters=[]): mixed {
 			return $this->make($abstract, $parameters);
@@ -675,9 +681,9 @@
 		
 		/**
 		 * Resolve the given type from the container
-		 * @param string|callable $abstract
-		 * @param array $parameters
-		 * @return mixed
+		 * @param string|callable $abstract The abstract type to resolve
+		 * @param array $parameters The parameters to inject
+		 * @return mixed The resolved instance
 		 */
 		public function make(string|callable $abstract, array $parameters=[]): mixed {
 			return $this->resolve($abstract, $parameters);
@@ -706,10 +712,10 @@
 		
 		/**
 		 * Resolve the given abstract type to a concrete instance
-		 * @param string|callable $abstract
-		 * @param array $parameters
-		 * @param bool $raiseEvents
-		 * @return mixed
+		 * @param string|callable $abstract The abstract type to resolve
+		 * @param array $parameters The parameters to inject
+		 * @param bool $raiseEvents Whether to raise events
+		 * @return mixed The resolved instance
 		 * 
 		 * @throws Magnetar\Container\BuildResolutionException
 		 */
@@ -773,8 +779,8 @@
 		
 		/**
 		 * Get the concrete type for a given abstract
-		 * @param string|callable $abstract
-		 * @return mixed
+		 * @param string|callable $abstract The abstract type to get the concrete type for
+		 * @return mixed The concrete type
 		 */
 		protected function getConcrete(string|callable $abstract): mixed {
 			if(isset($this->bindings[ $abstract ])) {
@@ -786,8 +792,8 @@
 		
 		/**
 		 * Resolve the given abstract type to a concrete instance
-		 * @param string|callable $abstract
-		 * @return Closure|string|array|null
+		 * @param string|callable $abstract The abstract type to resolve
+		 * @return Closure|string|array|null The concrete instance
 		 */
 		protected function getContextualConcrete(string|callable $abstract): Closure|string|array|null {
 			if(!is_null($binding = $this->findInContextualBindings($abstract))) {
@@ -809,8 +815,8 @@
 		
 		/**
 		 * Find the concrete binding for the given abstract
-		 * @param string|callable $abstract
-		 * @return Closure|string|null
+		 * @param string|callable $abstract The abstract type to find the concrete binding for
+		 * @return Closure|string|null The concrete binding
 		 */
 		protected function findInContextualBindings(string|callable $abstract): Closure|string|null {
 			return $this->contextual[ end($this->buildStack) ][ $abstract ] ?? null;
@@ -818,9 +824,9 @@
 		
 		/**
 		 * Determine if the given concrete is buildable
-		 * @param mixed $concrete
-		 * @param string $abstract
-		 * @return bool
+		 * @param mixed $concrete The concrete to check
+		 * @param string $abstract The abstract type to check
+		 * @return bool Whether the concrete is buildable
 		 */
 		protected function isBuildable(mixed $concrete, string $abstract): bool {
 			return (($concrete === $abstract) || ($concrete instanceof Closure));
@@ -828,9 +834,9 @@
 		
 		/**
 		 * Instantiate a concrete instance of the given type
-		 * @param Closure|string $concrete
-		 * @param array $parameters
-		 * @return mixed
+		 * @param Closure|string $concrete The concrete to instantiate
+		 * @param array $parameters The parameters to inject
+		 * @return mixed The instantiated concrete
 		 */
 		public function build(Closure|string $concrete): mixed {
 			// If the concrete type is actually a Closure, we will just execute it and
@@ -886,8 +892,8 @@
 		
 		/**
 		 * Resolve dependencies for the given concrete
-		 * @param ReflectionParameter[] $dependencies
-		 * @return array
+		 * @param ReflectionParameter[] $dependencies The dependencies to resolve
+		 * @return array The resolved dependencies
 		 */
 		protected function resolveDependencies(array $dependencies): array {
 			$results = [];
@@ -915,8 +921,8 @@
 		
 		/**
 		 * Determine if the given dependency has a parameter override
-		 * @param ReflectionParameter $dependency
-		 * @return bool
+		 * @param ReflectionParameter $dependency The dependency to check
+		 * @return bool Whether the dependency has a parameter override
 		 */
 		protected function hasParameterOverride(ReflectionParameter $dependency): bool {
 			return array_key_exists($dependency->name, $this->getLastParameterOverride());
@@ -924,8 +930,8 @@
 		
 		/**
 		 * Get the parameter override for the given dependency
-		 * @param ReflectionParameter $dependency
-		 * @return mixed
+		 * @param ReflectionParameter $dependency The dependency to get the parameter override for
+		 * @return mixed The parameter override
 		 */
 		protected function getParameterOverride(ReflectionParameter $dependency): mixed {
 			return $this->getLastParameterOverride()[ $dependency->name ];
@@ -933,7 +939,7 @@
 		
 		/**
 		 * Get the last parameter override
-		 * @return array
+		 * @return array The last parameter override
 		 */
 		protected function getLastParameterOverride(): array {
 			return count($this->with) ? end($this->with) : [];
@@ -941,8 +947,8 @@
 		
 		/**
 		 * Resolve a primitive dependency
-		 * @param ReflectionParameter $dependency
-		 * @return mixed
+		 * @param ReflectionParameter $dependency The dependency to resolve
+		 * @return mixed The resolved dependency
 		 * 
 		 * @throws ResolvingDependenciesException
 		 */
@@ -964,8 +970,8 @@
 		
 		/**
 		 * Resolve a class based dependency from the container
-		 * @param ReflectionParameter $parameter
-		 * @return mixed
+		 * @param ReflectionParameter $parameter The dependency to resolve
+		 * @return mixed The resolved dependency
 		 *
 		 * @throws Magnetar\Container\ResolvingDependenciesException
 		 */
@@ -993,8 +999,8 @@
 		
 		/**
 		 * Resolve a class based variadic dependency from the container
-		 * @param ReflectionParameter $parameter
-		 * @return mixed
+		 * @param ReflectionParameter $parameter The dependency to resolve
+		 * @return mixed The resolved dependency
 		 */
 		protected function resolveVariadicClass(ReflectionParameter $parameter): mixed {
 			$className = Helper::getParameterClassName($parameter);
@@ -1010,7 +1016,7 @@
 		
 		/**
 		 * Throw an exception that the concrete is not instantiable
-		 * @param string $concrete
+		 * @param string $concrete The concrete that is not instantiable
 		 * @return void
 		 * 
 		 * @throws UninstantiableException
@@ -1029,10 +1035,10 @@
 		
 		/**
 		 * Throw an exception for an unresolvable primitive
-		 * @param ReflectionParameter $parameter
+		 * @param ReflectionParameter $parameter The parameter that is unresolvable
 		 * @return void
 		 *
-		 * @throws Magnetar\Container\BuildResolutionException
+		 * @throws BuildResolutionException
 		 */
 		protected function unresolvablePrimitive(ReflectionParameter $parameter): void {
 			$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
@@ -1042,8 +1048,8 @@
 		
 		/**
 		 * Register a new before resolving callback for all types
-		 * @param Closure|string $abstract
-		 * @param Closure|null $callback
+		 * @param Closure|string $abstract The abstract type to register the callback for
+		 * @param Closure|null $callback The callback to register
 		 * @return void
 		 */
 		public function beforeResolving(
@@ -1063,8 +1069,8 @@
 		
 		/**
 		 * Register a new resolving callback
-		 * @param Closure|string $abstract
-		 * @param Closure|null $callback
+		 * @param Closure|string $abstract The abstract type to register the callback for
+		 * @param Closure|null $callback The callback to register
 		 * @return void
 		 */
 		public function resolving(
@@ -1084,8 +1090,8 @@
 		
 		/**
 		 * Register a new after resolving callback for all types
-		 * @param Closure|string $abstract
-		 * @param Closure|null $callback
+		 * @param Closure|string $abstract The abstract type to register the callback for
+		 * @param Closure|null $callback The callback to register
 		 * @return void
 		 */
 		public function afterResolving(
@@ -1105,8 +1111,8 @@
 		
 		/**
 		 * Fire all of the before resolving callbacks
-		 * @param string $abstract
-		 * @param array $parameters
+		 * @param string $abstract The abstract type to fire the callbacks for
+		 * @param array $parameters The parameters to inject
 		 * @return void
 		 */
 		protected function fireBeforeResolvingCallbacks(
@@ -1124,9 +1130,9 @@
 		
 		/**
 		 * Fire an array of callbacks with an object
-		 * @param string $abstract
-		 * @param array $parameters
-		 * @param array $callbacks
+		 * @param string $abstract The abstract type to fire the callbacks for
+		 * @param array $parameters The parameters to inject
+		 * @param array $callbacks The callbacks to fire
 		 * @return void
 		 */
 		protected function fireBeforeCallbackArray(
@@ -1141,8 +1147,8 @@
 		
 		/**
 		 * Fire all of the resolving callbacks
-		 * @param string $abstract
-		 * @param mixed $object
+		 * @param string $abstract The abstract type to fire the callbacks for
+		 * @param mixed $object The object to fire the callbacks for
 		 * @return void
 		 */
 		protected function fireResolvingCallbacks(string $abstract, mixed $object): void {
@@ -1158,8 +1164,8 @@
 		
 		/**
 		 * Fire all of the after resolving callbacks
-		 * @param string $abstract
-		 * @param mixed $object
+		 * @param string $abstract The abstract type to fire the callbacks for
+		 * @param mixed $object The object to fire the callbacks for
 		 * @return void
 		 */
 		protected function fireAfterResolvingCallbacks(string $abstract, mixed $object): void {
@@ -1173,10 +1179,10 @@
 		
 		/**
 		 * Get all callbacks for a given type
-		 * @param string $abstract
-		 * @param mixed $object
-		 * @param array $callbacksPerType
-		 * @return array
+		 * @param string $abstract The abstract type to get callbacks for
+		 * @param mixed $object The object to get callbacks for
+		 * @param array $callbacksPerType The callbacks to get
+		 * @return array The callbacks
 		 */
 		protected function getCallbacksForType(
 			string $abstract,
@@ -1196,8 +1202,8 @@
 		
 		/**
 		 * Fire an array of callbacks with an object
-		 * @param mixed $object
-		 * @param array $callbacks
+		 * @param mixed $object The object to fire the callbacks for
+		 * @param array $callbacks The callbacks to fire
 		 * @return void
 		 */
 		protected function fireCallbackArray(mixed $object, array $callbacks): void {
@@ -1208,7 +1214,7 @@
 		
 		/**
 		 * Get the container's bindings
-		 * @return array
+		 * @return array The bindings
 		 */
 		public function getBindings(): array {
 			return $this->bindings;
@@ -1216,8 +1222,8 @@
 		
 		/**
 		 * Get the alias for an abstract if available
-		 * @param string $abstract
-		 * @return string
+		 * @param string $abstract The abstract type to get the alias for
+		 * @return string The alias
 		 */
 		public function getAlias(string $abstract): string {
 			return isset($this->aliases[ $abstract ])
@@ -1227,8 +1233,8 @@
 		
 		/**
 		 * Get the extender callbacks for a given type
-		 * @param string $abstract
-		 * @return array
+		 * @param string $abstract The abstract type to get the extenders for
+		 * @return array The extenders
 		 */
 		protected function getExtenders(string $abstract): array {
 			return $this->extenders[ $this->getAlias($abstract) ] ?? [];
@@ -1236,7 +1242,7 @@
 		
 		/**
 		 * Remove all of the extender callbacks for a given type
-		 * @param string $abstract
+		 * @param string $abstract The abstract type to remove the extenders for
 		 * @return void
 		 */
 		public function forgetExtenders(string $abstract): void {
@@ -1245,7 +1251,7 @@
 		
 		/**
 		 * Unbind the given abstract type from the container
-		 * @param string $abstract
+		 * @param string $abstract The abstract type to unbind
 		 * @return void
 		 */
 		protected function dropStaleInstances(string $abstract): void {
@@ -1254,7 +1260,7 @@
 		
 		/**
 		 * Remove a resolved instance from the instance cache
-		 * @param string $abstract
+		 * @param string $abstract The abstract type to remove the instance for
 		 * @return void
 		 */
 		public function forgetInstance(string $abstract): void {
@@ -1306,8 +1312,8 @@
 		
 		/**
 		 * Set the shared instance of the container
-		 * @param Container|null $container
-		 * @return Container|static
+		 * @param Container|null $container The container to set as the shared instance
+		 * @return Container|static The shared instance
 		 */
 		public static function setInstance(Container|null $container = null): Container|static {
 			return static::$instance = $container;
@@ -1315,8 +1321,8 @@
 		
 		/**
 		 * Determine if a given offset exists
-		 * @param mixed $key
-		 * @return bool
+		 * @param mixed $key The offset to check
+		 * @return bool Whether the offset exists
 		 */
 		public function offsetExists(mixed $key): bool {
 			return $this->bound($key);
@@ -1324,8 +1330,8 @@
 		
 		/**
 		 * Get the value at a given offset
-		 * @param mixed $key
-		 * @return mixed
+		 * @param mixed $key The offset to get
+		 * @return mixed The value at the offset
 		 */
 		public function offsetGet(mixed $key): mixed {
 			return $this->make($key);
@@ -1333,8 +1339,8 @@
 		
 		/**
 		 * Set the value at a given offset
-		 * @param mixed $key
-		 * @param mixed $value
+		 * @param mixed $key The offset to set
+		 * @param mixed $value The value to set
 		 * @return void
 		 */
 		public function offsetSet(mixed $key, mixed $value): void {
@@ -1346,7 +1352,7 @@
 		
 		/**
 		 * Unset the value at a given offset
-		 * @param string $key
+		 * @param string $key The offset to unset
 		 * @return void
 		 */
 		public function offsetUnset($key): void {
@@ -1359,8 +1365,8 @@
 		
 		/**
 		 * Dynamically access container services
-		 * @param string $key
-		 * @return mixed
+		 * @param string $key The service to access
+		 * @return mixed The service
 		 */
 		public function __get(string $key): mixed {
 			return $this[ $key ];
@@ -1368,8 +1374,8 @@
 		
 		/**
 		 * Dynamically set container services
-		 * @param string $key
-		 * @param mixed $value
+		 * @param string $key The service to set
+		 * @param mixed $value The value to set
 		 * @return void
 		 */
 		public function __set(string $key, mixed $value): void {

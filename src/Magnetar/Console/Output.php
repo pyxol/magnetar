@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Console;
 	
+	/**
+	 * Command line output
+	 */
 	class Output {
 		/**
 		 * Constructor

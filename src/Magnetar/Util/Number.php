@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util;
 	
+	/**
+	 * Number utility static class
+	 */
 	class Number {
 		/**
 		 * Format a number to the shortened method. Eg 123456 => 123.4k

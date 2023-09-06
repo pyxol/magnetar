@@ -5,6 +5,9 @@
 	
 	use Magnetar\Console\Input;
 	
+	/**
+	 * Command line input using the argv array
+	 */
 	class ArgvInput extends Input {
 		/**
 		 * Script name

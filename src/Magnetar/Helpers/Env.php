@@ -3,8 +3,15 @@
 	
 	namespace Magnetar\Helpers;
 	
+	/**
+	 * Helper class to get environment variables
+	 */
 	class Env {
-		protected static array|null $store = null;
+		/**
+		 * Array to store environment variables
+		 * @var ?array
+		 */
+		protected static ?array $store = null;
 		
 		/**
 		 * Get the environment store and create it if it doesn't exist

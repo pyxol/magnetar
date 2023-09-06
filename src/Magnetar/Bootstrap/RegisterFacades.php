@@ -7,6 +7,9 @@
 	use Magnetar\Helpers\Facades\Facade;
 	use Magnetar\Helpers\AliasLoader;
 	
+	/**
+	 * Registers the application facades
+	 */
 	class RegisterFacades implements BootstrapLoaderInterface {
 		public function bootstrap(Application $app): void {
 			Facade::clearResolvedInstances();   // reset any resolved instances

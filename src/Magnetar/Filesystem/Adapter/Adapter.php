@@ -3,8 +3,15 @@
 	
 	namespace Magnetar\Filesystem\Adapter;
 	
+	/**
+	 * Adapter
+	 */
 	class Adapter {
 		public function __construct(
+			/**
+			 * Root directory
+			 * @var string|null
+			 */
 			protected ?string $rootDir=null
 		) {
 			if(null === $rootDir) {

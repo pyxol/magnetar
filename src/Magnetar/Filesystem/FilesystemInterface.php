@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Filesystem;
 	
+	/**
+	 * Filesystem interface
+	 */
 	interface FilesystemInterface {
 		// create
 		public function write(string $path, string $contents, bool $overwrite=false): bool;

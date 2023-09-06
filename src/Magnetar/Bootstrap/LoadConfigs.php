@@ -7,6 +7,9 @@
 	use Magnetar\Application;
 	use Magnetar\Config\Config;
 	
+	/**
+	 * Load the application configuration
+	 */
 	class LoadConfigs implements BootstrapLoaderInterface {
 		public function bootstrap(Application $app): void {
 			// load config

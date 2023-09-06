@@ -8,9 +8,20 @@
 	use Magnetar\Application;
 	use Magnetar\Template\Template;
 	
+	/**
+	 * Manages access and delivery of the application themes
+	 */
 	class ThemeManager {
+		/**
+		 * The active theme instances
+		 * @var array
+		 */
 		protected array $themes = [];
 		
+		/**
+		 * Create a new theme manager instance
+		 * @return self
+		 */
 		public function __construct(
 			/**
 			 * The application instance
@@ -24,7 +35,7 @@
 		/**
 		 * Returns the active template for the specified theme
 		 * @param string|null $theme_name
-		 * @return AbstractTheme
+		 * @return Template
 		 * 
 		 * @throws Exception
 		 */
@@ -57,8 +68,8 @@
 		
 		/**
 		 * Passes method calls to the active cache store
-		 * @param string $method
-		 * @param array $args
+		 * @param string $method The method name to call
+		 * @param array $args The arguments to pass to the method
 		 * @return mixed
 		 */
 		public function __call(string $method, array $args): mixed {

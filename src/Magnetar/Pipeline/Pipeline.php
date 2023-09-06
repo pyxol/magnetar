@@ -9,6 +9,9 @@
 	
 	use Magnetar\Container\Container;
 	
+	/**
+	 * A pipeline that passes a thing through a series of pipes
+	 */
 	class Pipeline {
 		/**
 		 * The thing that is being passed through the pipeline

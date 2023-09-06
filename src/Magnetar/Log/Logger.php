@@ -7,7 +7,14 @@
 	
 	use Magnetar\Container\Container;
 	
+	/**
+	 * Class to log messages during runtime
+	 */
 	class Logger {
+		/**
+		 * Log levels
+		 * @var array
+		 */
 		protected array $logLevels = [
 			'emergency' => 1,
 			'alert' => 2,
@@ -19,23 +26,27 @@
 			'debug' => 8,
 		];
 		
+		/**
+		 * The running logs array
+		 * @var array
+		 */
 		protected array $logs = [];
 		
-		//protected static ?Logger $logger = null;
-		
 		public function __construct(
+			/**
+			 * The application container
+			 * @var Container
+			 */
 			protected Container $container
 		) {
-			//if(null === static::$logger) {
-			//	static::$logger = $container->instance('logger', $this);
-			//}
+			
 		}
 		
 		/**
 		 * Logs a message
-		 * @param string $level
-		 * @param string $message
-		 * @param array $context
+		 * @param string $level The log level to use
+		 * @param string $message The message to log
+		 * @param array $context The context to log
 		 * @return void
 		 */
 		public function log(string $level, string $message, array $context=[]): void {
@@ -48,6 +59,7 @@
 		
 		/**
 		 * Gets the logs
+		 * @param int $minLevel The minimum log level to get
 		 * @return array
 		 */
 		public function getLogs(int $minLevel=0): array {
@@ -84,8 +96,8 @@
 		
 		/**
 		 * Magic method to log messages. Throws a BadMethodCallException if method isn't a known log level
-		 * @param string $method
-		 * @param array $args
+		 * @param string $method The method to call
+		 * @param array $args The arguments to pass to the method
 		 * @return void
 		 * 
 		 * @throws \BadMethodCallException

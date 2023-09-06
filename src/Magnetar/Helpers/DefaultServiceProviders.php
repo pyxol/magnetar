@@ -3,7 +3,14 @@
 	
 	namespace Magnetar\Helpers;
 	
+	/**
+	 * Helper class to load default service providers
+	 */
 	class DefaultServiceProviders {
+		/**
+		 * The default list of service providers
+		 * @var array
+		 */
 		protected array $providers = [];
 		
 		/**

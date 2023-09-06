@@ -7,6 +7,9 @@
 	use ReflectionParameter;
 	use ReflectionNamedType;
 	
+	/**
+	 * Helper functions for the container
+	 */
 	class Helper {
 		/**
 		 * If the given value is not an array and not null, wrap it in one.

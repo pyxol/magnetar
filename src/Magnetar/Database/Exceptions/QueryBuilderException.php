@@ -5,6 +5,9 @@
 	
 	use Magnetar\Database\Exceptions\QueryPreperationException;
 	
+	/**
+	 * Exception thrown when a query builder error occurs
+	 */
 	class QueryBuilderException extends QueryPreperationException {
 		
 	}

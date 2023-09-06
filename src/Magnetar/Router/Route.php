@@ -5,6 +5,9 @@
 	
 	use Magnetar\Http\Request;
 	
+	/**
+	 * A matched route
+	 */
 	class Route {
 		public function __construct(
 			/**
@@ -13,6 +16,10 @@
 			 */
 			protected string $pattern='',
 			
+			/**
+			 * The raw matches from the matched Router pattern
+			 * @var array
+			 */
 			array $raw_matches,
 			
 			/**
@@ -27,7 +34,7 @@
 		
 		/**
 		 * Get the matched request pattern
-		 * @return string
+		 * @return string The matched request pattern
 		 */
 		public function getPattern(): string {
 			return $this->pattern;
@@ -35,7 +42,7 @@
 		
 		/**
 		 * Get the request object
-		 * @return Request
+		 * @return Request The request object
 		 */
 		public function getRequest(): Request {
 			return $this->request;

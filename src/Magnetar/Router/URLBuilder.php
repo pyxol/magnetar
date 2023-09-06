@@ -5,6 +5,9 @@
 	
 	use Magnetar\Application;
 	
+	/**
+	 * URL Builder
+	 */
 	class URLBuilder {
 		/**
 		 * Scheme (http, https, ftp, s3, etc)

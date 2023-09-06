@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util;
 	
+	/**
+	 * HTML utility static class
+	 */
 	class HTML {
 		/**
 		 * Use specified HTML tags to hHighlight a string in a body of text

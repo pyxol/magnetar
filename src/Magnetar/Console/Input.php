@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Console;
 	
+	/**
+	 * Command line input
+	 */
 	class Input {
 		/**
 		 * Constructor

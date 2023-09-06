@@ -3,8 +3,14 @@
 	
 	namespace Magnetar\Template;
 	
-	// a class to encapsulate a template that's being rendered
-	// holds data via magic methods
+	use Magnetar\Template\Template;
+	
+	/**
+	 * A class to encapsulate a template that's being rendered.
+	 * Holds data via magic methods
+	 * 
+	 * @todo cleanup
+	 */
 	class View {
 		/**
 		 * Data stored specifically in this View, overrides data from the Template

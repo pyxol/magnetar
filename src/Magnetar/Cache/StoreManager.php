@@ -8,6 +8,9 @@
 	use Magnetar\Application;
 	use Magnetar\Cache\AbstractCacheStore;
 	
+	/**
+	 * Manages cache stores
+	 */
 	class StoreManager {
 		protected array $connections = [];
 		

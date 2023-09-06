@@ -6,9 +6,20 @@
 	use ArrayAccess;
 	use Exception;
 	
+	/**
+	 * Config class
+	 */
 	class Config implements ArrayAccess {
+		/**
+		 * Config values
+		 * @var array
+		 */
 		protected array $store = [];
 		
+		/**
+		 * Constructor
+		 * @param string|array|null $values Optional. The config values to set
+		 */
 		public function __construct(string|array|null $values=null) {
 			if(is_string($values)) {
 				try {
@@ -16,7 +27,8 @@
 				} catch(Exception $e) {
 					$this->store = [];
 					
-					throw new Exception("Could not load config file $values");
+					//throw new Exception('Could not load specified config file');
+					throw $e;
 				}
 			} elseif(is_array($values)) {
 				$this->store = $values;
@@ -110,7 +122,7 @@
 		
 		/**
 		 * Get all config values
-		 * @return array
+		 * @return array The config values
 		 */
 		public function all(): array {
 			return $this->store;
@@ -199,7 +211,7 @@
 		/**
 		 * Determine if the given configuration option exists
 		 * @param mixed $key
-		 * @return bool
+		 * @return bool True if the configuration option exists, false otherwise
 		 */
 		public function offsetExists(mixed $key): bool {
 			return $this->has((string)$key);
@@ -208,8 +220,8 @@
 		/**
 		 * Get a configuration option.
 		 *
-		 * @param mixed $key
-		 * @return mixed
+		 * @param mixed $key The configuration option key
+		 * @return mixed The configuration option value
 		 */
 		public function offsetGet(mixed $key): mixed {
 			return $this->get($key);
@@ -218,8 +230,8 @@
 		/**
 		 * Set a configuration option.
 		 *
-		 * @param mixed $key
-		 * @param mixed $value
+		 * @param mixed $key The configuration option key
+		 * @param mixed $value The configuration option value
 		 * @return void
 		 */
 		public function offsetSet(mixed $key, mixed $value): void {
@@ -229,7 +241,7 @@
 		/**
 		 * Unset a configuration option.
 		 *
-		 * @param mixed $key
+		 * @param mixed $key The configuration option key
 		 * @return void
 		 */
 		public function offsetUnset(mixed $key): void {

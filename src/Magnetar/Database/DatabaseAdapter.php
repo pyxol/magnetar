@@ -7,7 +7,13 @@
 	
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	
+	/**
+	 * Database adapter
+	 */
 	class DatabaseAdapter {
+		/**
+		 * Name of the adapter
+		 */
 		const ADAPTER_NAME = '';
 		
 		/**
@@ -76,9 +82,9 @@
 		
 		/**
 		 * Run a standard query. Returns the last inserted ID if an INSERT query is used, the number of affected rows, or false on error
-		 * @param string $sql_query
-		 * @param array $params
-		 * @return int|false
+		 * @param string $sql_query The SQL query to run
+		 * @param array $params Optional. Parameters to bind to the query
+		 * @return int|false The last inserted ID, the number of affected rows, or false on error
 		 * 
 		 * @throws RuntimeException
 		 */
@@ -89,8 +95,8 @@
 		}
 		
 		/**
-		 * Returns the name of the adapter
-		 * @return string
+		 * Get the adapter name
+		 * @return string The name of the adapter
 		 */
 		public function getAdapterName(): string {
 			return self::ADAPTER_NAME;

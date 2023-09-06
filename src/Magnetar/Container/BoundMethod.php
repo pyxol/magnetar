@@ -10,6 +10,11 @@
 	use ReflectionMethod;
 	use ReflectionParameter;
 	
+	use Magnetar\Container\Exceptions\BuildResolutionException;
+	
+	/**
+	 * A Bound Method class
+	 */
 	class BoundMethod {
 		/**
 		 * Call the given Closure / class@method and inject its dependencies

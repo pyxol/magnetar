@@ -6,8 +6,10 @@
 	use PDO;
 	
 	/**
-	 * @TODO replace PDO-specific code with a more generic solution
-	 * @TODO bindStatementParams is in HasPDOTrait
+	 * Provides quick query methods for a database adapter
+	 * 
+	 * @todo replace PDO-specific code with a more generic solution
+	 * @todo bindStatementParams is in HasPDOTrait
 	 */
 	trait HasQuickQueryTrait {
 		/**

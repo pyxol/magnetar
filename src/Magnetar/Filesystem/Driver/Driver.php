@@ -5,8 +5,15 @@
 	
 	use Magnetar\Filesystem\Adapter\Adapter;
 	
+	/**
+	 * Base class for filesystem drivers
+	 */
 	class Driver {
 		public function __construct(
+			/**
+			 * Filesystem adapter
+			 * @var Adapter
+			 */
 			protected Adapter $adapter
 		) {
 			

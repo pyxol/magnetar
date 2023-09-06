@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Helpers;
 	
+	/**
+	 * Helper class to load class aliases
+	 */
 	class AliasLoader {
 		/**
 		 * Indicates if a loader has been registered
@@ -10,7 +13,10 @@
 		 */
 		protected $loaded = false;
 		
-		
+		/**
+		 * The alias namespace for facades
+		 * @var string
+		 */
 		protected static $aliasNamespace = 'Facades\\';
 		
 		/**

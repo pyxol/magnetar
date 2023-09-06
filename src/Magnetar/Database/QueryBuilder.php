@@ -9,17 +9,17 @@
 	/**
 	 * Query Builder
 	 * 
-	 * @TODO Add support for joins
-	 * @TODO Add support for group by
-	 * @TODO Add support for having
+	 * @todo Add support for joins
+	 * @todo Add support for group by
+	 * @todo Add support for having
 	 * 
-	 * @TODO split off into a separate QueryBuilder, implement fetch() and fetchOne() in adapter-specific classes
+	 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() in adapter-specific classes
 	 * 
-	 * @TODO Add support for insert/update/delete
+	 * @todo Add support for insert/update/delete
 	 * 
-	 * @TODO buildQueryAndParams implies MySQL usage, need to make it adapter-agnostic
+	 * @todo buildQueryAndParams implies MySQL usage, need to make it adapter-agnostic
 	 * 
-	 * @TODO fetch and fetchOne should be rewritten to not rely on use of HasQuickQueryTrait methods
+	 * @todo fetch and fetchOne should be rewritten to not rely on use of HasQuickQueryTrait methods
 	 */
 	class QueryBuilder {
 		/**
@@ -379,6 +379,8 @@
 		/**
 		 * Build the query and fetch the results
 		 * @return array
+		 * 
+		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() using adapter
 		 */
 		public function fetch(): array {
 			list($query, $params) = $this->buildQueryAndParams();
@@ -393,6 +395,8 @@
 		/**
 		 * Build the query and fetch a single row
 		 * @return array
+		 * 
+		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() using adapter
 		 */
 		public function fetchOne(): array {
 			list($query, $params) = $this->buildQueryAndParams();

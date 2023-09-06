@@ -8,10 +8,13 @@
 	use Magnetar\Log\LogServiceProvider;
 	use Magnetar\Router\RouterServiceProvider;
 	
-	// @TODO
-	//use Magnetar\Helpers\DeferrableServiceInterface;
-	// @TODO
+	// @TODO   use Magnetar\Helpers\DeferrableServiceInterface;
 	
+	/**
+	 * The core application class
+	 * 
+	 * @todo check for and make use of DeferrableServiceInterface
+	 */
 	class Application extends Container {
 		/**
 		 * The application's base path
@@ -133,7 +136,8 @@
 		
 		/**
 		 * Get the base path of the application
-		 * @return string
+		 * @param string $rel_path The relative path inside the base path
+		 * @return string The base path
 		 */
 		public function pathBase(string $rel_path=''): string {
 			return $this->base_path . ltrim($rel_path, DIRECTORY_SEPARATOR);
@@ -141,7 +145,7 @@
 		
 		/**
 		 * Set the path to the application's app directory
-		 * @param string $path
+		 * @param string $path The path to the app directory
 		 * @return self
 		 */
 		public function setAppPath(string $path): self {
@@ -154,8 +158,8 @@
 		
 		/**
 		 * Get the path to the application's app directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the app directory
+		 * @return string The joined path
 		 */
 		public function pathApp(string $rel_path=''): string {
 			return $this->joinPath($this->path_app ?? $this->pathBase('app'), $rel_path);
@@ -163,7 +167,7 @@
 		
 		/**
 		 * Set the path to the application's config directory
-		 * @param string $path
+		 * @param string $path The path to the config directory
 		 * @return self
 		 */
 		public function setConfigPath(string $path): self {
@@ -176,8 +180,8 @@
 		
 		/**
 		 * Get the path to the application's config directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the config directory
+		 * @return string The joined path
 		 */
 		public function pathConfig(string $rel_path=''): string {
 			return $this->joinPath($this->path_config ?? $this->pathBase('config'), $rel_path);
@@ -185,7 +189,7 @@
 		
 		/**
 		 * Set the path to the application's data directory
-		 * @param string $path
+		 * @param string $path The path to the data directory
 		 * @return self
 		 */
 		public function setDataPath(string $path): self {
@@ -198,8 +202,8 @@
 		
 		/**
 		 * Get the path to the application's data directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the data directory
+		 * @return string The joined path
 		 */
 		public function pathData(string $rel_path=''): string {
 			return $this->joinPath($this->path_data ?? $this->pathBase('data'), $rel_path);
@@ -207,7 +211,7 @@
 		
 		/**
 		 * Set the path to the application's public directory
-		 * @param string $path
+		 * @param string $path The path to the public directory
 		 * @return self
 		 */
 		public function setPublicPath(string $path): self {
@@ -220,8 +224,8 @@
 		
 		/**
 		 * Get the path to the application's public directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the public directory
+		 * @return string The joined path
 		 */
 		public function pathPublic(string $rel_path=''): string {
 			return $this->joinPath($this->path_public ?? $this->pathBase('public'), $rel_path);
@@ -229,7 +233,7 @@
 		
 		/**
 		 * Set the path to the application's assets directory
-		 * @param string $path
+		 * @param string $path The path to the assets directory
 		 * @return self
 		 */
 		public function setAssetsPath(string $path): self {
@@ -242,8 +246,8 @@
 		
 		/**
 		 * Get the path to the application's assets directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the assets directory
+		 * @return string The joined path
 		 */
 		public function pathAssets(string $rel_path=''): string {
 			return $this->joinPath($this->path_assets ?? $this->pathBase('assets'), $rel_path);
@@ -251,7 +255,7 @@
 		
 		/**
 		 * Set the path to the application's storage directory
-		 * @param string $path
+		 * @param string $path The path to the storage directory
 		 * @return self
 		 */
 		public function setStoragePath(string $path): self {
@@ -264,7 +268,7 @@
 		
 		/**
 		 * Get the path to the application's storage directory
-		 * @param string $rel_path
+		 * @param string $rel_path The relative path inside the storage directory
 		 * @return string
 		 */
 		public function pathStorage(string $rel_path=''): string {
@@ -273,7 +277,7 @@
 		
 		/**
 		 * Set the path to the application's routing directory
-		 * @param string $path
+		 * @param string $path The path to the routing directory
 		 * @return self
 		 */
 		public function setRoutingPath(string $path): self {
@@ -286,8 +290,8 @@
 		
 		/**
 		 * Get the path to the application's routing directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the routing directory
+		 * @return string The joined path
 		 */
 		public function pathRouting(string $rel_path=''): string {
 			return $this->joinPath($this->path_routing ?? $this->pathBase('routing'), $rel_path);
@@ -295,7 +299,7 @@
 		
 		/**
 		 * Set the path to the application's themes directory
-		 * @param string $path
+		 * @param string $path The path to the themes directory
 		 * @return self
 		 */
 		public function setThemesPath(string $path): self {
@@ -308,8 +312,8 @@
 		
 		/**
 		 * Get the path to the application's themes directory
-		 * @param string $rel_path
-		 * @return string
+		 * @param string $rel_path The relative path inside the themes directory
+		 * @return string The joined path
 		 */
 		public function pathThemes(string $rel_path=''): string {
 			return $this->joinPath($this->path_themes ?? $this->pathBase('themes'), $rel_path);
@@ -319,7 +323,7 @@
 		 * Join a base path and a relative path
 		 * @param string $base_path Base path
 		 * @param string $rel_path Relative path
-		 * @return string
+		 * @return string The joined path
 		 */
 		public function joinPath(string $base_path, string $rel_path=''): string {
 			return $base_path . (('' !== $rel_path) ? DIRECTORY_SEPARATOR . ltrim($rel_path, DIRECTORY_SEPARATOR) : '');
@@ -327,7 +331,7 @@
 		
 		/**
 		 * Has the application been bootstrapped?
-		 * @return bool
+		 * @return bool True if the application has been bootstrapped, false otherwise
 		 */
 		public function hasBeenBootstrapped(): bool {
 			return $this->bootstrapped;
@@ -335,7 +339,6 @@
 		
 		/**
 		 * Run the given array of bootstrap classes
-		 *
 		 * @param string[] $bootstrappers
 		 * @return void
 		 */
@@ -349,7 +352,7 @@
 		
 		/**
 		 * Has the application booted up it's service providers?
-		 * @return bool
+		 * @return bool True if the service providers have been booted, false otherwise
 		 */
 		public function hasBootedServiceProviders(): bool {
 			return $this->bootedServiceProviders;
@@ -398,8 +401,8 @@
 		
 		/**
 		 * Register a service provider with the application
-		 * @param ServiceProvider|string $provider
-		 * @return ServiceProvider
+		 * @param ServiceProvider|string $provider The service provider to register
+		 * @return ServiceProvider The registered service provider
 		 */
 		public function registerServiceProvider(ServiceProvider|string $provider): ServiceProvider {
 			if($registered = $this->getServiceProvider($provider)) {
@@ -441,8 +444,8 @@
 		
 		/**
 		 * Resolve a service provider instance from the class name
-		 * @param string $provider
-		 * @return ServiceProvider
+		 * @param string $provider The service provider class name
+		 * @return ServiceProvider The service provider instance
 		 */
 		public function resolveServiceProvider(string $provider): ServiceProvider {
 			return new $provider($this);
@@ -450,8 +453,8 @@
 		
 		/**
 		 * Get the registered service provider instance if it exists
-		 * @param ServiceProvider|string $provider
-		 * @return ServiceProvider|null
+		 * @param ServiceProvider|string $provider The service provider to get
+		 * @return ServiceProvider|null The registered service provider instance, or null if it doesn't exist
 		 */
 		public function getServiceProvider(ServiceProvider|string $provider): ServiceProvider|null {
 			return array_values($this->getServiceProviders($provider))[0] ?? null;
@@ -459,8 +462,8 @@
 		
 		/**
 		 * Get the registered service provider instances if they exist
-		 * @param ServiceProvider|string $provider
-		 * @return array
+		 * @param ServiceProvider|string $provider The service provider to get
+		 * @return array The registered service provider instances
 		 */
 		public function getServiceProviders(ServiceProvider|string $provider): array {
 			$name = (is_string($provider) ? $provider : get_class($provider));
@@ -472,7 +475,7 @@
 		
 		/**
 		 * Mark a service provider as registered
-		 * @param ServiceProvider $provider
+		 * @param ServiceProvider $provider The service provider to mark as registered
 		 * @return void
 		 */
 		protected function markAsRegisteredServiceProvider(ServiceProvider $provider): void {
@@ -482,7 +485,6 @@
 		
 		/**
 		 * Register the container's basic bindings
-		 *
 		 * @return void
 		 */
 		protected function registerBaseBindings(): void {
@@ -548,8 +550,8 @@
 		
 		/**
 		 * Extend the container's make method with service provider functionality
-		 * @param string|callable $abstract
-		 * @param array $parameters
+		 * @param string|callable $abstract The abstract to make
+		 * @param array $parameters An array of parameters to pass to the constructor
 		 * @return mixed
 		 */
 		public function make(string|callable $abstract, array $parameters=[]): mixed {
@@ -562,10 +564,12 @@
 		
 		/**
 		 * Extend the container's resolve method with service provider functionality
-		 * @param string|callable $abstract
-		 * @param array $parameters
-		 * @param bool $raiseEvents
-		 * @return mixed
+		 * @param string|callable $abstract The abstract to resolve
+		 * @param array $parameters An array of parameters to pass to the constructor
+		 * @param bool $raiseEvents Whether or not to raise events
+		 * @return mixed The resolved instance
+		 * 
+		 * @todo check if deferred and load if necessary
 		 */
 		protected function resolve(
 			string|callable $abstract,
@@ -581,6 +585,8 @@
 		
 		/**
 		 * {@inheritDoc}
+		 * 
+		 * @todo check if deferred
 		 */
 		public function bound(string $abstract): bool {
 			$abstract = $this->getAlias($abstract);
@@ -636,7 +642,7 @@
 		
 		/**
 		 * Set the environment ("dev", "prod", etc)
-		 * @param string $env
+		 * @param string $env The environment to set
 		 * @return void
 		 */
 		public function setEnvironment(string $env): void {
@@ -645,22 +651,23 @@
 		
 		/**
 		 * Get the environment ("dev", "prod", etc)
-		 * @return string
+		 * @return string The environment
 		 */
 		public function environment(): string {
 			return $this['env'];
 		}
 		
 		/**
-		 * Is this the development environment?
+		 * Determine if this is the development environment
+		 * @return bool True if this is the development environment, false otherwise
 		 */
 		public function isDev(): bool {
 			return ('dev' === $this['env']);
 		}
 		
 		/**
-		 * Is this the production environment?
-		 * @return bool
+		 * Determine if this is the production environment
+		 * @return bool True if this is the production environment, false otherwise
 		 */
 		public function isProd(): bool {
 			return ('prod' === $this['env']);

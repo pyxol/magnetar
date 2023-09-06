@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util;
 	
+	/**
+	 * Array utility static class
+	 */
 	class Arr {
 		/**
 		 * Pick the same 'random' value from an array every time using a unique identifier as a seed to PHP's random number generator. Returns null if no values are in array

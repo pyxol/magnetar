@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Container;
 	
+	/**
+	 * Interface for the container
+	 */
 	interface ContainerInterface {
 		/**
 		 * Finds an entry of the container by its identifier and returns it.

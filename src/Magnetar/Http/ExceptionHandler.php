@@ -8,7 +8,7 @@
 	use Magnetar\Application;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
-	use Magnetar\Router\RouteUnassignedException;
+	use Magnetar\Router\Exceptions\RouteUnassignedException;
 	
 	class ExceptionHandler {
 		protected Throwable $caughtException;

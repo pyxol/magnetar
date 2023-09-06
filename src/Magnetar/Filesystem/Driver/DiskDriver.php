@@ -3,6 +3,10 @@
 	
 	namespace Magnetar\Filesystem\Driver;
 	
+	/**
+	 * Disk driver
+	 * @todo Currently an empty class
+	 */
 	class DiskDriver {
 		
 		

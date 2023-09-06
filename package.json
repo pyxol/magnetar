@@ -1,6 +1,8 @@
 {
 	"scripts": {
 		"php-server": "cd ./dev/public/ && php -S localhost:8001",
-		"docker-compose": "docker-compose up"
+		"docker-compose": "docker-compose up",
+		"generate-docs": "docker run --rm -v \"$(pwd):/data\" \"phpdoc/phpdoc:3\"",
+		"preview-docs": "php -S localhost:8000 -t ./docs/.output/"
 	}
 }

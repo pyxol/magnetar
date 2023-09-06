@@ -5,6 +5,9 @@
 	
 	use Magnetar\Database\QueryBuilder as QueryBuilder;
 	
+	/**
+	 * Provides the table method to start a query builder instance
+	 */
 	trait HasQueryBuilderTrait {
 		/**
 		 * Start a SELECT query builder instance

@@ -4,6 +4,10 @@
 	namespace Magnetar\Helpers;
 	
 	class DefaultFacadeAliases {
+		/**
+		 * The default list of facade aliases
+		 * @var array
+		 */
 		protected array $aliases = [];
 		
 		/**

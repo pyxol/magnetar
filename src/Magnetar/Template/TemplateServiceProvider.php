@@ -6,6 +6,9 @@
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Application;
 	
+	/**
+	 * Registers the theme manager service
+	 */
 	class TemplateServiceProvider extends ServiceProvider {
 		/**
 		 * {@inheritDoc}

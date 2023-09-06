@@ -6,6 +6,9 @@
 	use Magnetar\Application;
 	use Magnetar\Console\Input;
 	
+	/**
+	 * Console kernel
+	 */
 	class Kernel {
 		/**
 		 * Middleware stack
@@ -16,6 +19,8 @@
 		/**
 		 * Array of classes to instantiate and call using kernel->bootstrap()
 		 * @var array
+		 * 
+		 * @todo add console-specific bootstrappers
 		 */
 		protected array $bootstrappers = [
 			\Magnetar\Bootstrap\LoadConfigs::class,
@@ -42,6 +47,8 @@
 		 * @param Input $input The input object
 		 * @param Output $output The output object
 		 * @return int The exit status
+		 * 
+		 * @todo take input, route and execute, get and return the exit status
 		 */
 		public function handle(
 			Input $input,

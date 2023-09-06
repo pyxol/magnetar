@@ -8,6 +8,9 @@
 	
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	
+	/**
+	 * Provides the PDO handler instance and methods to bind params to a PDOStatement
+	 */
 	trait HasPDOTrait {
 		/**
 		 * PDO handler instance

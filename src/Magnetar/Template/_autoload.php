@@ -8,7 +8,7 @@
 		/**
 		 * Escape a string for use inside HTML attributes
 		 * @param ?string $string The string to escape
-		 * @return string
+		 * @return string The escaped string
 		 */
 		function esc_attr(?string $string): string {
 			if((null === $string) || ('' === $string)) {
@@ -25,7 +25,7 @@
 		/**
 		 * Escape a string for use in HTML
 		 * @param ?string $string The string to escape
-		 * @return string
+		 * @return string The escaped string
 		 */
 		function esc_html(?string $string): string {
 			if((null === $string) || ('' === $string)) {
@@ -42,7 +42,8 @@
 		/**
 		 * Escape a string for use in a URL
 		 * @param ?string $url The URL to escape
-		 * @return string
+		 * @return string The escaped URL
+		 * 
 		 * @see https://developer.wordpress.org/reference/functions/esc_url/
 		 */
 		function esc_url(?string $url): string {
@@ -67,7 +68,7 @@
 		/**
 		 * Escape a string for use in a 'tag'
 		 * @param ?string $string The string to escape
-		 * @return string
+		 * @return string The escaped string
 		 */
 		function esc_tag(?string $string): string {
 			if((null === $string) || ('' === $string)) {
@@ -84,7 +85,7 @@
 		/**
 		 * Use a specific theme
 		 * @param string|null|null $theme_name
-		 * @return Theme
+		 * @return Theme The theme instance
 		 */
 		function theme(string|null $theme_name=null): Template {
 			return Theme::theme($theme_name);

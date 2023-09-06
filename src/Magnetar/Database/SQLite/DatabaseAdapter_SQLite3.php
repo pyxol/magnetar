@@ -3,16 +3,17 @@
 	
 	namespace Magnetar\Database\SQLite;
 	
-	use SQLite3;
 	use RuntimeException;
+	
+	use SQLite3;
+	use SQLite3Result;
+	use SQLite3Stmt;
 	
 	use Magnetar\Database\DatabaseAdapter as BaseDatabaseAdapter;
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	use Magnetar\Database\Exceptions\QueryPreperationException;
-	use SQLite3Result;
-	use SQLite3Stmt;
 	
-	class DatabaseAdapter extends BaseDatabaseAdapter {
+	class DatabaseAdapter_SQLite3 extends BaseDatabaseAdapter {
 		const ADAPTER_NAME = 'sqlite';
 		
 		// SQLite3 instance

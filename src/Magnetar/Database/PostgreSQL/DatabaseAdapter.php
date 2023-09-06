@@ -4,7 +4,6 @@
 	namespace Magnetar\Database\PostgreSQL;
 	
 	use RuntimeException;
-	use PDO;
 	
 	use Magnetar\Database\DatabaseAdapter as BaseDatabaseAdapter;
 	use Magnetar\Database\HasPDOTrait;
@@ -12,6 +11,9 @@
 	use Magnetar\Database\HasQueryBuilderTrait;
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	
+	/**
+	 * Database adapter for PostgreSQL
+	 */
 	class DatabaseAdapter extends BaseDatabaseAdapter {
 		use HasPDOTrait,
 			HasQuickQueryTrait,

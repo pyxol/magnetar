@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util;
 	
+	/**
+	 * String utility static class
+	 */
 	class Str {
 		/**
 		 * Convert a string to a URL-friendly string

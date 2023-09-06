@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util\Cryptography;
 	
+	/**
+	 * Encryption utility static class
+	 */
 	class Encryption {
 		protected string $digest_method = 'SHA256';   // a value from openssl_get_md_methods()
 		protected string $cipher_method = 'aes-128-ctr';   // a value from openssl_get_cipher_methods()

@@ -6,6 +6,9 @@
 	use Magnetar\Application;
 	use Magnetar\Router\URLBuilder;
 	
+	/**
+	 * URL generator
+	 */
 	class URLGenerator {
 		public function __construct(
 			/**

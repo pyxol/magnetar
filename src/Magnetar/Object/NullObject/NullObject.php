@@ -7,6 +7,9 @@
 	
 	use Magnetar\Object\AbstractObject;
 	
+	/**
+	 * A sample Null object
+	 */
 	class NullObject extends AbstractObject {
 		/**
 		 * Filler method for pulling an object from storage

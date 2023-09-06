@@ -3,13 +3,15 @@
 	
 	namespace Magnetar\Template;
 	
+	/**
+	 * Data storage for a template instance
+	 */
 	class Data {
 		protected array $data = [];
 		
 		/**
-		 * Get a template variable
-		 * @param string $name
-		 * @param mixed|null $default
+		 * Get a template variable. Returns null if not set
+		 * @param string $name Variable name to get
 		 * @return mixed
 		 */
 		public function __get(string $name): mixed {
@@ -18,8 +20,8 @@
 		
 		/**
 		 * Set a template variable
-		 * @param string $name
-		 * @param mixed $value
+		 * @param string $name Variable name to set
+		 * @param mixed $value Variable value to set
 		 * @return void
 		 */
 		public function __set(string $name, mixed $value): void {
@@ -28,7 +30,7 @@
 		
 		/**
 		 * Check if a template variable is set
-		 * @param string $name
+		 * @param string $name Variable name to check
 		 * @return bool
 		 */
 		public function __isset(string $name): bool {
@@ -37,7 +39,7 @@
 		
 		/**
 		 * Unset a template variable
-		 * @param string $name
+		 * @param string $name Variable name to unset
 		 * @return void
 		 */
 		public function __unset(string $name): void {

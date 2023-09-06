@@ -7,6 +7,9 @@
 	use IteratorAggregate;
 	use Traversable;
 	
+	/**
+	 * A generator that can be rewound
+	 */
 	class RewindableGenerator implements Countable, IteratorAggregate {
 		/**
 		 * The generator callback

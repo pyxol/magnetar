@@ -5,6 +5,9 @@
 	
 	use Magnetar\Application;
 	
+	/**
+	 * Boots the application service providers
+	 */
 	class BootServiceProviders implements BootstrapLoaderInterface {
 		/**
 		 * Tell the app to boot service providers

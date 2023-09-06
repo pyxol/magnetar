@@ -5,6 +5,9 @@
 	
 	use Magnetar\Util\Str;
 	
+	/**
+	 * Scramble utility static class
+	 */
 	class Scramble {
 		/**
 		 * Encode a string into a base64-like string that is non-trivial to decode

@@ -5,6 +5,9 @@
 	
 	use Exception;
 	
+	/**
+	 * Exception thrown when a route cannot be processed
+	 */
 	class CannotProcessRouteException extends Exception {
 		
 	}

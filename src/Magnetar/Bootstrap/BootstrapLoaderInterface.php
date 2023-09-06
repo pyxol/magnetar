@@ -5,6 +5,9 @@
 	
 	use Magnetar\Application;
 	
+	/**
+	 * Interface for bootstrap loaders
+	 */
 	interface BootstrapLoaderInterface {
 		/**
 		 * Load the bootstrap file

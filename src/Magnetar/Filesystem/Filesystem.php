@@ -8,22 +8,29 @@
 	
 	use Magnetar\Filesystem\Adapter\Adapter;
 	use Magnetar\Filesystem\Driver\Driver;
-	use Magnetar\Filesystem\Exception\FileNotFoundException;
-	use Magnetar\Filesystem\Exception\SourceNotFoundException;
-	use Magnetar\Filesystem\Exception\DirectoryNotFoundException;
-	use Magnetar\Filesystem\Exception\DestinationExistsException;
+	use Magnetar\Filesystem\Exceptions\FileNotFoundException;
+	use Magnetar\Filesystem\Exceptions\SourceNotFoundException;
+	use Magnetar\Filesystem\Exceptions\DirectoryNotFoundException;
+	use Magnetar\Filesystem\Exceptions\DestinationExistsException;
 	
 	/**
 	 * A local filesystem implementation
-	 * @package Magnetar\Filesystem
 	 */
 	class Filesystem implements FilesystemInterface {
 		/**
 		 * Filesystem constructor
-		 * @param Adapter $adapter
 		 */
 		public function __construct(
+			/**
+			 * The filesystem adapter
+			 * @var Adapter
+			 */
 			protected Adapter $adapter,
+			
+			/**
+			 * The filesystem driver
+			 * @var Driver
+			 */
 			protected Driver $driver
 		) {
 			
@@ -38,7 +45,11 @@
 		 * 
 		 * @throws DestinationExistsException
 		 */
-		public function write(string $path, string $contents, bool $overwrite=false): bool {
+		public function write(
+			string $path,
+			string $contents,
+			bool $overwrite=false
+		): bool {
 			if(!$overwrite && $this->isFile($path)) {
 				throw new DestinationExistsException("File already exists");
 			}
@@ -60,7 +71,11 @@
 		 * @throws SourceNotFoundException
 		 * @throws DestinationExistsException
 		 */
-		public function copy(string $path, string $destination, bool $overwrite=false): bool {
+		public function copy(
+			string $path,
+			string $destination,
+			bool $overwrite=false
+		): bool {
 			if(!$this->isFile($path)) {
 				throw new SourceNotFoundException("Source file does not exist");
 			}
@@ -74,8 +89,8 @@
 		
 		/**
 		 * Read the contents of a file
-		 * @param string $path
-		 * @return string|false
+		 * @param string $path File path
+		 * @return string|false The contents of the file, or false on failure
 		 */
 		public function read(string $path): string|false {
 			return file_get_contents($this->adapter->path($path));
@@ -83,8 +98,8 @@
 		
 		/**
 		 * Determines if a path exists (directory or file)
-		 * @param string $path
-		 * @return bool
+		 * @param string $path Path to check
+		 * @return bool True if path exists, false otherwise
 		 */
 		public function exists(string $path): bool {
 			return file_exists($this->adapter->path($path));
@@ -92,8 +107,8 @@
 		
 		/**
 		 * Determines if a path is a file
-		 * @param string $path
-		 * @return bool
+		 * @param string $path Path to check
+		 * @return bool True if path is a file, false otherwise
 		 */
 		public function isFile(string $path): bool {
 			return is_file($this->adapter->path($path));
@@ -101,8 +116,8 @@
 		
 		/**
 		 * Get the filename of a path
-		 * @param string $path
-		 * @return string
+		 * @param string $path Path to check
+		 * @return string The filename
 		 */
 		public function name(string $path): string {
 			return pathinfo($this->adapter->path($path), PATHINFO_FILENAME);
@@ -110,8 +125,8 @@
 		
 		/**
 		 * Get the basename of a path
-		 * @param string $path
-		 * @return string
+		 * @param string $path Path to check
+		 * @return string The basename
 		 */
 		public function basename(string $path): string {
 			return basename($this->adapter->path($path));
@@ -119,8 +134,8 @@
 		
 		/**
 		 * Get the extension of a path
-		 * @param string $path
-		 * @return string
+		 * @param string $path Path to check
+		 * @return string The extension
 		 */
 		public function extension(string $path): string {
 			return pathinfo($this->adapter->path($path), PATHINFO_EXTENSION);
@@ -128,8 +143,8 @@
 		
 		/**
 		 * Detect the mimetype of a file
-		 * @param string $path
-		 * @return string|false
+		 * @param string $path Path to check
+		 * @return string|false The mimetype, or false on failure
 		 */
 		public function mimetype(string $path): string|false {
 			return mime_content_type($this->adapter->path($path));
@@ -138,8 +153,8 @@
 		
 		/**
 		 * Determine the timestamp of the last modification of a file
-		 * @param string $path
-		 * @return int|false
+		 * @param string $path Path to check
+		 * @return int|false The timestamp, or false on failure
 		 */
 		public function lastModified(string $path): string|false {
 			return filemtime($this->adapter->path($path));
@@ -147,9 +162,9 @@
 		
 		/**
 		 * Append contents to a file. If file does not exist, it will be created
-		 * @param string $path
-		 * @param string $contents
-		 * @return bool
+		 * @param string $path Path relative to root directory
+		 * @param string $contents Contents to append
+		 * @return bool True on success, false on failure
 		 */
 		public function append(string $path, string $contents): bool {
 			return (false !== file_put_contents($this->adapter->path($path), $contents, FILE_APPEND));
@@ -157,9 +172,9 @@
 		
 		/**
 		 * Prepend contents to a file. If file does not exist, it will be created
-		 * @param string $path
-		 * @param string $contents
-		 * @return bool
+		 * @param string $path Path relative to root directory
+		 * @param string $contents Contents to prepend
+		 * @return bool True on success, false on failure
 		 */
 		public function prepend(string $path, string $contents): bool {
 			if($this->isFile($path)) {
@@ -171,10 +186,10 @@
 		
 		/**
 		 * Move a file
-		 * @param string $source
-		 * @param string $destination
-		 * @param bool $overwrite
-		 * @return bool
+		 * @param string $source Source file path
+		 * @param string $destination Destination file path
+		 * @param bool $overwrite Optional. Set to true to overwrite an existing file
+		 * @return bool True on success, false on failure
 		 * 
 		 * @throws FileNotFoundException
 		 * @throws DestinationExistsException
@@ -193,8 +208,8 @@
 		
 		/**
 		 * Delete file(s)
-		 * @param string|array $paths
-		 * @return bool
+		 * @param string|array $paths Path(s) relative to root directory
+		 * @return bool True on success, false on failure
 		 */
 		public function delete(string|array $paths): bool {
 			if(!is_array($paths)) {
@@ -222,8 +237,8 @@
 		
 		/**
 		 * Determines if a path is a directory
-		 * @param string $path
-		 * @return bool
+		 * @param string $path Path to check
+		 * @return bool True if path is a directory, false otherwise
 		 */
 		public function isDirectory(string $path): bool {
 			return is_dir($this->adapter->path($path));
@@ -234,7 +249,7 @@
 		 * @param string $path Path relative to root directory
 		 * @param int $mode Chmod permission. Defaults to 0777 (similar to mkdir())
 		 * @param bool $recursive Whether to recursively create directories. Defaults to false (similar to mkdir())
-		 * @return bool
+		 * @return bool True on success, false on failure
 		 */
 		public function makeDirectory(string $path, int $mode=0777, bool $recursive=false): bool {
 			if($this->isDirectory($path)) {
@@ -246,11 +261,10 @@
 		
 		/**
 		 * Copy a directory and all of its contents to a destination directory. Throws error if source directory does not exist or if destination directory already exists. If ovewrite is set to true, the entirety of the existing destination directory will be deleted first
-		 * 
-		 * @param string $source
-		 * @param string $destination
-		 * @param bool $overwrite
-		 * @return bool
+		 * @param string $source Source directory path
+		 * @param string $destination Destination directory path
+		 * @param bool $overwrite Optional. Set to true to overwrite an existing directory
+		 * @return bool True on success, false on failure
 		 * 
 		 * @throws SourceNotFoundException
 		 * @throws DestinationExistsException
@@ -297,8 +311,8 @@
 		
 		/**
 		 * Empty a directory but preserve the directory itself
-		 * @param string $path
-		 * @return bool
+		 * @param string $path Path relative to root directory
+		 * @return bool True on success, false on failure
 		 * 
 		 * @throws DirectoryNotFoundException
 		 */
@@ -330,8 +344,8 @@
 		
 		/**
 		 * Delete a directory and all of its contents
-		 * @param string $path
-		 * @return bool
+		 * @param string $path Path relative to root directory
+		 * @return bool True on success, false on failure
 		 * 
 		 * @throws DirectoryNotFoundException
 		 */

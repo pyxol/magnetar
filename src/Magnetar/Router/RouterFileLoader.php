@@ -5,6 +5,9 @@
 	
 	use Magnetar\Router\Router;
 	
+	/**
+	 * Class to load user-defined routes from a file
+	 */
 	class RouterFileLoader {
 		/**
 		 * constructor

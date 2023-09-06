@@ -8,9 +8,12 @@
 	use Magnetar\Container\Container;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
-	use Magnetar\Router\RouteUnassignedException;
+	use Magnetar\Router\Exceptions\RouteUnassignedException;
 	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 	
+	/**
+	 * Router class
+	 */
 	class Router {
 		/**
 		 * Whether or not the request has been served
@@ -82,8 +85,8 @@
 		
 		/**
 		 * Turn the request into a response by matching against the registered routes
-		 * @param Request $request
-		 * @return Response
+		 * @param Request $request The request
+		 * @return Response The response
 		 * 
 		 * @throws CannotProcessRouteException
 		 * @throws RouteUnassignedException

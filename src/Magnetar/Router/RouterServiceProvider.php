@@ -6,10 +6,12 @@
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Router\Router;
 	
+	/**
+	 * Service provider for the Router
+	 */
 	class RouterServiceProvider extends ServiceProvider {
 		/**
-		 * Register the service provider
-		 * @return void
+		 * {@inheritDoc}
 		 */
 		public function register(): void {
 			$this->registerRouter();

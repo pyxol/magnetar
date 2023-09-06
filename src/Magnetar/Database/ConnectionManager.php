@@ -8,6 +8,9 @@
 	use Magnetar\Application;
 	use Magnetar\Database\DatabaseAdapter;
 	
+	/**
+	 * Database connection manager
+	 */
 	class ConnectionManager {
 		/**
 		 * Array of database connection instances
@@ -15,6 +18,10 @@
 		 */
 		protected array $connections = [];
 		
+		/**
+		 * Array of database adapter classes
+		 * @var array<string, string>
+		 */
 		protected array $adapters = [
 			'mariadb' => MariaDB\DatabaseAdapter::class,
 			'mysql' => MySQL\DatabaseAdapter::class,
@@ -25,9 +32,12 @@
 		
 		/**
 		 * ConnectionManager constructor
-		 * @param Application $app
 		 */
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app
 		) {
 			

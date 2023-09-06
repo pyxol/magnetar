@@ -1,4 +1,4 @@
-FROM php:8-fpm
+FROM php:8-fpm-bullseye
 
 # add in composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

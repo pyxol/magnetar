@@ -5,6 +5,9 @@
 	
 	use Magnetar\Filesystem\Adapter\Adapter;
 	
+	/**
+	 * Disk adapter
+	 */
 	class DiskAdapter extends Adapter {
 		
 	}

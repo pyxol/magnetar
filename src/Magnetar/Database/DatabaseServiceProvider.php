@@ -7,6 +7,9 @@
 	use Magnetar\Helpers\DeferrableServiceInterface;
 	use Magnetar\Database\ConnectionManager;
 	
+	/**
+	 * Database service provider
+	 */
 	class DatabaseServiceProvider extends ServiceProvider implements DeferrableServiceInterface {
 		/**
 		 * {@inheritDoc}

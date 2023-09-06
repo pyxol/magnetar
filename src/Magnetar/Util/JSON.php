@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util;
 	
+	/**
+	 * JSON utility static class
+	 */
 	class JSON {
 		/**
 		 * Encode a variable into a JSON string

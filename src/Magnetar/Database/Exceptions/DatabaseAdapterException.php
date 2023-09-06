@@ -5,6 +5,9 @@
 	
 	use Exception;
 	
+	/**
+	 * Exception thrown when a database adapter error occurs
+	 */
 	class DatabaseAdapterException extends Exception {
 		
 	}

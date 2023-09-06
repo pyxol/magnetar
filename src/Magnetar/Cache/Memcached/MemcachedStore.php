@@ -9,7 +9,11 @@
 	use Magnetar\Config\Config;
 	
 	class MemcachedStore extends AbstractCacheStore {
-		protected $memcached;
+		/**
+		 * The Memcached instance
+		 * @var Memcached $memcached
+		 */
+		protected Memcached $memcached;
 		
 		/**
 		 * Connect to Memcached
@@ -30,7 +34,7 @@
 		 * @return void
 		 */
 		public function clear(): void {
-			if("" === $this->prefix) {
+			if('' === $this->prefix) {
 				$this->memcached->flush();
 				
 				return;
@@ -58,7 +62,6 @@
 		 * Get a value from the cache. If the value does not exist, null is returned.
 		 * If a callback is provided, it will be called and the return value will be
 		 * stored in the cache and returned
-		 *
 		 * @param string $key
 		 * @param mixed $callback Optional. The value to store in cache if the key does not exist. If callable, the return value will be stored
 		 * @return mixed
@@ -83,8 +86,8 @@
 		
 		/**
 		 * Get the values for the given keys. Null is returned for each key that doesn't exist or isn't scalar.
-		 * @param array $keys
-		 * @return array
+		 * @param array $keys The keys to get
+		 * @return array An assoc array of key => value
 		 */
 		public function getMany(array $keys): array {
 			$defaultValues = array_fill_keys($keys, null);
@@ -100,9 +103,9 @@
 		
 		/**
 		 * Increment the value of an item in the cache
-		 * @param string $key
+		 * @param string $key The key to increment
 		 * @param int $step How much to increment by
-		 * @return int|false
+		 * @return int|false The new value of the cache, or false on failure
 		 */
 		public function increment(string $key, int $step=1): int|false {
 			return $this->memcached->increment($this->prefix . $key, $step);
@@ -110,9 +113,9 @@
 		
 		/**
 		 * Decrement the value of an item in the cache
-		 * @param string $key
+		 * @param string $key The key to decrement
 		 * @param int $step How much to decrement by
-		 * @return int|false
+		 * @return int|false The new value of the cache, or false on failure
 		 */
 		public function decrement(string $key, int $step=1): int|false {
 			return $this->memcached->decrement($this->prefix . $key, $step);
@@ -120,8 +123,8 @@
 		
 		/**
 		 * Determine if an item exists in the cache
-		 * @param string $key
-		 * @return bool
+		 * @param string $key The key to check
+		 * @return bool True if the key exists, false otherwise
 		 */
 		public function has(string $key): bool {
 			$this->memcached->get($this->prefix . $key);
@@ -131,8 +134,8 @@
 		
 		/**
 		 * Determine if the given items exist in the cache
-		 * @param array $keys
-		 * @return array
+		 * @param array $keys The keys to check
+		 * @return array An assoc array of booleans, true if the key exists, false otherwise
 		 */
 		public function hasMany(array $keys): array {
 			$has = [];
@@ -146,10 +149,10 @@
 		
 		/**
 		 * Store an item in the cache. Returns the value
-		 * @param string $key
-		 * @param mixed $value
+		 * @param string $key The key to store the item under
+		 * @param mixed $value The value to store
 		 * @param int $ttl Number of seconds to store the item. If greater than 30 days, it will be treated as a unix timestamp.
-		 * @return mixed
+		 * @return mixed The value of the cache
 		 */
 		public function set(string $key, $value, int $ttl=0): mixed {
 			\Magnetar\Helpers\Facades\Log::debug("Setting $key to $value");
@@ -169,7 +172,7 @@
 		
 		/**
 		 * Store multiple items in the cache
-		 * @param array $values
+		 * @param array $values An assoc array of key => value
 		 * @param int $ttl TTL is not used in this implementation
 		 * @return void
 		 */

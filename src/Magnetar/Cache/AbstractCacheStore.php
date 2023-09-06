@@ -8,10 +8,12 @@
 	
 	/**
 	 * Abstract class for cache stores
-	 * @package Magnetar\Cache
-	 * @uses Magnetar\Config
 	 */
 	abstract class AbstractCacheStore implements CacheStoreInterface {
+		/**
+		 * The prefix to prepend to all cache keys
+		 * @var string
+		 */
 		protected string $prefix = '';
 		
 		/**
@@ -28,6 +30,10 @@
 			$this->wireUp($container['config']);
 		}
 		
-		// connection
+		/**
+		 * Connect to the cache store
+		 * @param Config $config The config object
+		 * @return void
+		 */
 		abstract protected function wireUp(Config $config): void;
 	}

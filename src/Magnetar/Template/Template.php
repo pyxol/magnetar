@@ -6,10 +6,21 @@
 	use Magnetar\Application;
 	use Magnetar\Http\Response;
 	
+	/**
+	 * Template class
+	 */
 	class Template {
+		/**
+		 * Data instance for storing template variables
+		 * @var Data
+		 */
 		protected Data $data;
 		
-		protected string $base_path = "";
+		/**
+		 * The path to the selected theme folder
+		 * @var string
+		 */
+		protected string $base_path = '';
 		
 		/**
 		 * Template constructor.
@@ -25,14 +36,14 @@
 			
 			/**
 			 * The folder to load templates from
-			 * @var string
+			 * @var string $folder The folder name to load templates from
 			 */
 			protected string $folder
 		) {
 			// assign the base path
 			$this->base_path = $this->app->pathBase(
 				$this->app->make('config')->get('theme.storage.base_path', 'themes')
-				. DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR
+					. DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR
 			);
 			
 			// initialize the template data
@@ -56,7 +67,7 @@
 		/**
 		 * Return a rendered template
 		 * @param string $tpl_name The template name to render
-		 * @param array $data The data to pass to the template
+		 * @param array $view_data The data to pass to the template
 		 * @return string
 		 */
 		public function render(string $tpl_name, array $view_data=[]): string {
@@ -93,8 +104,7 @@
 		
 		/**
 		 * Get a template variable
-		 * @param string $name
-		 * @param mixed|null $default
+		 * @param string $name Variable name to get
 		 * @return mixed
 		 */
 		public function __get(string $name): mixed {
@@ -103,8 +113,8 @@
 		
 		/**
 		 * Set a template variable
-		 * @param string $name
-		 * @param mixed $value
+		 * @param string $name Variable name to set
+		 * @param mixed $value Variable value to set
 		 * @return void
 		 */
 		public function __set(string $name, mixed $value): void {
@@ -113,7 +123,7 @@
 		
 		/**
 		 * Check if a template variable is set
-		 * @param string $name
+		 * @param string $name Variable name to check
 		 * @return bool
 		 */
 		public function __isset(string $name): bool {
@@ -122,7 +132,7 @@
 		
 		/**
 		 * Unset a template variable
-		 * @param string $name
+		 * @param string $name Variable name to unset
 		 * @return void
 		 */
 		public function __unset(string $name): void {

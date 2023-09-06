@@ -8,6 +8,9 @@
 	use Magnetar\Container\Container;
 	use Magnetar\Container\Helper;
 	
+	/**
+	 * Class used to build contextual bindings
+	 */
 	class ContextualBindingBuilder {
 		/**
 		 * The abstract target

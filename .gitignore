@@ -9,6 +9,10 @@ vendor/
 /.phpunit.cache
 .phpunit.result.cache
 
+# phpDocumentor
+/phpdoc.phar
+docs/
+
 # database files
 *.sql
 *.sql.gz

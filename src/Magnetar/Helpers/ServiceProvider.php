@@ -7,8 +7,15 @@
 	use Magnetar\Helpers\DeferrableServiceInterface;
 	use Magnetar\Helpers\DefaultServiceProviders;
 	
+	/**
+	 * A class that service providers should extend
+	 */
 	class ServiceProvider {
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app
 		) {
 			

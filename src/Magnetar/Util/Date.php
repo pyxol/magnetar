@@ -3,6 +3,9 @@
 	
 	namespace Magnetar\Util;
 	
+	/**
+	 * Date utility static class
+	 */
 	class Date {
 		/**
 		 * Get the date since a given timestamp

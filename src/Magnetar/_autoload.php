@@ -9,7 +9,7 @@
 		 * Get a config value
 		 * @param string $key Config key
 		 * @param mixed $default Optional. Value to return if the key is not found. Defaults to empty string
-		 * @return mixed
+		 * @return mixed Config value
 		 */
 		function config(string $key, mixed $default=''): mixed {
 			return Config::get($key, $default);
@@ -21,7 +21,7 @@
 		 * Get an environment variable
 		 * @param string $key Environment variable key
 		 * @param mixed $default Default value to return if the key is not found
-		 * @return mixed
+		 * @return mixed Environment variable value
 		 */
 		function env(string $key, mixed $default): mixed {
 			return Env::get($key, $default);
