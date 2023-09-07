@@ -17,7 +17,7 @@
 	 * @method set(string $key, $value, int $ttl=0): mixed;
 	 * @method setMany(array $values, int $ttl=0): void;
 	 * 
-	 * @see Magnetar\Cache\CacheStoreInterface
+	 * @see Magnetar\Cache\StoreManager
 	 */
 	class Cache extends Facade {
 		/**

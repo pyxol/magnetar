@@ -154,7 +154,7 @@
 		 * @param int $ttl Number of seconds to store the item. If greater than 30 days, it will be treated as a unix timestamp.
 		 * @return mixed The value of the cache
 		 */
-		public function set(string $key, $value, int $ttl=0): mixed {
+		public function set(string $key, mixed $value, int $ttl=0): mixed {
 			\Magnetar\Helpers\Facades\Log::debug("Setting $key to $value");
 			
 			$result = $this->memcached->set(

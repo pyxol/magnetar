@@ -16,10 +16,10 @@
 		 *
 		 * From Arr::wrap() in Illuminate\Support.
 		 *
-		 * @param  mixed  $value
+		 * @param mixed $value
 		 * @return array
 		 */
-		public static function arrayWrap($value) {
+		public static function arrayWrap(mixed $value) {
 			if(is_null($value)) {
 				return [];
 			}
@@ -42,7 +42,7 @@
 		 * @param ReflectionParameter $parameter
 		 * @return string|null
 		 */
-		public static function getParameterClassName($parameter): string|null {
+		public static function getParameterClassName(ReflectionParameter $parameter): string|null {
 			$type = $parameter->getType();
 			
 			if(!($type instanceof ReflectionNamedType) || $type->isBuiltIn()) {

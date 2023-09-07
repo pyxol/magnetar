@@ -1355,7 +1355,7 @@
 		 * @param string $key The offset to unset
 		 * @return void
 		 */
-		public function offsetUnset($key): void {
+		public function offsetUnset(mixed $key): void {
 			unset(
 				$this->bindings[ $key ],
 				$this->instances[ $key ],

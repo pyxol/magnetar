@@ -8,7 +8,7 @@
 	/**
 	 * 
 	 * 
-	 * @see Magnetar\Cache\CacheStoreInterface
+	 * @see Magnetar\Log\Logger
 	 */
 	class Log extends Facade {
 		/**

@@ -69,8 +69,8 @@
 		
 		/**
 		 * Specify the configuration item to bind as a primitive
-		 * @param  string  $key
-		 * @param  mixed  $default
+		 * @param string $key
+		 * @param mixed $default
 		 * @return void
 		 */
 		public function giveConfig(string $key, mixed $default=null): void {
