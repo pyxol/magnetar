@@ -6,16 +6,8 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method clear(): void;
-	 * @method delete(string $key): bool;
-	 * @method get(string $key): mixed;
-	 * @method getMany(array $keys): array;
-	 * @method increment(string $key, int $step=1): int|false;
-	 * @method decrement(string $key, int $step=1): int|false;
-	 * @method has(string $key): bool;
-	 * @method hasMany(array $keys): array;
-	 * @method set(string $key, $value, int $ttl=0): mixed;
-	 * @method setMany(array $values, int $ttl=0): void;
+	 * @method theme(?string $theme_name=null): Magnetar\Template\Template;
+	 * @method tpl(string $tpl_name, array $view_data=[]): string;
 	 * 
 	 * @see Magnetar\Template\ThemeManager
 	 */

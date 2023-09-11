@@ -6,13 +6,10 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method connection(string|null $driver_name=null): Magnetar\Database\DatabaseAdapter
-	 * @method query(array $sql_query, array $params=[]): int|false;
-	 * @method get_rows(string $sql_query, array $params=[], array|false $column_key=false): array|false;
-	 * @method get_row(string $sql_query, array $params=[]): array|false;
-	 * @method get_col(string $sql_query, array $params=[], string|int $column_key=0): array|false;
-	 * @method get_col_assoc(string $sql_query, array $params=[], string $assoc_key, string|int $column_key=0): array|false;
-	 * @method get_var(string $sql_query, array $params=[], string|int|false $column_key=false): string|int|false;
+	 * @method connection(?string $connection_name=null): Magnetar\Database\DatabaseAdapter;
+	 * @method getDefaultConnectionName(): ?string;
+	 * @method getConnected(): array;
+	 * @method adapter(string $connection_name): Magnetar\Database\DatabaseAdapter;
 	 * 
 	 * @see Magnetar\Database\ConnectionManager
 	 */

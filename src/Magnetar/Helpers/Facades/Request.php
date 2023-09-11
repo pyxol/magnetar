@@ -6,12 +6,16 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method path(): string
-	 * @method assignOverrideParameters(array $parameters): void
-	 * @method getParameter(string $name, mixed $default=null): mixed
-	 * @method getParameters(): array
-	 * @method getRoute(): ?Route
-	 * @method setRoute(Route $route): void
+	 * @method create(): Magnetar\Http\Request;
+	 * @method headers(): array;
+	 * @method header(string $name): ?string;
+	 * @method hasHeader(string $name): bool;
+	 * @method path(): string;
+	 * @method getMethod(): ?string;
+	 * @method assignOverrideParameters(array $parameters): void;
+	 * @method getParameter(string $name, mixed $default=null): mixed;
+	 * @method getParameters(): array;
+	 * @method body(): string;
 	 * 
 	 * @see Magnetar\Http\Request
 	 */

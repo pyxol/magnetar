@@ -6,12 +6,23 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method status($code=200): Magnetar\Http\Response
-	 * @method header(string $header, bool|int $replace=true, int|null $response_code=0): Magnetar\Http\Response
-	 * @method setCookie($name, $value=null, $expires=0, $path="", $domain="", $secure=false, $httponly=false): Magnetar\Http\Response
-	 * @method redirect(string $path, int $response_code=302): void
-	 * @method send($body=""): void
-	 * @method json(array $body): void
+	 * @method status(int $code=200): self;
+	 * @method setCookie(string $name, ?string $value=null, int $expires=0, string $path='', string $domain='', bool $secure=false, bool $httponly=false): self;
+	 * @method redirect(string $path, int $response_code=302): void;
+	 * @method setBody(string $body=''): self;
+	 * @method json(array $body): self;
+	 * @method send(): self;
+	 * @method sendHeaders(): self;
+	 * @method sendBody(): self;
+	 * @method body(): string;
+	 * @method statusCode(): int;
+	 * @method header(string $header, ?string $value=null, int|bool $replace=true, ?int $response_code=0): self|string;
+	 * @method headers(): array;
+	 * @method getHeader(string $name): ?string;
+	 * @method hasHeader(string $name): bool;
+	 * @method removeHeader(string $name): self;
+	 * @method headersSent(): bool;
+	 * @method sent(): bool;
 	 * 
 	 * @see Magnetar\Http\Response
 	 */

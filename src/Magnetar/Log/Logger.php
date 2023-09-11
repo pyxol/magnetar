@@ -8,7 +8,11 @@
 	use Magnetar\Container\Container;
 	
 	/**
-	 * Class to log messages during runtime
+	 * Class to log messages during runtime.
+	 * Allows for log level names to be used as methods for logging messages.
+	 * Example: Logger::info('This is an info message');
+	 * 
+	 * @todo Add support for logging to file
 	 */
 	class Logger {
 		/**

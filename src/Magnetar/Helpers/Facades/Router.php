@@ -6,16 +6,16 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * __construct(
-	 * @method group(string $prefixPath, callable $callback): void
-	 * @method get($pattern): bool
-	 * @method post(string $pattern): bool
-	 * @method put(string $pattern): bool
-	 * @method patch(string $pattern): bool
-	 * @method delete(string $pattern): bool
-	 * @method head(string $pattern): bool
-	 * @method option(string $pattern): bool
-	 * @method any(string $pattern): bool
+	 * @method group(string $prefixPath, callable $callback): void;
+	 * @method processRequest(Magnetar\Http\Request $request): Magnetar\Http\Response;
+	 * @method any(string $pattern, callable|array|null $callback=null): void;
+	 * @method get(string $pattern, callable|array|null $callback=null): void;
+	 * @method post(string $pattern, callable|array|null $callback=null): void;
+	 * @method put(string $pattern, callable|array|null $callback=null): void;
+	 * @method patch(string $pattern, callable|array|null $callback=null): void;
+	 * @method delete(string $pattern, callable|array|null $callback=null): void;
+	 * @method head(string $pattern, callable|array|null $callback=null): void;
+	 * @method option(string $pattern, callable|array|null $callback=null): void;
 	 * 
 	 * @see Magnetar\Router\Router
 	 */
