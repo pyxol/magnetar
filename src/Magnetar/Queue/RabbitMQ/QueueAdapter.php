@@ -70,24 +70,12 @@
 		
 		/**
 		 * {@inheritDoc}
-		 * 
-		 * @todo vscode reports as incompatible return type
-		 * @todo implement this
 		 */
-		public function sendMessage(
-			Channel $channel,
-			Message $message,
+		public function publish(
+			string $channel,
+			mixed $message,
 			string $exchange=''
 		): bool {
-			//$message = new AMQPMessage(
-			//	$message->encodeBody(),
-			//	[
-			//		'content_type' => $message->getContentType(),
-			//	]
-			//);
-			//
-			//$this->channel->basic_publish($message, $exchange);
-			
-			return true;
+			return $this->channel($channel)->publish($message, $exchange);
 		}
 	}

@@ -30,6 +30,8 @@
 		 * The main loop for a consumer. Waits for messages from the queue.
 		 * To run the loop, all that is needed is $consumer->waitForMessage();
 		 * @return void
+		 * 
+		 * @todo fix this
 		 */
 		public function waitForMessage(): void {
 			while($this->channel->is_open()) {
@@ -41,6 +43,8 @@
 		 * Handle a message from this queue
 		 * @param mixed $message
 		 * @return void
+		 * 
+		 * @todo fix this
 		 */
 		protected function handle(mixed $message): void {
 			$this->process(

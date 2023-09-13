@@ -9,14 +9,24 @@
 	use Magnetar\Utilities\JSON;
 	
 	/**
-	 * Message class for RabbitMQ queues
+	 * Message class for Redis queues
+	 * 
+	 * @todo needs heavy work
 	 */
 	class Message extends BaseMessage {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function parseMessage(): void {
-			
+		protected function parseMessage(mixed $message): void {
+			$this->decodeBody($message);
+		}
+		
+		/**
+		 * Decode the message body
+		 * @return mixed The decoded message body
+		 */
+		protected function decodeBody(mixed $body): mixed {
+			return JSON::maybe_decode($body->message ?? $body ?? '');
 		}
 		
 		/**

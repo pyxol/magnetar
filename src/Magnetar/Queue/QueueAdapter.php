@@ -2,8 +2,9 @@
 	declare(strict_types=1);
 	
 	namespace Magnetar\Queue;
-	
-	use RuntimeException;
+
+use Magnetar\Application;
+use RuntimeException;
 	
 	use Magnetar\Queue\Connection;
 	use Magnetar\Queue\Channel;
@@ -30,9 +31,9 @@
 		
 		/**
 		 * Channel object
-		 * @var Channel
+		 * @var array<Channel>
 		 */
-		protected Channel $channel;
+		protected array $channels = [];
 		
 		/**
 		 * Connection handler
@@ -42,6 +43,7 @@
 		
 		/**
 		 * Adapter constructor
+		 * @param Application $app Application object
 		 * @param string $connection_name Name of the connection
 		 * @param array $configuration Configuration data to wire up the connection
 		 * 
@@ -49,6 +51,7 @@
 		 * @throws QueueAdapterException
 		 */
 		public function __construct(
+			protected Application $app,
 			protected string $connection_name,
 			protected array $connection_config = []
 		) {
@@ -91,6 +94,14 @@
 		}
 		
 		/**
+		 * Get the application object
+		 * @return Application The application object
+		 */
+		public function getApp(): Application {
+			return $this->app;
+		}
+		
+		/**
 		 * Get the adapter name
 		 * @return string The name of the adapter
 		 */
@@ -124,52 +135,36 @@
 		
 		/**
 		 * Generate a new Message object
-		 * @param mixed $body The message body
-		 * @return Message
+		 * @param mixed $body The raw contents of the message body
+		 * @return Message The message object
 		 */
-		public function makeMessage(mixed $message): Message {
-			if(is_object($message)) {
-				return new Message($this->channel, $message->body);
-			}
-			
-			return new Message($this->channel, $message);
+		public function makeMessage(mixed $body): Message {
+			return new Message($body);
 		}
 		
 		/**
-		 * Parse a message from the queue
-		 * @param mixed $message The message to parse
-		 * @return Message The parsed message
-		 */
-		public function parseMessage(mixed $message): Message {
-			return $this->makeMessage($message);
-		}
-		
-		/**
-		 * Creates a new Message object
-		 * @param mixed $message The body of the message to create
-		 * @return Message
-		 */
-		public function createMessage(mixed $message): Message {
-			return $this->parseMessage($message);
-		}
-		
-		/**
-		 * Send a message to the queue
-		 * @param Channel $channel The channel to send the message to
-		 * @param Message $body The message body
-		 * @param string $exchange The exchange to send the message to
-		 * @return bool Whether the message was sent successfully
+		 * Get a channel object by name
+		 * @param string $channelName Name of the channel
+		 * @return Channel The channel object
 		 * 
-		 * @throws RuntimeException
+		 * @example Queue::channel('my-channel')->publish($message);
 		 */
-		public function sendMessage(
-			Channel $channel,
-			Message $message,
+		public function channel(string $channelName): Channel {
+			return new Channel($this, $channelName);
+		}
+		
+		/**
+		 * Helper method to send a message to the queue
+		 * @param string $channel Name of the channel
+		 * @param mixed $message The message body
+		 * @param string $exchange The exchange to send the message to
+		 * @return bool
+		 */
+		public function publish(
+			string $channel,
+			mixed $message,
 			string $exchange=''
 		): bool {
-			throw new RuntimeException("Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides sendMessage().");
+			throw new RuntimeException("Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides publish().");
 		}
-		
-		
-		
 	}

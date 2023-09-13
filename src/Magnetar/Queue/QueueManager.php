@@ -22,7 +22,7 @@
 		 * Array of queue adapter classes
 		 * @var array<string, string>
 		 */
-		protected array $adapters = [
+		protected array $available_adapters = [
 			'redis' => Redis\QueueAdapter::class,
 			'rabbitmq' => RabbitMQ\QueueAdapter::class,
 		];
@@ -72,11 +72,12 @@
 				throw new Exception('Queue driver not specified for connection');
 			}
 			
-			if(null === ($adapter_class = $this->adapters[ $adapter ] ?? null)) {
+			if(null === ($adapter_class = $this->available_adapters[ $adapter ] ?? null)) {
 				throw new Exception('Invalid queue driver');
 			}
 			
 			$this->connections[ $connection_name ] = new $adapter_class(
+				$this->app,
 				$connection_name,
 				$this->app['config']->get('queue.connections.'. $connection_name, [])
 			) ?? throw new Exception('Unable to start queue driver');
