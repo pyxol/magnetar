@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Util\Cryptography;
+	namespace Magnetar\Utilities\Cryptography;
 	
 	/**
 	 * Encryption utility static class

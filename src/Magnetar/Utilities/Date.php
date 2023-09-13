@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Util;
+	namespace Magnetar\Utilities;
 	
 	/**
 	 * Date utility static class

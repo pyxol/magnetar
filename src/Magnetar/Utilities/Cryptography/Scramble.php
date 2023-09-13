@@ -1,9 +1,9 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Util\Cryptography;
+	namespace Magnetar\Utilities\Cryptography;
 	
-	use Magnetar\Util\Str;
+	use Magnetar\Utilities\Str;
 	
 	/**
 	 * Scramble utility static class

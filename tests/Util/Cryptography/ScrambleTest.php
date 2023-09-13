@@ -1,11 +1,11 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Tests\Util\Cryptography;
+	namespace Magnetar\Tests\Utilities\Cryptography;
 	
 	use PHPUnit\Framework\TestCase;
 	
-	use Magnetar\Util\Cryptography\Scramble;
+	use Magnetar\Utilities\Cryptography\Scramble;
 	
 	class ScrambleTest extends TestCase {
 		public function testEncryptionMatch(): void {
