@@ -43,8 +43,9 @@
 	 * @method terminate(): void;
 	 * @method setEnvironment(string $env): void;
 	 * @method environment(): string;
-	 * @method isDev(): bool;
-	 * @method isProd(): bool;
+	 * @method isDevEnv(): bool;
+	 * @method isTestEnv(): bool;
+	 * @method isLiveEnv(): bool;
 	 * @method when( $concrete): Magnetar\Container\ContextualBindingBuilder;
 	 * @method has(string $id): bool;
 	 * @method resolved(string $abstract): bool;

@@ -661,15 +661,23 @@
 		 * Determine if this is the development environment
 		 * @return bool True if this is the development environment, false otherwise
 		 */
-		public function isDev(): bool {
+		public function isDevEnv(): bool {
 			return ('dev' === $this['env']);
 		}
 		
 		/**
-		 * Determine if this is the production environment
-		 * @return bool True if this is the production environment, false otherwise
+		 * Determine if this is the test environment
+		 * @return bool True if this is the test environment, false otherwise
 		 */
-		public function isProd(): bool {
-			return ('prod' === $this['env']);
+		public function isTestEnv(): bool {
+			return ('test' === $this['env']);
+		}
+		
+		/**
+		 * Determine if this is the live environment
+		 * @return bool True if this is the live environment, false otherwise
+		 */
+		public function isLiveEnv(): bool {
+			return ('live' === $this['env']);
 		}
 	}
