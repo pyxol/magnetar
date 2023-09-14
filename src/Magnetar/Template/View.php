@@ -3,6 +3,8 @@
 	
 	namespace Magnetar\Template;
 	
+	use Throwable;
+	
 	use Magnetar\Template\Template;
 	
 	/**
@@ -50,14 +52,25 @@
 		/**
 		 * Render the template
 		 * @return string
+		 * 
+		 * @throws Throwable
 		 */
 		public function render(): string {
 			// render the template
-			ob_start();
-			
-			include($this->template_path);
-			
-			return ob_get_clean();
+			try {
+				// use output buffering to capture the template output
+				// this allows us to catch any exceptions thrown by the template
+				ob_start();
+				
+				include($this->template_path);
+				
+				return ob_get_clean();
+			} catch(Throwable $e) {
+				// clean the output buffer and rethrow the exception
+				ob_end_clean();
+				
+				throw $e;
+			}
 		}
 		
 		/**
