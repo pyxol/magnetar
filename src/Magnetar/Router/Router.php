@@ -13,6 +13,11 @@
 	
 	/**
 	 * Router class
+	 * 
+	 * @todo ->group() isn't finished yet
+	 * @todo grouped collections' routes aren't being added to the router
+	 * @todo create __call()
+	 * @todo move get/post/put/etc. methods to RouteCollection, define in __call()
 	 */
 	class Router {
 		/**
@@ -33,6 +38,26 @@
 		 */
 		protected array $routeCallbacks = [];
 		
+		/**
+		 * The current route collection
+		 * @var RouteCollection
+		 */
+		protected RouteCollection $routeCollection;
+		
+		/**
+		 * Contextual array of route collections.
+		 * The first entry is the primary route collection. Subsequent entries are contextually relevant.
+		 * Used when grouping routes inside of a route collection's initialization callback
+		 * @var array<RouteCollection>
+		 */
+		protected array $contextualRouteCollections = [];
+		
+		/**
+		 * Constructor
+		 * @param Container $container The container instance
+		 * @param string $pathPrefix The path's prefix
+		 * @return void
+		 */
 		public function __construct(
 			/**
 			 * The container instance
@@ -44,23 +69,9 @@
 			 * The path's prefix
 			 * @var string
 			 */
-			protected string $prefixPath=''
+			protected string $pathPrefix=''
 		) {
 			$this->requestMethod = $_SERVER['REQUEST_METHOD'] ?? null;
-		}
-		
-		/**
-		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against
-		 * @param string $pattern The pattern to match against
-		 * @param string $method The HTTP method to match against
-		 * @return void
-		 */
-		public function group(string $prefixPath, callable $callback): void {
-			// $router = new Router($this->request, $prefixPath);
-			// $callback($router);
-			
-			// @TMP
-			throw new RuntimeException("Router grouping functionality not yet implemented");
 		}
 		
 		/**
@@ -164,6 +175,30 @@
 		}
 		
 		/**
+		 * Attach a subsequent route collection to add context to
+		 * basic Route:: calls inside of group initialization callbacks.
+		 * @param RouteCollection $collection
+		 * @return void
+		 */
+		public function attachContext(RouteCollection $collection): void {
+			// store the current context
+			$this->contextualRouteCollections[] = $this->routeCollection;
+			
+			// set the new context
+			$this->routeCollection = $collection;
+		}
+		
+		/**
+		 * Resets the context of the router. Used when a route collection
+		 * is finished being defined
+		 * @return void
+		 */
+		public function detachContext(): void {
+			// restore the previous context
+			$this->routeCollection = array_pop($this->contextualRouteCollections);
+		}
+		
+		/**
 		 * Test if the request matches the given path and pattern for any form of request
 		 * @param string $pattern The pattern to match against
 		 * @param callable|array|null $callback The callback to run if matched
@@ -241,5 +276,28 @@
 		 */
 		public function option(string $pattern, callable|array|null $callback=null): void {
 			$this->assignRoute($pattern, $callback, 'OPTION');
+		}
+		
+		/**
+		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against
+		 * @param string $pattern The pattern to match against
+		 * @param string $method The HTTP method to match against
+		 * @return void
+		 */
+		public function group(string $pathPrefix, callable $callback): void {
+			$collection = new RouteCollection(
+				$this,
+				$this->routeCollection,
+				$pathPrefix,
+				$callback,
+				$this->routeCollection->getNamePrefix()
+			);
+			
+			
+			// $router = new Router($this->request, $pathPrefix);
+			// $callback($router);
+			
+			// @TMP
+			throw new RuntimeException("Router grouping functionality not yet implemented");
 		}
 	}
