@@ -8,6 +8,8 @@
 	use Magnetar\Container\Container;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
+	use Magnetar\Router\RouteCollection;
+	use Magnetar\Router\Enums\HTTPMethodEnum;
 	use Magnetar\Router\Exceptions\RouteUnassignedException;
 	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 	
@@ -72,26 +74,13 @@
 			protected string $pathPrefix=''
 		) {
 			$this->requestMethod = $_SERVER['REQUEST_METHOD'] ?? null;
-		}
-		
-		/**
-		 * Assign a route to the router
-		 * @param string $pattern The regex pattern to match against
-		 * @param callable|array|null $callback The callback to run if matched
-		 * @param string $method The HTTP method to match against. Defaults to psuedo-method 'ANY'
-		 * @return void
-		 */
-		protected function assignRoute(string $pattern, callable|array|null $callback, string $method='ANY'): void {
-			if($this->served) {
-				return;
-			}
 			
-			// @TODO likely rearrange routeCallbacks to store pattern+method+callback or convert routeCallbacks into a Routes collection class
-			if(($this->requestMethod !== $method) && ('ANY' !== $method)) {
-				return;
-			}
-			
-			$this->routeCallbacks[ $pattern ] = $callback;
+			// create the base route collection
+			$this->routeCollection = new RouteCollection(
+				$this,
+				null,
+				$this->pathPrefix
+			);
 		}
 		
 		/**
@@ -113,15 +102,6 @@
 				}
 				
 				$this->served = true;
-				
-				//// @TODO Request shouldn't be responsible for route
-				//$this->container['request']->setRoute(
-				//	new Route(
-				//		$pattern,
-				//		$raw_matches,
-				//		$this->container['request']
-				//	)
-				//);
 				
 				// execute callback
 				if(is_array($callback)) {
@@ -150,6 +130,46 @@
 			
 			// no route has triggered an execution, send out a 404
 			throw new RouteUnassignedException('Requested path is not assigned to a route');
+		}
+		
+		/**
+		 * Assign a route to the router
+		 * @param HTTPMethodEnum|array|string|null $method The HTTP method to match against. If null, matches any method
+		 * @param string $pattern The regex pattern to match against
+		 * @param callable|array|null $callback The callback to run if matched
+		 * @return Route
+		 */
+		protected function assignRoute(
+			HTTPMethodEnum|array|string|null $method,
+			string $pattern,
+			callable|array|null $callback=null
+		): Route {
+			// @TODO validate $callback
+			
+			//$this->routeCallbacks[ $pattern ] = $callback;
+			
+			return $this->routeCollection->add(
+				$this->makeRoute($method, $pattern)
+			);
+		}
+		
+		/**
+		 * Generate a route under the current route collection and return it
+		 * @param HTTPMethodEnum|array|string|null $method The HTTP method to match against. If null, matches any method
+		 * @param string $pattern The pattern to match against
+		 * @return Route The generated route
+		 */
+		protected function makeRoute(
+			HTTPMethodEnum|array|string|null $method=null,
+			string $pattern
+		): Route {
+			// create and add the route to the collection
+			// assign route and return it
+			return (new Route(
+				$this->routeCollection,
+				$method,
+				$pattern
+			))->setRouter($this)->setContainer($this->container);
 		}
 		
 		/**
@@ -204,8 +224,8 @@
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function any(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback);
+		public function any(string $pattern, callable|array|null $callback=null): Route {
+			return $this->assignRoute(null, $pattern, $callback);
 		}
 		
 		/**
@@ -214,8 +234,11 @@
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function get(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'GET');
+		public function get(string $pattern, callable|array|null $callback=null): Route {
+			return $this->assignRoute([
+				HTTPMethodEnum::GET,
+				HTTPMethodEnum::HEAD
+			], $pattern, $callback);
 		}
 		
 		/**
@@ -224,8 +247,11 @@
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function post(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'POST');
+		public function post(
+			string $pattern,
+			callable|array|null $callback=null
+		): Route {
+			return $this->assignRoute(HTTPMethodEnum::POST, $pattern, $callback);
 		}
 		
 		/**
@@ -234,8 +260,8 @@
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function put(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'PUT');
+		public function put(string $pattern, callable|array|null $callback=null): Route {
+			return $this->assignRoute(HTTPMethodEnum::PUT, $pattern, $callback);
 		}
 		
 		/**
@@ -244,8 +270,8 @@
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function patch(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'PATCH');
+		public function patch(string $pattern, callable|array|null $callback=null): Route {
+			return $this->assignRoute(HTTPMethodEnum::PATCH, $pattern, $callback);
 		}
 		
 		/**
@@ -254,28 +280,18 @@
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function delete(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'DELETE');
+		public function delete(string $pattern, callable|array|null $callback=null): Route {
+			return $this->assignRoute(HTTPMethodEnum::DELETE, $pattern, $callback);
 		}
 		
 		/**
-		 * Test if the request matches the given path and pattern for HEAD requests
+		 * Test if the request matches the given path and pattern for OPTIONS requests
 		 * @param string $pattern The pattern to match against
 		 * @param callable|array|null $callback The callback to run if matched
 		 * @return bool
 		 */
-		public function head(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'HEAD');
-		}
-		
-		/**
-		 * Test if the request matches the given path and pattern for OPTION requests
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function option(string $pattern, callable|array|null $callback=null): void {
-			$this->assignRoute($pattern, $callback, 'OPTION');
+		public function options(string $pattern, callable|array|null $callback=null): Route {
+			return $this->assignRoute(HTTPMethodEnum::OPTIONS, $pattern, $callback);
 		}
 		
 		/**
@@ -293,9 +309,14 @@
 				$this->routeCollection->getNamePrefix()
 			);
 			
+			// attach context to router
+			$this->attachContext($collection);
 			
 			// $router = new Router($this->request, $pathPrefix);
-			// $callback($router);
+			$callback();
+			
+			// done with context for router
+			$this->detachContext();
 			
 			// @TMP
 			throw new RuntimeException("Router grouping functionality not yet implemented");

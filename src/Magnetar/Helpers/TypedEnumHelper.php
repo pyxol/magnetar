@@ -5,38 +5,38 @@
 	
 	use Exception;
 	
-	use Magnetar\Helpers\Enums\Typed;
+	use Magnetar\Helpers\Enums\TypedEnum;
 	
 	/**
 	 * Helper static class to assist with typed values
 	 */
-	class TypedHelper {
+	class TypedEnumHelper {
 		/**
 		 * Get the type of a value
 		 * @param mixed $value The value to get the type of
-		 * @param Typed|null $default The default value to return if the type is unknown. If null, an exception will be thrown
-		 * @return Typed The type of the value
+		 * @param TypedEnum|null $default The default value to return if the type is unknown. If null, an exception will be thrown
+		 * @return TypedEnum The type of the value
 		 * 
 		 * @throws Exception If the type is unknown and no default value is provided
 		 */
-		public static function getType(mixed $value, Typed|null $default=null): Typed {
+		public static function getType(mixed $value, TypedEnum|null $default=null): TypedEnum {
 			// get the type of the value
 			$type = gettype($value);
 			
 			// return the type
 			return match($type) {
-				'boolean' => Typed::Boolean,
-				'integer' => Typed::Int,
-				'double' => Typed::Float,
-				'string' => Typed::String,
-				'array' => Typed::Array,
-				'object' => Typed::Object,
-				'resource' => Typed::Resource,
-				'resource (closed)' => Typed::Resource,
-				'NULL' => Typed::Null,
-				//'callable' => Typed::Callable,
-				//'mixed' => Typed::Mixed,
-				//'void' => Typed::Void,
+				'boolean' => TypedEnum::Boolean,
+				'integer' => TypedEnum::Int,
+				'double' => TypedEnum::Float,
+				'string' => TypedEnum::String,
+				'array' => TypedEnum::Array,
+				'object' => TypedEnum::Object,
+				'resource' => TypedEnum::Resource,
+				'resource (closed)' => TypedEnum::Resource,
+				'NULL' => TypedEnum::Null,
+				//'callable' => TypedEnum::Callable,
+				//'mixed' => TypedEnum::Mixed,
+				//'void' => TypedEnum::Void,
 				default => $default ?? throw new Exception('Unknown type: '. $type)
 			};
 		}
@@ -51,43 +51,43 @@
 		 * 
 		 * @see Magnetar\Helpers\Enums\Typed
 		 */
-		public static function typeByName(string $named_type, mixed $default=null): Typed {
+		public static function typeByName(string $named_type, mixed $default=null): TypedEnum {
 			return match($named_type) {
 				// booleans
-				'bool' => Typed::Boolean,
-				'boolean' => Typed::Boolean,
+				'bool' => TypedEnum::Boolean,
+				'boolean' => TypedEnum::Boolean,
 				
 				// integers
-				'int' => Typed::Int,
-				'integer' => Typed::Int,
+				'int' => TypedEnum::Int,
+				'integer' => TypedEnum::Int,
 				
 				// floats
-				'float' => Typed::Float,
-				'double' => Typed::Float,
+				'float' => TypedEnum::Float,
+				'double' => TypedEnum::Float,
 				
 				// strings
-				'string' => Typed::String,
+				'string' => TypedEnum::String,
 				
 				// arrays
-				'array' => Typed::Array,
+				'array' => TypedEnum::Array,
 				
 				// objects
-				'object' => Typed::Object,
+				'object' => TypedEnum::Object,
 				
 				// callables
-				'callable' => Typed::Callable,
+				'callable' => TypedEnum::Callable,
 				
 				// resources
-				'resource' => Typed::Resource,
+				'resource' => TypedEnum::Resource,
 				
 				// mixed
-				'mixed' => Typed::Mixed,
+				'mixed' => TypedEnum::Mixed,
 				
 				// null
-				'null' => Typed::Null,
+				'null' => TypedEnum::Null,
 				
 				// void
-				'void' => Typed::Void,
+				'void' => TypedEnum::Void,
 				default => $default ?? throw new Exception('Unknown type: '. $named_type)
 			};
 		}

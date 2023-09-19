@@ -3,12 +3,10 @@
 	
 	namespace Magnetar\Helpers\Enums;
 	
-	use Exception;
-	
 	/**
 	 * An enum for defining static types
 	 */
-	enum Typed {
+	enum TypedEnum {
 		case Null;
 		case Boolean;
 		case Int;

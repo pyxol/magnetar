@@ -2,16 +2,34 @@
 	declare(strict_types=1);
 	
 	namespace Magnetar\Router;
-
-	use Magnetar\Helpers\TypedHelper;
-	use Magnetar\Helpers\Enums\Typed;
-	use Magnetar\Router\Enums\HTTPMethod;
+	
+	use Exception;
+	
+	use Magnetar\Router\Router;
+	use Magnetar\Container\Container;
+	use Magnetar\Router\RouteCollection;
+	use Magnetar\Helpers\TypedEnumHelper;
+	use Magnetar\Helpers\Enums\TypedEnum;
+	use Magnetar\Router\Enums\HTTPMethodEnum;
 	use Magnetar\Router\Helpers\HTTPMethodEnumResolver;
-
+	
 	/**
 	 * A defined route
+	 * 
+	 * @todo handle method matching
+	 * @todo handle multiple methods + matching
 	 */
 	class Route {
+		/**
+		 * The route name
+		 * @var string|null The route name
+		 */
+		protected string|null $name = null;
+		
+		/**
+		 * The route's regex pattern (converted from this->pattern_basic)
+		 * @var string
+		 */
 		protected string $pattern_regex;
 		
 		/**
@@ -20,6 +38,18 @@
 		 */
 		protected array $var_types = [];
 		
+		
+		protected Router $router;
+		
+		protected Container $container;
+		
+		/**
+		 * Constructor
+		 * @param RouteCollection $routeCollection The route collection this route belongs to
+		 * @param string $name The route name
+		 * @param HTTPMethodEnum|string $method The HTTP request method (GET, POST, etc)
+		 * @param string $pattern_basic The pattern to match against
+		 */
 		public function __construct(
 			/**
 			 * The route collection this route belongs to
@@ -28,30 +58,46 @@
 			protected RouteCollection $routeCollection,
 			
 			/**
-			 * The route name
-			 * @var string
-			 */
-			protected string $name,
-			
-			/**
 			 * The HTTP request method (GET, POST, etc)
 			 * @var string
 			 */
-			protected HTTPMethod|string $method,
+			protected HTTPMethodEnum|array|string|null $method,
 			
 			/**
 			 * The pattern to match against
-			 * @var string
+			 * @var string|null
 			 */
-			protected string $pattern_basic
+			protected string|null $pattern_basic
 		) {
 			// properly type the method
 			if(is_string($method)) {
-				$this->method = HTTPMethodEnumResolver::resolve($method);
+				$this->method = HTTPMethodEnumResolver::resolve(strtoupper($method));
 			}
 			
 			// parse pattern
 			$this->pattern_regex = $this->parsePattern($this->pattern_basic);
+		}
+		
+		/**
+		 * Set the router instance
+		 * @param Router $router The router instance
+		 * @return self
+		 */
+		public function setRouter(Router $router): self {
+			$this->router = $router;
+			
+			return $this;
+		}
+		
+		/**
+		 * Set the container instance
+		 * @param Container $container The container instance
+		 * @return self
+		 */
+		public function setContainer(Container $container): self {
+			$this->container = $container;
+			
+			return $this;
 		}
 		
 		/**
@@ -70,7 +116,7 @@
 				"#\{([a-zA-Z0-9_]+)\:([A-Za-z]+)\}#si",
 				// replace with named capture group
 				function(array $matches): string {
-					$type = TypedHelper::getType($matches['type'], Typed::String);
+					$type = TypedEnumHelper::getType($matches['type'], TypedEnum::String);
 					
 					$this->var_types[ $matches['name'] ] = $type;
 					
@@ -86,9 +132,9 @@
 				"#\{(?<name>[a-zA-Z0-9_]+)\}#si",
 				// replace with named capture group
 				function(array $matches): string {
-					$this->var_types[ $matches['name'] ] = Typed::String;
+					$this->var_types[ $matches['name'] ] = TypedEnum::String;
 					
-					return '(?<' . $matches['name'] . '>'. $this->regexMatchByTyped(Typed::String) .')';
+					return '(?<' . $matches['name'] . '>'. $this->regexMatchByTyped(TypedEnum::String) .')';
 				},
 				$pattern
 			);
@@ -101,12 +147,12 @@
 		 * @param Typed $type The type to generate a match pattern for
 		 * @return string The regex variable match pattern
 		 */
-		protected function regexMatchByTyped(Typed $type): string {
+		protected function regexMatchByTyped(TypedEnum $type): string {
 			return match($type) {
-				Typed::Boolean => '[01]',
-				Typed::Int => '[0-9]+',
-				Typed::Float => '[0-9]+(?:\.[0-9]+)?',
-				Typed::String => '[^/]+',
+				TypedEnum::Boolean => '[01]',
+				TypedEnum::Int => '[0-9]+',
+				TypedEnum::Float => '[0-9]+(?:\.[0-9]+)?',
+				TypedEnum::String => '[^/]+',
 				
 				// other Typed values aren't supported, so we'll
 				// default to anything that isn't a slash
@@ -114,7 +160,20 @@
 			};
 		}
 		
-		
+		/**
+		 * Set the name for this route
+		 * @param string|null $name The name for this route. Prefixed with parent route collection's name. If null, the name is reset.
+		 * @return Route
+		 */
+		public function name(string|null $name=null): Route {
+			if(null !== $name) {
+				$this->name = $this->routeCollection->formatNameWithPrefix($name);
+			} else {
+				$this->name = null;
+			}
+			
+			return $this;
+		}
 		
 		///**
 		// * Parse the pattern, setting any parameters in the request

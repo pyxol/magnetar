@@ -6,7 +6,8 @@
 	use Exception;
 	
 	use Magnetar\Router\Router;
-	use Magnetar\Router\Enums\HTTPMethod;
+	use Magnetar\Router\Route;
+	use Magnetar\Router\Enums\HTTPMethodEnum;
 	
 	/**
 	 * A collection for Route objects.
@@ -20,12 +21,19 @@
 		 */
 		public array $routes = [];
 		
+		
+		/**
+		 * The name prefix for all routes in this collection
+		 * @var string|null The name prefix
+		 */
+		protected string|null $namePrefix = null;
+		
 		/**
 		 * Constructor
 		 * 
 		 * @param Router $router The router instance
 		 * @param string $pathPrefix The path prefix for all routes in this collection
-		 * @param callable $callback The callback to run that will define the routes in this collection
+		 * @param callable|null $callback The callback to run that will define the routes in this collection
 		 * @param string|null $namePrefix The name prefix for all routes in this collection
 		 * 
 		 * @return self
@@ -36,9 +44,20 @@
 			protected Router $router,
 			protected RouteCollection|null $parentCollection = null,
 			protected string $pathPrefix,
-			callable $callback,
-			protected string|null $namePrefix = null
+			callable|null $callback=null
 		) {
+			// process callback?
+			if(null !== $callback) {
+				$this->processCallback($callback);
+			}
+		}
+		
+		/**
+		 * Process the constructor callback (if set)
+		 * @param callable $callback The callback to run
+		 * @return void
+		 */
+		protected function processCallback(callable $callback): void {
 			$this->attachContext();
 			
 			try {
@@ -79,6 +98,21 @@
 			return $this;
 		}
 		
+		/**
+		 * Set the name prefix for all routes in this collection
+		 * @param string|null $namePrefix The name prefix
+		 * @return self
+		 */
+		public function namePrefix(string|null $namePrefix): self {
+			$this->namePrefix = $namePrefix;
+			
+			return $this;
+		}
+		
+		/**
+		 * Get the path prefix for all routes in this collection
+		 * @return string The path prefix
+		 */
 		public function getNamePrefix(): string|null {
 			return $this->namePrefix;
 		}
@@ -88,30 +122,37 @@
 		 * @param string $name The name of the route
 		 * @return string The formatted name
 		 */
-		protected function formatNameWithPrefix(string $name): string {
+		public function formatNameWithPrefix(string $name): string {
 			return $this->namePrefix . $name;
 		}
 		
 		/**
 		 * Generate a route, add it to the collection, and return it
-		 * @param string $name The name of the route (prefix will be prepended)
-		 * @param HTTPMethod|string $method The HTTP method to match against
 		 * @param string $pattern The pattern to match against
+		 * @param HTTPMethodEnum|string|null $method The HTTP method to match against. If null, all methods are matched
 		 * @return Route
 		 */
 		public function makeRoute(
-			string $name,
-			HTTPMethod|string $method,
+			HTTPMethodEnum|string|null $method=null,
 			string $pattern
 		): Route {
 			// create and add the route to the collection
-			$route_name = $this->formatNameWithPrefix($name);
-			
-			return $this->routes[ $route_name ] = new Route(
+			// assign route and return it
+			return $this->routes[] = new Route(
 				$this,
-				$route_name,
 				$method,
 				$pattern
 			);
+		}
+		
+		/**
+		 * Add a route to the collection
+		 * @param Route $route The route to add
+		 * @return Route This collection
+		 */
+		public function add(
+			Route $route
+		): Route {
+			return $this->routes[] = $route;
 		}
 	}

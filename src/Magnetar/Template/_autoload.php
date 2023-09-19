@@ -84,7 +84,7 @@
 	if(!function_exists('theme')) {
 		/**
 		 * Use a specific theme
-		 * @param string|null|null $theme_name
+		 * @param string|null $theme_name
 		 * @return Theme The theme instance
 		 */
 		function theme(string|null $theme_name=null): Template {
