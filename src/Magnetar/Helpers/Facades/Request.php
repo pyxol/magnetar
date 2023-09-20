@@ -11,10 +11,10 @@
 	 * @method header(string $name): ?string;
 	 * @method hasHeader(string $name): bool;
 	 * @method path(): string;
-	 * @method getMethod(): ?string;
+	 * @method method(): ?Magnetar\Router\Enums\HTTPMethodEnum;
 	 * @method assignOverrideParameters(array $parameters): void;
-	 * @method getParameter(string $name, mixed $default=null): mixed;
-	 * @method getParameters(): array;
+	 * @method parameter(string $name, mixed $default=null): mixed;
+	 * @method parameters(): array;
 	 * @method body(): string;
 	 * 
 	 * @see Magnetar\Http\Request

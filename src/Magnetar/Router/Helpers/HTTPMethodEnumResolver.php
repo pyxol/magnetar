@@ -29,7 +29,6 @@
 				'DELETE'  => HTTPMethodEnum::DELETE,
 				'OPTIONS' => HTTPMethodEnum::OPTIONS,
 				'HEAD'    => HTTPMethodEnum::HEAD,
-				'TRACE'   => HTTPMethodEnum::TRACE,
 				'CONNECT' => HTTPMethodEnum::CONNECT,
 				default => $default ?? throw new Exception('Unknown HTTP method: '. $method)
 			};

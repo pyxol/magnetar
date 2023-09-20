@@ -4,15 +4,13 @@
 	namespace Magnetar\Router;
 	
 	use Exception;
-	
+	use Magnetar\Http\Request;
 	use Magnetar\Router\Router;
 	use Magnetar\Router\Route;
 	use Magnetar\Router\Enums\HTTPMethodEnum;
 	
 	/**
-	 * A collection for Route objects.
-	 * 
-	 * @todo 
+	 * A collection manager for Route objects. Subsequent instances are typically shortlived and allow for grouping routes together
 	 */
 	class RouteCollection {
 		/**
@@ -21,20 +19,19 @@
 		 */
 		public array $routes = [];
 		
-		
 		/**
 		 * The name prefix for all routes in this collection
-		 * @var string|null The name prefix
+		 * @var string The name prefix
 		 */
-		protected string|null $namePrefix = null;
+		protected string $namePrefix = '';
 		
 		/**
 		 * Constructor
 		 * 
 		 * @param Router $router The router instance
+		 * @param RouteCollection|null $parentCollection The parent collection (if this collection is a sub-collection)
 		 * @param string $pathPrefix The path prefix for all routes in this collection
 		 * @param callable|null $callback The callback to run that will define the routes in this collection
-		 * @param string|null $namePrefix The name prefix for all routes in this collection
 		 * 
 		 * @return self
 		 * 
@@ -43,9 +40,13 @@
 		public function __construct(
 			protected Router $router,
 			protected RouteCollection|null $parentCollection = null,
-			protected string $pathPrefix,
-			callable|null $callback=null
+			protected string $pathPrefix = '',
+			callable|null $callback = null
 		) {
+			if(null !== $this->parentCollection) {
+				$this->pathPrefix = $this->parentCollection->formatPathWithPrefix($this->pathPrefix);
+			}
+			
 			// process callback?
 			if(null !== $callback) {
 				$this->processCallback($callback);
@@ -84,6 +85,11 @@
 		 * @return void
 		 */
 		protected function detachContext(): void {
+			// provide the parent collection with the routes generated in this collection
+			if(null !== $this->parentCollection) {
+				$this->parentCollection->addRoutes($this->routes);
+			}
+			
 			$this->router->detachContext();
 		}
 		
@@ -99,11 +105,24 @@
 		}
 		
 		/**
+		 * Format a path with the path prefix
+		 * @param string $path
+		 * @return string
+		 */
+		public function formatPathWithPrefix(string $path): string {
+			return rtrim($this->pathPrefix, '/') .'/'. ltrim($path, '/');
+		}
+		
+		/**
 		 * Set the name prefix for all routes in this collection
-		 * @param string|null $namePrefix The name prefix
+		 * @param string $namePrefix The name prefix
 		 * @return self
 		 */
-		public function namePrefix(string|null $namePrefix): self {
+		public function namePrefix(string $namePrefix=''): self {
+			if(null !== $this->parentCollection) {
+				$namePrefix = $this->parentCollection->formatNameWithPrefix($namePrefix);
+			}
+			
 			$this->namePrefix = $namePrefix;
 			
 			return $this;
@@ -128,21 +147,21 @@
 		
 		/**
 		 * Generate a route, add it to the collection, and return it
-		 * @param string $pattern The pattern to match against
 		 * @param HTTPMethodEnum|string|null $method The HTTP method to match against. If null, all methods are matched
+		 * @param string $pattern The pattern to match against
 		 * @return Route
 		 */
 		public function makeRoute(
-			HTTPMethodEnum|string|null $method=null,
+			HTTPMethodEnum|array|string|null $method=null,
 			string $pattern
 		): Route {
 			// create and add the route to the collection
 			// assign route and return it
-			return $this->routes[] = new Route(
+			return (new Route(
 				$this,
 				$method,
 				$pattern
-			);
+			));
 		}
 		
 		/**
@@ -153,6 +172,44 @@
 		public function add(
 			Route $route
 		): Route {
-			return $this->routes[] = $route;
+			return $this->routes[ $route->getName() ] = $route;
+		}
+		
+		/**
+		 * Add multiple routes to the collection
+		 * @param array $routes Route instances to add
+		 * @return self
+		 */
+		public function addRoutes(
+			array $routes
+		): self {
+			//$this->routes = array_merge($this->routes, $routes);
+			foreach($routes as $route) {
+				$this->add($route);
+			}
+			
+			return $this;
+		}
+		
+		/**
+		 * Attempt to match a request to a route
+		 * @param Request $request
+		 * @return Route|null
+		 */
+		public function matchRequestToRoute(
+			HTTPMethodEnum $method,
+			string $path
+		): Route|null {
+			// loop through routes
+			foreach($this->routes as $route) {
+				// check if the route matches the request
+				if($route->matches($method, $path)) {
+					// route matches, return it
+					return $route;
+				}
+			}
+			
+			// no route matches, return null
+			return null;
 		}
 	}

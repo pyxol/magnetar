@@ -136,7 +136,7 @@
 		): array {
 			$dependencies = [];
 			
-			foreach (static::getCallReflector($callback)->getParameters() as $parameter) {
+			foreach(static::getCallReflector($callback)->getParameters() as $parameter) {
 				static::addDependencyForCallParameter(
 					$container,
 					$parameter,

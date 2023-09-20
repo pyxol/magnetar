@@ -8,8 +8,6 @@
 	use Magnetar\Log\LogServiceProvider;
 	use Magnetar\Router\RouterServiceProvider;
 	
-	// @TODO   use Magnetar\Helpers\DeferrableServiceInterface;
-	
 	/**
 	 * The core application class
 	 * 

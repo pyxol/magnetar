@@ -11,6 +11,5 @@
 		case DELETE;
 		case OPTIONS;
 		case HEAD;
-		//case TRACE;
 		case CONNECT;
 	}

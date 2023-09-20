@@ -6,16 +6,18 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method group(string $prefixPath, callable $callback): void;
 	 * @method processRequest(Magnetar\Http\Request $request): Magnetar\Http\Response;
-	 * @method any(string $pattern, callable|array|null $callback=null): void;
-	 * @method get(string $pattern, callable|array|null $callback=null): void;
-	 * @method post(string $pattern, callable|array|null $callback=null): void;
-	 * @method put(string $pattern, callable|array|null $callback=null): void;
-	 * @method patch(string $pattern, callable|array|null $callback=null): void;
-	 * @method delete(string $pattern, callable|array|null $callback=null): void;
-	 * @method head(string $pattern, callable|array|null $callback=null): void;
-	 * @method option(string $pattern, callable|array|null $callback=null): void;
+	 * @method attachContext(Magnetar\Router\RouteCollection $collection): void;
+	 * @method detachContext(): void;
+	 * @method isTrailingSlashOptional(): bool;
+	 * @method any(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method get(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method post(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method put(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method patch(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method delete(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method options(string $pattern, callable|array|null $callback=null): Magnetar\Router\Route;
+	 * @method group(string $pathPrefix, callable $callback): void;
 	 * 
 	 * @see Magnetar\Router\Router
 	 */

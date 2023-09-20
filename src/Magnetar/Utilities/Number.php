@@ -41,12 +41,9 @@
 			int $number_to,
 			int|string $seed
 		): mixed {
-			if($number_from == $number_to) {
+			if($number_from === $number_to) {
 				return $number_from;
 			}
-			
-			$min_number = min($number_from, $number_to);
-			$max_number = max($number_from, $number_to);
 			
 			if(!is_numeric($seed)) {
 				$seed = preg_replace("#[^0-9]+#si", '', md5($seed));
@@ -54,7 +51,10 @@
 			
 			mt_srand((int)$seed);
 			
-			$selected_value = mt_rand($number_from, $number_to);
+			$selected_value = mt_rand(
+				min($number_from, $number_to),
+				max($number_from, $number_to)
+			);
 			
 			mt_srand((int)microtime(true));   // attempt to re-randomize the internal seed
 			

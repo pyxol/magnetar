@@ -13,13 +13,15 @@
 		 * @param string|false $append Optional. The string to append to the date
 		 * @param string|false $prepend Optional. The string to prepend to the date
 		 * @param int|false $relative_timestamp Optional. The timestamp to use as the current time. Defaults to current timestamp. If not a valid timestamp, strtotime() will be used to convert it
+		 * @param string $just_now Optional. The string to return if the timestamp is very recent. Defaults to 'just now'
 		 * @return string|false
 		 */
 		public static function sinceDate(
 			int|string $timestamp,
-			string|false $append=" ago",
+			string|false $append=' ago',
 			string|false $prepend=false,
-			int|false $relative_timestamp=false
+			int|false $relative_timestamp=false,
+			string $just_now='just now'
 		): string|false {
 			if(!preg_match("#^([0-9]+)$#si", $timestamp)) {
 				$timestamp = strtotime($timestamp);
@@ -37,7 +39,7 @@
 			
 			// provided timestamp is in the future but not by long
 			if(($date_diff <= 0) && ($date_diff >= (-1 * 60 * 5))) {
-				return "just now";
+				return $just_now;
 			}
 			
 			$ranges = [
@@ -55,12 +57,12 @@
 			
 			foreach($ranges as $name => $seconds) {
 				if($date_diff >= $seconds) {
-					if($name == "second") {
-						return "just now";
+					if('second' === $name) {
+						return 'just now';
 					}
 					
 					$div = floor( @($date_diff / $seconds) );
-					return (!empty($prepend)?$prepend:"") . $div ." ". $name . (($div <> 1)?"s":"") . (!empty($append)?$append:"");
+					return (!empty($prepend)?$prepend:'') . $div .' '. $name . (($div <> 1)?'s':'') . (!empty($append)?$append:'');
 				}
 			}
 			
@@ -91,10 +93,10 @@
 			}
 			
 			// if the month+day of start is later in the year than the month+day of end, then the person has not had their birthday yet
-			if(date("md", $start) > date("md", $end)) {
-				return ((date("Y", $end) - date("Y", $start)) - 1);
+			if(date('md', $start) > date('md', $end)) {
+				return ((date('Y', $end) - date('Y', $start)) - 1);
 			}
 			
-			return (date("Y", $end) - date("Y", $start));
+			return (date('Y', $end) - date('Y', $start));
 		}
 	}

@@ -86,7 +86,7 @@
 				// eg: from the core of the onion outwards
 				array_reverse($this->pipes),
 				
-				// create a closure that will call the next pipe in the chain
+				// create a closure that will call the next pipe in the pipeline
 				$this->carry(),
 				
 				// create a closure that will call the destination callback
@@ -118,7 +118,7 @@
 		}
 		
 		/**
-		 * Create a closure for the next pipe in the chain
+		 * Create a closure for the next pipe in the pipeline
 		 * @return Closure
 		 * 
 		 * @throws Exception

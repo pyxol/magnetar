@@ -84,7 +84,6 @@
 					->then($this->sendRequestToRouter());
 				
 				// send to client
-				// @TODO currently doesnt work because of the way the router is set up
 				$response->send();
 			} catch(Throwable $e) {
 				$this->recordException($e);

@@ -8,16 +8,15 @@
 	use Magnetar\Router\Router;
 	use Magnetar\Container\Container;
 	use Magnetar\Router\RouteCollection;
-	use Magnetar\Helpers\TypedEnumHelper;
 	use Magnetar\Helpers\Enums\TypedEnum;
+	use Magnetar\Helpers\TypedEnumHelper;
 	use Magnetar\Router\Enums\HTTPMethodEnum;
 	use Magnetar\Router\Helpers\HTTPMethodEnumResolver;
+	use Magnetar\Router\Exceptions\InvalidMethodException;
 	
 	/**
-	 * A defined route
-	 * 
-	 * @todo handle method matching
-	 * @todo handle multiple methods + matching
+	 * A route that can be defined and matched against a request by the router
+	 * using request methods and paths
 	 */
 	class Route {
 		/**
@@ -27,55 +26,74 @@
 		protected string|null $name = null;
 		
 		/**
-		 * The route's regex pattern (converted from this->pattern_basic)
-		 * @var string
+		 * An array of HTTP request methods (GET, POST, etc) this route responds to,
+		 * stored as HTTPMethodEnum values. Null values match any method.
+		 * @var array|null
 		 */
-		protected string $pattern_regex;
+		protected array|null $methods = [];
 		
 		/**
-		 * An array of named parameters and their associated Typed value
-		 * @var array<string, Typed>
+		 * The basic form of the route's path (before regex conversion)
+		 * @var string
+		 */
+		protected string $path_basic = '';
+		
+		/**
+		 * The route's path in regex format (converted version of this->path_basic)
+		 * @var string
+		 */
+		protected string $path_regex = '';
+		
+		/**
+		 * If the path is a regex pattern, this is true
+		 * @var bool
+		 */
+		protected bool $path_is_regex = false;
+		
+		/**
+		 * An array of named parameters and their associated TypedEnum value
+		 * @var array<string, TypedEnum>
 		 */
 		protected array $var_types = [];
 		
+		/**
+		 * An array of parameters that were matched in the request.
+		 * Key is the parameter name, value is a typed variable of the matched value
+		 * @var array|null
+		 */
+		protected array|null $parameters = null;
 		
-		protected Router $router;
+		/**
+		 * The router instance
+		 * @var Router
+		 */
+		protected ?Router $router = null;
 		
-		protected Container $container;
+		/**
+		 * The container instance
+		 * @var Container
+		 */
+		protected ?Container $container = null;
 		
 		/**
 		 * Constructor
 		 * @param RouteCollection $routeCollection The route collection this route belongs to
-		 * @param string $name The route name
-		 * @param HTTPMethodEnum|string $method The HTTP request method (GET, POST, etc)
-		 * @param string $pattern_basic The pattern to match against
+		 * @param HTTPMethodEnum|array|string|null $method The HTTP request method(s) (GET, POST, etc) to respond to. Null value means any
+		 * @param string $path The path to match against
+		 * @return self
+		 * 
+		 * @throws InvalidMethodException If the method(s) is an invalid type
 		 */
 		public function __construct(
-			/**
-			 * The route collection this route belongs to
-			 * @var RouteCollection
-			 */
 			protected RouteCollection $routeCollection,
-			
-			/**
-			 * The HTTP request method (GET, POST, etc)
-			 * @var string
-			 */
-			protected HTTPMethodEnum|array|string|null $method,
-			
-			/**
-			 * The pattern to match against
-			 * @var string|null
-			 */
-			protected string|null $pattern_basic
+			HTTPMethodEnum|array|string|null $method,
+			string $path
 		) {
-			// properly type the method
-			if(is_string($method)) {
-				$this->method = HTTPMethodEnumResolver::resolve(strtoupper($method));
-			}
+			// parse method(s)
+			$this->parseMethod($method);
 			
-			// parse pattern
-			$this->pattern_regex = $this->parsePattern($this->pattern_basic);
+			// parse path
+			$this->parsePath($path);
 		}
 		
 		/**
@@ -101,60 +119,133 @@
 		}
 		
 		/**
-		 * Parse the convenient pattern into a regex pattern
+		 * Parse the constructor method
+		 * @param HTTPMethodEnum|array|string|null $method
+		 * @return void
+		 * 
+		 * @throws InvalidMethodException If the method is an invalid type
+		 */
+		protected function parseMethod(
+			HTTPMethodEnum|array|string|null $method
+		): void {
+			// properly type the method
+			if(null === $method) {
+				// any method is valid
+				$this->methods = null;
+				
+				return;
+			} elseif($method instanceof HTTPMethodEnum) {
+				// single HTTPMethodEnum, easy
+				$this->methods = [
+					$method
+				];
+				
+				return;
+			} elseif(is_string($method)) {
+				// convert method string to HTTPMethodEnum
+				$this->methods = [
+					HTTPMethodEnumResolver::resolve(strtoupper($method))
+				];
+				
+				return;
+			}
+			
+			// making it this far means it's an array
+			foreach($method as $method_item) {
+				if($method_item instanceof HTTPMethodEnum) {
+					$this->methods[] = $method_item;
+				} elseif(is_string($method_item)) {
+					$this->methods[] = HTTPMethodEnumResolver::resolve(strtoupper($method_item));
+				} else {
+					throw new InvalidMethodException('Invalid HTTP method type');
+				}
+			}
+		}
+		
+		/**
+		 * Parse the constructor path pattern
 		 * @return void
 		 * 
 		 * @throws Exception If the pattern uses an invalid type name
 		 */
-		protected function parsePattern(string $pattern): string {
-			// parse typed patterns
+		protected function parsePath(string $path): void {
+			$path = $this->routeCollection->formatPathWithPrefix($path);
+			
+			$this->path_basic = $path;
+			
+			// delimiter
+			$delimiter = '#';
+			
+			// init pattern
+			$regex_pattern = $path;
+			
+			
+			// @TODO maybe combine these into one preg_replace_callback() call? using (?:(?<type>...))
+			
+			// parse type-specific patterns
 			// example:
-			//    /{id:int}/{name:string}/{age:int}/
-			//      => /(?<id>[0-9]+)/(?<name>[^/]+)/(?<age>[0-9]+)/
-			$pattern = preg_replace_callback(
+			//    /{city:string}/{last_name}/{id:int}/
+			//      => /(?<city>[^/]+)/(?<last_name>[^/]+)/(?<id>[0-9]+)/
+			$regex_pattern = preg_replace_callback(
 				// match any named parameters
-				"#\{([a-zA-Z0-9_]+)\:([A-Za-z]+)\}#si",
+				"#\{(?<name>[a-zA-Z0-9_]+)\:(?<type>[A-Za-z]+)\}#si",
 				// replace with named capture group
-				function(array $matches): string {
-					$type = TypedEnumHelper::getType($matches['type'], TypedEnum::String);
+				function(array $matches) use ($delimiter): string {
+					$type = TypedEnumHelper::typeByName($matches['type'], TypedEnum::String);
 					
 					$this->var_types[ $matches['name'] ] = $type;
 					
-					// use the Typed value to generate a match pattern
-					return '(?<' . $matches['name'] . '>'. $this->regexMatchByTyped($type) .')';
+					// use the TypedEnum value to generate a match pattern
+					return '(?<' . $matches['name'] . '>'. $this->regexMatchByTypedEnum($type) .')';
 				},
-				$pattern
+				$regex_pattern,
+				-1,
+				$count1
 			);
 			
 			// parse basic patterns (defaults to strings)
-			$pattern = preg_replace_callback(
+			$regex_pattern = preg_replace_callback(
 				// match any named parameters
 				"#\{(?<name>[a-zA-Z0-9_]+)\}#si",
 				// replace with named capture group
-				function(array $matches): string {
+				function(array $matches) use ($delimiter): string {
 					$this->var_types[ $matches['name'] ] = TypedEnum::String;
 					
-					return '(?<' . $matches['name'] . '>'. $this->regexMatchByTyped(TypedEnum::String) .')';
+					return '(?<' . $matches['name'] . '>'. $this->regexMatchByTypedEnum(TypedEnum::String) .')';
 				},
-				$pattern
+				$regex_pattern,
+				-1,
+				$count2
 			);
 			
-			return $pattern;
+			// check if any parameters were found
+			if($count1 || $count2) {
+				// path is regex
+				$this->path_is_regex = true;
+			}
+			
+			// trailing slash optional?
+			if((null !== $this->router) && $this->router->isTrailingSlashOptional()) {
+				$regex_pattern = preg_replace('#/$#si', '/?', $regex_pattern);
+			}
+			
+			// add delimiters and end-of-string match
+			$this->path_regex = $delimiter .'^'. $regex_pattern .'$'. $delimiter .'si';
 		}
 		
 		/**
 		 * Generate a regex variable match pattern for a given type
-		 * @param Typed $type The type to generate a match pattern for
+		 * @param TypedEnum $type The type to generate a match pattern for
 		 * @return string The regex variable match pattern
 		 */
-		protected function regexMatchByTyped(TypedEnum $type): string {
+		protected function regexMatchByTypedEnum(TypedEnum $type): string {
 			return match($type) {
 				TypedEnum::Boolean => '[01]',
 				TypedEnum::Int => '[0-9]+',
 				TypedEnum::Float => '[0-9]+(?:\.[0-9]+)?',
 				TypedEnum::String => '[^/]+',
 				
-				// other Typed values aren't supported, so we'll
+				// other TypedEnum values aren't supported, so we'll
 				// default to anything that isn't a slash
 				default => '[^/]+'
 			};
@@ -175,6 +266,25 @@
 			return $this;
 		}
 		
+		/**
+		 * Returns the name of the path, or an md5 hash of the path if no name is set
+		 * @return string
+		 * 
+		 * @todo make this more efficient (maybe have a unique id for each route)
+		 */
+		public function getName(): string {
+			return $this->name ??= md5($this->path_basic);
+		}
+		
+		/**
+		 * Get the route's assoc array of variables defined in the path.
+		 * Key is the variable name, value is the TypedEnum
+		 * @return array
+		 */
+		public function getPathVariableTypes(): array {
+			return $this->var_types;
+		}
+		
 		///**
 		// * Parse the pattern, setting any parameters in the request
 		// * @param array $raw_matches The raw matches from the matched Router pattern
@@ -192,5 +302,76 @@
 		//	);
 		//}
 		
+		/**
+		 * Determine if the provided method and path match this route
+		 * @param HTTPMethodEnum $method The HTTP method to match against
+		 * @param string $path The path to match against
+		 * @return bool
+		 */
+		public function matches(
+			HTTPMethodEnum $method,
+			string $path
+		): bool {
+			//print "Checking path[". $path ."] against ". $this->path_basic ." [". $this->path_regex ."]<br>\n";
+			
+			// check method
+			// @todo use a bitwise match operation instead of in_array()?
+			if(!in_array($method, $this->methods)) {
+				// request method isn't the same
+				return false;
+			}
+			
+			// check path
+			if($this->path_is_regex) {
+				if(!preg_match($this->path_regex, $path, $matches)) {
+					return false;
+				}
+				
+				// path matches
+				
+				// parse path matches
+				$this->parseMatchedPathVariables($matches);
+				
+				return true;
+			} else {
+				// basic path match
+				if($path !== $this->path_basic) {
+					return false;
+				}
+				
+				return true;
+			}
+		}
 		
+		/**
+		 * Processes the provided array of matches from the path regex
+		 * into a typed array of parameters
+		 * @param array $matches The raw preg_match matches from the path's regex pattern
+		 * @return void
+		 */
+		protected function parseMatchedPathVariables(array $matches): void {
+			// assign matched path parameters to request
+			$params = [];
+			
+			foreach($this->var_types as $var_name => $var_typed) {
+				$params[ $var_name ] = TypedEnumHelper::castTypedVariable(
+					// the TypedEnum value for the variable
+					$var_typed,
+					
+					// get the matched value from the regex matches
+					// @todo handle missing matches (by throwing exception?)
+					$matches[ $var_name ] ?? null
+				);
+			}
+			
+			$this->parameters = $params;
+		}
+		
+		/**
+		 * Get the route's matched, typed parameters
+		 * @return array
+		 */
+		public function parameters(): array {
+			return $this->parameters ?? [];
+		}
 	}

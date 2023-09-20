@@ -407,12 +407,4 @@
 			// get a single row
 			return $this->adapter->get_row($query, $params);
 		}
-		
-		/**
-		 * @TMP Debug function
-		 * @return string
-		 */
-		public function debugQueryParams(): string {
-			return print_r($this->buildQueryAndParams(), true);
-		}
 	}

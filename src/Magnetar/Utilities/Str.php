@@ -64,20 +64,22 @@
 		public static function formatPhoneNumber(int|string $phoneNumber): string {
 			$phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
 			
-			if(strlen($phoneNumber) > 10) {
+			$len = strlen($phoneNumber);
+			
+			if($len > 10) {
 				$countryCode = substr($phoneNumber, 0, (strlen($phoneNumber) - 10));
 				$areaCode = substr($phoneNumber, -10, 3);
 				$nextThree = substr($phoneNumber, -7, 3);
 				$lastFour = substr($phoneNumber, -4, 4);
 				
 				$phoneNumber = '+'. $countryCode .' ('. $areaCode .') '. $nextThree .'-'. $lastFour;
-			} elseif(strlen($phoneNumber) == 10) {
+			} elseif($len === 10) {
 				$areaCode = substr($phoneNumber, 0, 3);
 				$nextThree = substr($phoneNumber, 3, 3);
 				$lastFour = substr($phoneNumber, 6, 4);
 				
 				$phoneNumber = '('. $areaCode .') '. $nextThree .'-'. $lastFour;
-			} elseif(strlen($phoneNumber) == 7) {
+			} elseif($len === 7) {
 				$nextThree = substr($phoneNumber, 0, 3);
 				$lastFour = substr($phoneNumber, 3, 4);
 				
@@ -100,10 +102,6 @@
 			array $user_encasings=[]
 		): array {
 			$text = trim($text);
-			
-			if(!is_array($user_encasings)) {
-				$user_encasings = [];
-			}
 			
 			$hard_replacers = [
 				// quotation marks

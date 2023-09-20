@@ -3,11 +3,10 @@
 	
 	namespace Magnetar\Http;
 	
-	//use Magnetar\Router\Route;
+	use Magnetar\Router\Enums\HTTPMethodEnum;
+	use Magnetar\Router\Helpers\HTTPMethodEnumResolver;
 	
 	class Request {
-		//protected ?Route $route = null;
-		
 		/**
 		 * The requested path (without query string)
 		 * @var string
@@ -30,7 +29,7 @@
 		 * The request method
 		 * @var string|null
 		 */
-		protected ?string $method = null;
+		protected ?HTTPMethodEnum $method = null;
 		
 		/**
 		 * Request headers
@@ -43,27 +42,40 @@
 		 * @param string $path The requested path (without query string)
 		 */
 		public function __construct() {
+			// set request method
+			$this->processRequestMethod();
 			
+			// parse the request path and query string
+			$this->processRequestPath();
 			
-			
-			
-			// @TODO massive cleanup
-			
-			
-			
-			
-			
-			
+			// record request headers
+			$this->recordHeaders();
+		}
+		
+		/**
+		 * Process the request method
+		 * @return void
+		 */
+		protected function processRequestMethod(): void {
+			// set request method
+			$this->method = HTTPMethodEnumResolver::resolve(
+				$_SERVER['REQUEST_METHOD'] ?? null,
+				HTTPMethodEnum::GET
+			);
+		}
+		
+		/**
+		 * Process the request path
+		 * @return void
+		 */
+		protected function processRequestPath(): void {
 			$path = $_SERVER['REQUEST_URI'];
 			
 			// sanitize request path
-			$path = ltrim($path, "/");
+			$path = '/'. ltrim($path, "/");
 			$path = rtrim($path, '?&');
 			
 			$this->path = $path;
-			
-			// set request method
-			$this->method = $_SERVER['REQUEST_METHOD'] ?? null;
 			
 			if(false !== ($q_pos = strpos($this->path, '?'))) {
 				// request has ?, save to request and parse parameters
@@ -75,29 +87,6 @@
 				// chop off query string from request path
 				$this->path = substr($this->path, 0, $q_pos);
 			}
-			
-			
-			// record request headers
-			$this->recordHeaders();
-			
-			//// set base parameters (any created with URI arguments)
-			//$this->parameters = $_REQUEST;
-			
-			//// override any existing parameters set by URI arguments
-			//if(!empty($override_parameters)) {
-			//	if(!is_array($override_parameters)) {
-			//		//parse_str($override_parameters, $override_parameters);
-			//		throw new \Exception("Request was provided invalid routed parameters");
-			//	}
-			//	
-			//	foreach($override_parameters as $name => $value) {
-			//		if("" === ($name = strtolower(trim($name)))) {
-			//			continue;
-			//		}
-			//		
-			//		$this->parameters[ $name ] = $value;
-			//	}
-			//}
 		}
 		
 		/**
@@ -171,14 +160,15 @@
 		
 		/**
 		 * Get the request method
-		 * @return string|null
+		 * @return ?HTTPMethodEnum
 		 */
-		public function getMethod(): ?string {
+		public function method(): ?HTTPMethodEnum {
 			return $this->method;
 		}
 		
 		/**
-		 * Pass in parameters from the route that override parameters found in URI query params (eg those found in ?...)
+		 * Pass in parameters from the route that override parameters found in URI query params (eg those found in ?...).
+		 * Called by Router::processRequest()
 		 * @param array $parameters Assoc array of arameters to override
 		 * @return void
 		 */
@@ -198,23 +188,19 @@
 		 * @param mixed $default Optional. Return this if requested parameter isn't set
 		 * @return mixed
 		 */
-		public function getParameter(string $name, mixed $default=null): mixed {
-			if("" === ($name = strtolower(trim($name)))) {
-				return $default;
-			}
+		public function parameter(string $name, mixed $default=null): mixed {
+			//if("" === ($name = strtolower(trim($name)))) {
+			//	return $default;
+			//}
 			
-			if(!isset($this->parameters[ $name ])) {
-				return $default;
-			}
-			
-			return $this->parameters[ $name ];
+			return $this->parameters[ $name ] ?? $default;
 		}
 		
 		/**
 		 * Get all parameters from the request
 		 * @return array
 		 */
-		public function getParameters(): array {
+		public function parameters(): array {
 			return $this->parameters;
 		}
 		
@@ -225,25 +211,4 @@
 		public function body(): string {
 			return file_get_contents('php://input') ?: '';
 		}
-		
-		/**
-		 * Get the route that was matched
-		 * @return Route|null
-		 */
-		/* public function getRoute(): ?Route {
-			return $this->route;
-		} */
-		
-		/**
-		 * Set the route that was matched
-		 * @param Route $route The route that was matched
-		 * @return void
-		 */
-		/* public function setRoute(Route $route): void {
-			if(!is_null($this->route)) {
-				return;
-			}
-			
-			$this->route = $route;
-		} */
 	}

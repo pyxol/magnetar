@@ -102,7 +102,8 @@
 		 * @return void
 		 */
 		public function json(array $body): self {
-			// @TODO turn into a factory method
+			// @TODO turn into a factory method that clones itself and returns
+			// a JsonResponse object instead
 			
 			$this->header('Content-Type', 'application/json');
 			

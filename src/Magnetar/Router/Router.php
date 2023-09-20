@@ -3,7 +3,7 @@
 	
 	namespace Magnetar\Router;
 	
-	use RuntimeException;   // @TMP
+	use Exception;
 	
 	use Magnetar\Container\Container;
 	use Magnetar\Http\Request;
@@ -14,12 +14,7 @@
 	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 	
 	/**
-	 * Router class
-	 * 
-	 * @todo ->group() isn't finished yet
-	 * @todo grouped collections' routes aren't being added to the router
-	 * @todo create __call()
-	 * @todo move get/post/put/etc. methods to RouteCollection, define in __call()
+	 * Router class to match requests against routes and generates a response
 	 */
 	class Router {
 		/**
@@ -35,10 +30,10 @@
 		protected ?string $requestMethod = null;
 		
 		/**
-		 * Array of routes to match against. Key is the regex pattern to match against request uri, value is the callback to run if matched
-		 * @var array
+		 * The route action registry
+		 * @var RouteActionRegistry
 		 */
-		protected array $routeCallbacks = [];
+		protected RouteActionRegistry $actionRegistry;
 		
 		/**
 		 * The current route collection
@@ -81,6 +76,9 @@
 				null,
 				$this->pathPrefix
 			);
+			
+			// create the route action registry
+			$this->actionRegistry = new RouteActionRegistry();
 		}
 		
 		/**
@@ -90,46 +88,41 @@
 		 * 
 		 * @throws CannotProcessRouteException
 		 * @throws RouteUnassignedException
+		 * 
+		 * @note For web requests, called by Http\Kernel::sendRequestToRouter() via Http\Kernel::process(Request $request)
 		 */
 		public function processRequest(Request $request): Response {
-			//throw new RuntimeException("Router::processRequest() not yet fully implemented, routes are not read from APP/routing/website.php");
-			
-			// run through registered routes, find a match, pass execute callback to response class
-			foreach($this->routeCallbacks as $pattern => $callback) {
-				// @TODO attemptPathPattern() should use $request
-				if(!$this->attemptPathPattern($pattern)) {
-					continue;
-				}
-				
-				$this->served = true;
-				
-				// execute callback
-				if(is_array($callback)) {
-					// class reference and method
-					list($instance, $method) = $callback;
-					
-					if(is_string($instance)) {
-						$instance = new ($instance)($this);
-					}
-					
-					//$instance->$method($this->request, $this->response);
-					
-					// call instance method and reference params
-					//call_user_func([$instance, $method]);
-					return $this->container->instance('response', call_user_func([$instance, $method]));
-				} elseif(is_callable($callback)) {
-					// closure
-					//call_user_func_array($callback, $params);
-					//call_user_func($callback);
-					return $this->container->instance('response', call_user_func($callback));
-				} else {
-					// unknown callback method
-					throw new CannotProcessRouteException('Kernel execution was provided an unprocessable callback');
-				}
+			// attempt to match the request against the registered routes
+			if(null === ($route = $this->routeCollection->matchRequestToRoute(
+				$request->method(),
+				$request->path()
+			))) {
+				// no route matches request, send out a 404
+				throw new RouteUnassignedException('Requested path is not assigned to a route');
 			}
 			
-			// no route has triggered an execution, send out a 404
-			throw new RouteUnassignedException('Requested path is not assigned to a route');
+			// override request parameters with matched route parameters
+			$request->assignOverrideParameters($route->parameters());
+			
+			$callback = $this->actionRegistry->get($route->getName());
+			
+			// execute callback
+			if(is_array($callback)) {
+				// class reference and method
+				list($instance, $method) = $callback;
+				
+				if(is_string($instance)) {
+					$instance = new ($instance)($this);
+				}
+				
+				return $this->container->instance('response', call_user_func([$instance, $method]));
+			} elseif(is_callable($callback)) {
+				// closure
+				return $this->container->instance('response', call_user_func($callback));
+			} else {
+				// unknown callback method
+				throw new CannotProcessRouteException('Route matched has an unprocessable callback');
+			}
 		}
 		
 		/**
@@ -144,12 +137,11 @@
 			string $pattern,
 			callable|array|null $callback=null
 		): Route {
-			// @TODO validate $callback
-			
-			//$this->routeCallbacks[ $pattern ] = $callback;
-			
-			return $this->routeCollection->add(
-				$this->makeRoute($method, $pattern)
+			return $this->actionRegistry->register(
+				$this->routeCollection->add(
+					$this->makeRoute($method, $pattern)
+				),
+				$callback
 			);
 		}
 		
@@ -165,11 +157,15 @@
 		): Route {
 			// create and add the route to the collection
 			// assign route and return it
-			return (new Route(
-				$this->routeCollection,
+			//return (new Route(
+			//	$this->routeCollection,
+			//	$method,
+			//	$pattern
+			//))->setRouter($this)->setContainer($this->container);
+			return $this->routeCollection->makeRoute(
 				$method,
 				$pattern
-			))->setRouter($this)->setContainer($this->container);
+			);
 		}
 		
 		/**
@@ -195,8 +191,11 @@
 		}
 		
 		/**
-		 * Attach a subsequent route collection to add context to
-		 * basic Route:: calls inside of group initialization callbacks.
+		 * Create router context by attaching a new, temporary route collection to
+		 * a route collection stack so that routes can be defined inside of a group
+		 * callback.
+		 * As an example, this allows Route::get() calls inside of Route::group(..., fn() => { ... })
+		 * to be defined inside of the context of the group's context (name, path prefix, etc.)
 		 * @param RouteCollection $collection
 		 * @return void
 		 */
@@ -216,6 +215,14 @@
 		public function detachContext(): void {
 			// restore the previous context
 			$this->routeCollection = array_pop($this->contextualRouteCollections);
+		}
+		
+		/**
+		 * Determine if trailing slashes are optional when matching against a route
+		 * @return bool
+		 */
+		public function isTrailingSlashOptional(): bool {
+			return true;
 		}
 		
 		/**
@@ -301,24 +308,35 @@
 		 * @return void
 		 */
 		public function group(string $pathPrefix, callable $callback): void {
-			$collection = new RouteCollection(
+			// instantiate a route collection, pass in the context, path prefix, and callback that will
+			// use a temporary router context to define routes. Automatically reverts context when finished
+			new RouteCollection(
 				$this,
 				$this->routeCollection,
 				$pathPrefix,
-				$callback,
-				$this->routeCollection->getNamePrefix()
+				$callback
 			);
-			
-			// attach context to router
-			$this->attachContext($collection);
-			
-			// $router = new Router($this->request, $pathPrefix);
-			$callback();
-			
-			// done with context for router
-			$this->detachContext();
-			
-			// @TMP
-			throw new RuntimeException("Router grouping functionality not yet implemented");
+		}
+		
+		/**
+		 * Catch magic method calls and assign routes based on the method name if it matches a valid HTTP method name
+		 * @param string $name The method name
+		 * @param array $arguments The arguments passed to the method
+		 * @return mixed
+		 */
+		public function __call(string $name, array $arguments): mixed {
+			return match($name) {
+				//'any' => $this->assignRoute(null, ...$arguments),
+				//'get' => $this->assignRoute([
+				//	HTTPMethodEnum::GET,
+				//	HTTPMethodEnum::HEAD
+				//], ...$arguments),
+				//'post' => $this->assignRoute(HTTPMethodEnum::POST, ...$arguments),
+				//'put' => $this->assignRoute(HTTPMethodEnum::PUT, ...$arguments),
+				//'patch' => $this->assignRoute(HTTPMethodEnum::PATCH, ...$arguments),
+				//'delete' => $this->assignRoute(HTTPMethodEnum::DELETE, ...$arguments),
+				//'options' => $this->assignRoute(HTTPMethodEnum::OPTIONS, ...$arguments),
+				default => throw new Exception("Router method ". $name ." does not exist")
+			};
 		}
 	}

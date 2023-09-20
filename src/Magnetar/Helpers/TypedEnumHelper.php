@@ -45,11 +45,11 @@
 		 * Get a type by it's name. This accepts loosely typed names, such as 'int' or 'integer' for Int, or 'bool' or 'boolean' for Boolean
 		 * @param string $named_type The name of the type to get
 		 * @param mixed $default The default value to return if the type is unknown. If null, an exception will be thrown
-		 * @return Typed The type
+		 * @return TypedEnum The type
 		 * 
 		 * @throws Exception If the type is unknown and no default value is provided
 		 * 
-		 * @see Magnetar\Helpers\Enums\Typed
+		 * @see Magnetar\Helpers\Enums\TypedEnum
 		 */
 		public static function typeByName(string $named_type, mixed $default=null): TypedEnum {
 			return match($named_type) {
@@ -134,5 +134,48 @@
 				'null',
 				'void',
 			];
+		}
+		
+		/**
+		 * Cast a variable based on the specified TypedEnum
+		 * @param TypedEnum $type The type to cast the variable to
+		 * @param mixed $value The value to cast
+		 * @return mixed
+		 */
+		public static function castTypedVariable(
+			TypedEnum $type,
+			mixed $value
+		): mixed {
+			// return the type
+			return match($type) {
+				// booleans
+				TypedEnum::Boolean => (bool)$value,
+				
+				// integers
+				TypedEnum::Int => (int)$value,
+				
+				// floats
+				TypedEnum::Float => (float)$value,
+				
+				// strings
+				TypedEnum::String => (string)$value,
+				
+				// arrays
+				TypedEnum::Array => $value,
+				
+				// objects
+				TypedEnum::Object => $value,
+				
+				// resources
+				TypedEnum::Resource => $value,
+				
+				// null
+				TypedEnum::Null => null,
+				
+				//'callable' => TypedEnum::Callable,
+				//'mixed' => TypedEnum::Mixed,
+				//'void' => TypedEnum::Void,
+				default => $value
+			};
 		}
 	}
