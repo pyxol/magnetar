@@ -163,7 +163,6 @@
 			return $this;
 		}
 		
-		
 		/**
 		 * Get the response body
 		 * @return string

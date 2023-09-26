@@ -19,9 +19,10 @@
 		/**
 		 * Getter: get cache by key
 		 * @param string $key The key to get
+		 * @param mixed $callback Optional. The value to cache. If callable, this will be called and the value returned is stored in cache. If null, the stored cache value will be returned (defaults to null)
 		 * @return mixed The value of the cache
 		 */
-		public function get(string $key): mixed;
+		public function get(string $key, mixed $callback=null): mixed;
 		
 		/**
 		 * Getter: get multiple cache by keys

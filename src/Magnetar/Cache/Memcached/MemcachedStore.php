@@ -155,8 +155,6 @@
 		 * @return mixed The value of the cache
 		 */
 		public function set(string $key, mixed $value, int $ttl=0): mixed {
-			\Magnetar\Helpers\Facades\Log::debug("Setting $key to $value");
-			
 			$result = $this->memcached->set(
 				$this->prefix . $key,
 				$value,
