@@ -8,7 +8,7 @@
 	use Magnetar\Helpers\Facades\URL;
 	use Magnetar\Http\JsonResponse;
 	use Magnetar\Http\RedirectResponse;
-	use Magnetar\Logger;
+	use Magnetar\Log\Logger;
 	use Magnetar\Template\Template;
 	
 	if(!function_exists('app')) {
@@ -26,6 +26,54 @@
 			
 			// return an instance of the requested class from the container
 			return Container::getInstance()->make($abstract, $params);
+		}
+	}
+	
+	if(!function_exists('app_path')) {
+		/**
+		 * Get the path in the App directory
+		 * @param string $rel_path Path relative to the App directory. Defaults to an empty string
+		 * @return string
+		 */
+		function app_path(string $rel_path=''): string {
+			return app()->pathApp($rel_path);
+		}
+	}
+	
+	if(!function_exists('asset')) {
+		/**
+		 * Get the URL to an asset
+		 * @param string $rel_path Path relative to the asset directory. Defaults to an empty string
+		 * @return string
+		 * 
+		 * @todo implement
+		 */
+		function asset(string $rel_path=''): string {
+			throw new \Exception("Function 'asset' not implemented");
+		}
+	}
+	
+	if(!function_exists('asset_path')) {
+		/**
+		 * Get the path in the asset directory
+		 * @param string $rel_path Path relative to the asset directory. Defaults to an empty string
+		 * @return string
+		 * 
+		 * @todo implement
+		 */
+		function asset_path(string $rel_path=''): string {
+			return app()->pathAssets($rel_path);
+		}
+	}
+	
+	if(!function_exists('base_path')) {
+		/**
+		 * Get the path in the base directory
+		 * @param string $rel_path Path relative to the base directory. Defaults to an empty string
+		 * @return string
+		 */
+		function base_path(string $rel_path=''): string {
+			return app()->pathBase($rel_path);
 		}
 	}
 	
@@ -64,6 +112,28 @@
 		}
 	}
 	
+	if(!function_exists('config_path')) {
+		/**
+		 * Get the path in the config directory
+		 * @param string $rel_path Path relative to the config directory. Defaults to an empty string
+		 * @return string
+		 */
+		function config_path(string $rel_path=''): string {
+			return app()->pathConfig($rel_path);
+		}
+	}
+	
+	if(!function_exists('data_path')) {
+		/**
+		 * Get the path to a file in the data directory
+		 * @param string $rel_path Path relative to the data directory. Defaults to an empty string
+		 * @return string
+		 */
+		function data_path(string $rel_path=''): string {
+			return app()->pathData($rel_path);
+		}
+	}
+	
 	if(!function_exists('env')) {
 		/**
 		 * Get an environment variable
@@ -87,13 +157,34 @@
 		}
 	}
 	
+	if(!function_exists('logger')) {
+		/**
+		 * Log a debug message to the logger
+		 * @return void
+		 */
+		function logger(string $message, array $context=[]): void {
+			app('logger')->debug($message, $context);
+		}
+	}
+	
 	if(!function_exists('logs')) {
 		/**
 		 * Get the logger instance
-		 * @return \Magnetar\Logger
+		 * @return Logger|null
 		 */
 		function logs(): Logger {
 			return app('logger');
+		}
+	}
+	
+	if(!function_exists('public_path')) {
+		/**
+		 * Get the path in the public directory
+		 * @param string $rel_path Path relative to the public directory. Defaults to an empty string
+		 * @return string
+		 */
+		function public_path(string $rel_path=''): string {
+			return app()->pathPublic($rel_path);
 		}
 	}
 	
@@ -108,6 +199,17 @@
 		}
 	}
 	
+	if(!function_exists('storage_path')) {
+		/**
+		 * Get the path to a file in the storage directory
+		 * @param string $rel_path Path relative to the storage directory. Defaults to an empty string
+		 * @return string
+		 */
+		function storage_path(string $rel_path=''): string {
+			return app()->pathStorage($rel_path);
+		}
+	}
+	
 	if(!function_exists('theme')) {
 		/**
 		 * Use a specific theme
@@ -116,6 +218,30 @@
 		 */
 		function theme(string|null $theme_name=null): Template {
 			return app('theme')->theme($theme_name);
+		}
+	}
+	
+	if(!function_exists('themes_path')) {
+		/**
+		 * Get the path to a file in the themes directory
+		 * @param string $rel_path Path relative to the themes directory. Defaults to an empty string
+		 * @return string
+		 */
+		function themes_path(string $rel_path=''): string {
+			return app()->pathThemes($rel_path);
+		}
+	}
+	
+	if(!function_exists('theme_path')) {
+		/**
+		 * Get the path to a file in the active theme directory
+		 * @param string $rel_path Path relative to the active theme directory. Defaults to an empty string
+		 * @return string
+		 */
+		function theme_path(string $rel_path=''): string {
+			return app()->pathThemes(
+				app()->joinPath(config('theme.default'), $rel_path)
+			);
 		}
 	}
 	
