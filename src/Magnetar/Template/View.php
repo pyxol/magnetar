@@ -12,6 +12,7 @@
 	 * Holds data via magic methods
 	 * 
 	 * @todo cleanup
+	 * @todo calls to global tpl() from inside templates lose contextual data
 	 */
 	class View {
 		/**
@@ -41,12 +42,16 @@
 			
 			/**
 			 * The data to pass to the template view
-			 * @var array
+			 * @var array|null
 			 */
-			array $view_data=[]
+			array|null $view_data=null
 		) {
 			// set the view data
-			$this->data = array_merge($this->template->getData(), $view_data);
+			if(null !== $view_data) {
+				$this->data = array_merge($this->template->getData(), $view_data);
+			} else {
+				$this->data = $this->template->getData();
+			}
 		}
 		
 		/**

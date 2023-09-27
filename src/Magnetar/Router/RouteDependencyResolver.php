@@ -33,7 +33,8 @@
 		 * @throws InvalidArgumentException If the callback is invalid
 		 */
 		public function resolveParameters(
-			callable|array|string|null $callback=null
+			callable|array|string|null $callback=null,
+			array $namedParameters=[]
 		): array {
 			// null value, no params
 			if(null === $callback) {
@@ -55,13 +56,20 @@
 			// array
 			// ex: [ClassName::class, 'methodName']
 			if(is_array($callback)) {
-				return $this->resolveClassMethodParameters($callback[0], $callback[1]);
+				return $this->resolveClassMethodParameters(
+					$callback[0],
+					$callback[1],
+					$namedParameters
+				);
 			}
 			
 			// callable
 			// ex: function() {}
 			// ex: fn() => {}
-			return $this->resolveCallableParameters($callback);
+			return $this->resolveCallableParameters(
+				$callback,
+				$namedParameters
+			);
 		}
 		
 		/**
@@ -85,18 +93,25 @@
 		/**
 		 * Resolve a reflection parameter dependency
 		 * @param ReflectionParameter $parameter The parameter to resolve
+		 * @param array $namedParameters The named parameters from the route to match against
 		 * @return mixed The resolved value
 		 * 
 		 * @throws UnresolvableRouteParameterException If the parameter cannot be resolved
 		 */
 		protected function resolveParameterDependency(
-			ReflectionParameter $parameter
+			ReflectionParameter $parameter,
+			array $namedParameters=[]
 		): mixed {
 			if($parameter->hasType()) {
 				if(!$parameter->getType()->isBuiltin()) {
 					return $this->container->make(
 						$parameter->getType()->getName()
 					);
+				}
+				
+				// matched path parameter -> return type casted value
+				if(isset($namedParameters[ $parameter->getName() ])) {
+					return $namedParameters[ $parameter->getName() ];
 				}
 				
 				if($parameter->isOptional() && $parameter->isDefaultValueAvailable()) {
@@ -109,6 +124,11 @@
 				
 				// @TODO needs further testing
 				throw new UnresolvableRouteParameterException("Unable to resolve parameter: ". $parameter->getName());
+			}
+			
+			// matched path parameter -> return type casted value
+			if(isset($namedParameters[ $parameter->getName() ])) {
+				return $namedParameters[ $parameter->getName() ];
 			}
 			
 			// resolve as default value
@@ -125,25 +145,34 @@
 		 * Resolve parameters for a class method
 		 * @param string $class The class name
 		 * @param string $method The method name
+		 * @param array $namedParameters The named parameters from the route to match against
 		 * @return array The resolved parameters for the method
 		 */
 		protected function resolveClassMethodParameters(
 			string $class,
-			string $method
+			string $method,
+			array $namedParameters=[]
 		): array {
 			// cycle through each of the class method's parameter and resolve it
 			return array_map(
-				fn(ReflectionParameter $parameter) => $this->resolveParameterDependency($parameter),
+				fn(ReflectionParameter $parameter) => $this->resolveParameterDependency($parameter, $namedParameters),
 				(new ReflectionMethod($class, $method))->getParameters()
 			);
 		}
 		
+		/**
+		 * Resolve parameters for a callable
+		 * @param callable $callable The callable to resolve parameters for
+		 * @param array $namedParameters The named parameters from the route to match against
+		 * @return array The resolved parameters for the callable
+		 */
 		protected function resolveCallableParameters(
-			callable $callable
+			callable $callable,
+			array $namedParameters=[]
 		): array {
 			// cycle through each of the callable's parameter and resolve it
 			return array_map(
-				fn(ReflectionParameter $parameter) => $this->resolveParameterDependency($parameter),
+				fn(ReflectionParameter $parameter) => $this->resolveParameterDependency($parameter, $namedParameters),
 				(new ReflectionFunction($callable))->getParameters()
 			);
 		}

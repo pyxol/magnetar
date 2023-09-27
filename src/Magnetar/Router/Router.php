@@ -108,8 +108,13 @@
 			// fetch the callback for the route from the action registry
 			$callback = $this->actionRegistry->get($route->getName());
 			
-			// resolve parameter dependencies for the callback
-			$resolved_parameters = (new RouteDependencyResolver($this->container))->resolveParameters($callback);
+			// resolve parameter dependencies for the callback. Additionally pass
+			// the route's path-defined parameters to the resolver so that they can be
+			// injected into the callback by name (eg: /path/{id} => function(string $id) {}})
+			$resolved_parameters = (new RouteDependencyResolver($this->container))->resolveParameters(
+				$callback,
+				$route->parameters()
+			);
 			
 			// pass resolved parameters, execute callback, and return response
 			if(is_array($callback)) {
