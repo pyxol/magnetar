@@ -49,7 +49,7 @@
 		 * @todo implement
 		 */
 		function asset(string $rel_path=''): string {
-			throw new \Exception("Function 'asset' not implemented");
+			throw new \Exception("Global function 'asset()' has not been implemented yet");
 		}
 	}
 	
@@ -58,8 +58,6 @@
 		 * Get the path in the asset directory
 		 * @param string $rel_path Path relative to the asset directory. Defaults to an empty string
 		 * @return string
-		 * 
-		 * @todo implement
 		 */
 		function asset_path(string $rel_path=''): string {
 			return app()->pathAssets($rel_path);

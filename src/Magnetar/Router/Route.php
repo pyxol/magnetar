@@ -180,7 +180,7 @@
 			$regex_pattern = $path;
 			
 			
-			// @TODO maybe combine these into one preg_replace_callback() call? using (?:(?<type>...))
+			// @TODO maybe combine these into one preg_replace_callback() call? using (?:\:(?<type>...))
 			
 			// parse type-specific patterns
 			// example:

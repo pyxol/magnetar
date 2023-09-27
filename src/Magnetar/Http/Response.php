@@ -98,10 +98,10 @@
 		
 		/**
 		 * Set JSON header and prints JSON response
-		 * @param array $body The JSON body to print
+		 * @param mixed $body The JSON body to print
 		 * @return void
 		 */
-		public function json(array $body): self {
+		public function json(mixed $body): self {
 			// @TODO turn into a factory method that clones itself and returns
 			// a JsonResponse object instead
 			

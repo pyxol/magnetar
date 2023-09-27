@@ -512,31 +512,41 @@
 			foreach([
 				'app' => [
 					self::class,
-					\Magnetar\Application::class
+					\Magnetar\Container\Container::class,
+					\Magnetar\Application::class,
 				],
 				'cache' => [
-					\Magnetar\Cache\StoreManager::class
+					\Magnetar\Cache\StoreManager::class,
 				],
 				'config' => [
-					\Magnetar\Config\Config::class
+					\Magnetar\Config\Config::class,
 				],
 				'database' => [
-					\Magnetar\Database\ConnectionManager::class
+					\Magnetar\Database\ConnectionManager::class,
 				],
 				'files' => [
-					\Magnetar\Filesystem\Filesystem::class
+					\Magnetar\Filesystem\Filesystem::class,
 				],
 				'logger' => [
-					\Magnetar\Log\Logger::class
+					\Magnetar\Log\Logger::class,
+				],
+				'queue' => [
+					\Magnetar\Queue\QueueManager::class,
 				],
 				'request' => [
-					\Magnetar\Http\Request::class
+					\Magnetar\Http\Request::class,
 				],
 				'response' => [
-					\Magnetar\Http\Response::class
+					\Magnetar\Http\Response::class,
 				],
 				'router' => [
-					\Magnetar\Router\Router::class
+					\Magnetar\Router\Router::class,
+				],
+				'theme' => [
+					\Magnetar\Template\ThemeManager::class,
+				],
+				'urlgenerator' => [
+					\Magnetar\Http\UrlGenerator::class,
 				],
 			] as $key => $aliases) {
 				foreach($aliases as $alias) {

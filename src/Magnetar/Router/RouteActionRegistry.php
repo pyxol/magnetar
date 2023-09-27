@@ -19,13 +19,13 @@
 		 * Register a route action
 		 * 
 		 * @param string $name The name of the action
-		 * @param callable|array|null $callback The callback to run when the action is called
+		 * @param callable|array|string|null $callback The callback to run when the action is called
 		 * 
 		 * @return Route
 		 */
 		public function register(
 			Route $route,
-			callable|array|null $callback
+			callable|array|string|null $callback
 		): Route {
 			$this->actions[ $route->getName() ] = $callback;
 			
