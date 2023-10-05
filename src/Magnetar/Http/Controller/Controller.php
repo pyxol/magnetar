@@ -10,11 +10,11 @@
 		 * Catch any undefined methods
 		 * @param string $method
 		 * @param array $args
-		 * @return void
+		 * @return mixed
 		 * 
 		 * @throws \BadMethodCallException
 		 */
-		public function __call(string $method, array $args): void {
+		public function __call(string $method, array $args): mixed {
 			throw new BadMethodCallException(sprintf(
 				"The method %s does not exist for controller %s.",
 				$method,

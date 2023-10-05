@@ -3,11 +3,11 @@
 	
 	namespace Magnetar\Filesystem\Exceptions;
 	
-	use Exception;
+	use Magnetar\Filesystem\Exceptions\DiskAdapterException;
 	
 	/**
 	 * Exception thrown when a file is not found
 	 */
-	class FileNotFoundException extends Exception {
+	class FileNotFoundException extends DiskAdapterException {
 		
 	}

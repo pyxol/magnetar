@@ -10,7 +10,7 @@
 	 * @method setCookie(string $name, ?string $value=null, int $expires=0, string $path='', string $domain='', bool $secure=false, bool $httponly=false): self;
 	 * @method redirect(string $path, int $response_code=302): void;
 	 * @method setBody(string $body=''): self;
-	 * @method json(array $body): self;
+	 * @method json(mixed $body): self;
 	 * @method send(): self;
 	 * @method sendHeaders(): self;
 	 * @method sendBody(): self;

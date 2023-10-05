@@ -6,8 +6,8 @@
 	use Magnetar\Filesystem\Exceptions\DiskAdapterException;
 	
 	/**
-	 * Exception thrown when a directory is not found
+	 * Exception thrown when the adapter fails to write a file
 	 */
-	class DirectoryNotFoundException extends DiskAdapterException {
+	class FailedWriteException extends DiskAdapterException {
 		
 	}

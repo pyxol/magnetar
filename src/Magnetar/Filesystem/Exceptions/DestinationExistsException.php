@@ -3,11 +3,11 @@
 	
 	namespace Magnetar\Filesystem\Exceptions;
 	
-	use Exception;
+	use Magnetar\Filesystem\Exceptions\DiskAdapterException;
 	
 	/**
 	 * Exception thrown when a destination exists
 	 */
-	class DestinationExistsException extends Exception {
+	class DestinationExistsException extends DiskAdapterException {
 		
 	}

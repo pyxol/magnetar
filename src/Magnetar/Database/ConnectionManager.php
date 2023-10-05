@@ -71,11 +71,11 @@
 		 * @throws Exception
 		 */
 		protected function makeConnection(string $connection_name): void {
-			if(null === ($adapter = $this->getAdapterNameFromConnectionName($connection_name))) {
+			if(null === ($adapter_name = $this->getAdapterNameFromConnectionName($connection_name))) {
 				throw new Exception('Database driver not specified for connection');
 			}
 			
-			if(null === ($adapter_class = $this->adapters[ $adapter ] ?? null)) {
+			if(null === ($adapter_class = $this->adapters[ $adapter_name ] ?? null)) {
 				throw new Exception('Invalid database driver');
 			}
 			
@@ -126,6 +126,8 @@
 		 * @param string $method
 		 * @param array $args
 		 * @return mixed
+		 * 
+		 * @see DatabaseAdapter
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);

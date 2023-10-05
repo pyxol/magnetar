@@ -6,6 +6,7 @@
 	use Magnetar\Helpers\Facades\Config;
 	use Magnetar\Helpers\Facades\Theme;
 	use Magnetar\Helpers\Facades\URL;
+	use Magnetar\Http\Response;
 	use Magnetar\Http\JsonResponse;
 	use Magnetar\Http\RedirectResponse;
 	use Magnetar\Log\Logger;
@@ -136,10 +137,10 @@
 		/**
 		 * Get an environment variable
 		 * @param string $key Environment variable key
-		 * @param mixed $default Default value to return if the key is not found
+		 * @param mixed $default Default value to return if the key is not found. Defaults to null
 		 * @return mixed Environment variable value
 		 */
-		function env(string $key, mixed $default): mixed {
+		function env(string $key, mixed $default=null): mixed {
 			return Env::get($key, $default);
 		}
 	}
@@ -194,6 +195,23 @@
 		 */
 		function redirect(string $url): RedirectResponse {
 			return (new RedirectResponse())->setURL($url);
+		}
+	}
+	
+	if(!function_exists('response')) {
+		/**
+		 * Make a Response instance and set various properties
+		 * @param string $body Response body
+		 * @param int $status_code Optional. HTTP status code. Defaults to 200
+		 * @param array $headers Optional. HTTP headers to set. Defaults to an empty array
+		 * @return Response
+		 */
+		function response(
+			string $body,
+			int $status_code=200,
+			array $headers=[]
+		): Response {
+			return (new Response())->setBody($body)->status($status_code)->setHeaders($headers);
 		}
 	}
 	

@@ -6,8 +6,8 @@
 	use Magnetar\Filesystem\Exceptions\DiskAdapterException;
 	
 	/**
-	 * Exception thrown when a directory is not found
+	 * Exception thrown when the drive isn't configured for public URLs
 	 */
-	class DirectoryNotFoundException extends DiskAdapterException {
+	class NoPublicEndpointException extends DiskAdapterException {
 		
 	}

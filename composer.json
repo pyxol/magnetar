@@ -23,8 +23,9 @@
 	"require-dev": {
 		"filp/whoops": "^2.15",
 		"jbzoo/jbdump": "^1.5",
-		"phpunit/phpunit": "^10.2",
-		"php-amqplib/php-amqplib": "^3.0"
+		"league/flysystem-aws-s3-v3": "^3.0",
+		"php-amqplib/php-amqplib": "^3.0",
+		"phpunit/phpunit": "^10.2"
 	},
 	"autoload": {
 		"files": [
@@ -46,7 +47,8 @@
 		"ext-redis": "Required for using redis-specific caching and queueing functionality",
 		"filp/whoops": "Strongly suggested for development environments",
 		"phpunit/phpunit": "Required for running unit tests",
-		"php-amqplib/php-amqplib": "Required for using RabbitMQ-specific queueing functionality"
+		"php-amqplib/php-amqplib": "Required for using RabbitMQ-specific queueing functionality",
+		"league/flysystem-aws-s3-v3": "Required for using the s3 filesystem adapter"
 	},
 	"config": {
 		"sort-packages": true

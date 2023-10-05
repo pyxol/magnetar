@@ -17,6 +17,9 @@
 		 */
 		public function __construct() {
 			$this->headers = new HeaderCollection();
+			
+			// set default content type
+			$this->header('Content-Type', 'text/html; charset=UTF-8');
 		}
 		
 		/**
@@ -121,8 +124,6 @@
 				return $this;
 			}
 			
-			$this->header('Content-Type', 'text/html; charset=UTF-8');
-			
 			$this->sendHeaders();
 			$this->sendBody();
 			
@@ -207,6 +208,23 @@
 		}
 		
 		/**
+		 * Set multiple headers at once. Note, this will replace any existing headers with the same name
+		 * @param array $headers An associative array of headers to set. Key is the header name, value is the header value
+		 * @return self
+		 */
+		public function setHeaders(array $headers): self {
+			if($this->headersSent) {
+				return $this;
+			}
+			
+			foreach($headers as $header => $value) {
+				$this->header($header, $value);
+			}
+			
+			return $this;
+		}
+		
+		/**
 		 * Get the response headers
 		 * @return array
 		 */
@@ -243,6 +261,20 @@
 			}
 			
 			$this->headers->remove($name);
+			
+			return $this;
+		}
+		
+		/**
+		 * Clear all unsent response headers
+		 * @return self
+		 */
+		public function clearHeaders(): self {
+			if($this->headersSent) {
+				return $this;
+			}
+			
+			$this->headers->clear();
 			
 			return $this;
 		}

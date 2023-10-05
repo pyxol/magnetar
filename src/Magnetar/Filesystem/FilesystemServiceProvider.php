@@ -4,7 +4,7 @@
 	namespace Magnetar\Filesystem;
 	
 	use Magnetar\Helpers\ServiceProvider;
-	use Magnetar\Filesystem\FilesystemManager;
+	use Magnetar\Filesystem\ConnectionManager;
 	
 	/**
 	 * Filesystem service provider
@@ -14,18 +14,16 @@
 		 * {@inheritDoc}
 		 */
 		public function register(): void {
-			$this->registerFilesystemManager();
+			$this->registerConnectionManager();
 		}
 		
 		/**
 		 * Register the filesystem manager
 		 * @return void
 		 */
-		public function registerFilesystemManager(): void {
+		public function registerConnectionManager(): void {
 			$this->app->singleton('files', function($app) {
-				return new FilesystemManager($app);
+				return new ConnectionManager($app);
 			});
 		}
-		
-		
 	}

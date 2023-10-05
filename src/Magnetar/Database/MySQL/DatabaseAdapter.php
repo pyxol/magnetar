@@ -19,6 +19,9 @@
 			HasQuickQueryTrait,
 			HasQueryBuilderTrait;
 		
+		/**
+		 * {@inheritDoc}
+		 */
 		const ADAPTER_NAME = 'mysql';
 		
 		/**

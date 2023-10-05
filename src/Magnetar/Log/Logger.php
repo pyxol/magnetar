@@ -102,17 +102,15 @@
 		 * Magic method to log messages. Throws a BadMethodCallException if method isn't a known log level
 		 * @param string $method The method to call
 		 * @param array $args The arguments to pass to the method
-		 * @return void
+		 * @return mixed
 		 * 
 		 * @throws \BadMethodCallException
 		 */
-		public function __call(string $method, array $args): void {
-			if(isset($this->logLevels[ $method ])) {
-				$this->log($method, ...$args);
-				
-				return;
+		public function __call(string $method, array $args): mixed {
+			if(!isset($this->logLevels[ $method ])) {
+				throw new BadMethodCallException('Method '. $method .' does not exist');
 			}
 			
-			throw new BadMethodCallException('Method '. $method .' does not exist');
+			$this->log($method, ...$args);
 		}
 	}
