@@ -64,10 +64,10 @@
 		 * @return void
 		 */
 		protected function bindStatementParams(
-			PDOStatement $statement,
+			PDOStatement &$statement,
 			array $params,
 			bool $prepend_param_key_with_colon=false
-		): PDOStatement {
+		): void {
 			$is_list = array_is_list($params);
 			
 			foreach($params as $param_key => $param_value) {
@@ -98,7 +98,7 @@
 				);
 			}
 			
-			return $statement;
+			//return $statement;
 		}
 		
 		/**
@@ -121,7 +121,7 @@
 				
 				// bind any params to the statement
 				if(!empty($params)) {
-					$statement = $this->bindStatementParams($statement, $params);
+					$this->bindStatementParams($statement, $params);
 				}
 				
 				// execute the query

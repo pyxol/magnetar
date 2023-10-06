@@ -166,9 +166,6 @@
 			return $this->buckets[ $bucket_name ] ??= $this->connectBucket($bucket_name);
 		}
 		
-		
-		protected array $times = [];
-		
 		/**
 		 * Passes method calls to the default bucket
 		 * @param string $method The method name
@@ -178,13 +175,6 @@
 		 * @see \League\Flysystem\Filesystem
 		 */
 		public function __call(string $method, array $args): mixed {
-			$this->times[] = "Calling ". $method ." [". implode(', ', $args) ."] on default bucket\n";
-			
-			if(count($this->times) > 5) {
-				print "<pre>". print_r($this->times, true) ."</pre>";
-				die;
-			}
-			
 			return $this->bucket()->$method(...$args);
 		}
 	}

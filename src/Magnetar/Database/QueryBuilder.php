@@ -156,12 +156,17 @@
 		 */
 		public function where(
 			string $column_name,
+			mixed $value_or_comparison_operator=null,
 			mixed $value=null,
-			string $comparison_operator='=',
 			bool $use_raw_value=false
 		): self {
-			// sanitize comparison operator
-			$comparison_operator = strtoupper(trim($comparison_operator));
+			if(func_num_args() == 2) {
+				$value = $value_or_comparison_operator;
+				$comparison_operator = '=';
+			} else {
+				// sanitize comparison operator
+				$comparison_operator = strtoupper(trim($value_or_comparison_operator));
+			}
 			
 			// null value
 			if(null === $value) {
@@ -348,8 +353,8 @@
 			if(!empty($this->wheres)) {
 				$query .= ' WHERE';
 				
-				foreach($this->wheres as $where) {
-					$query .= ' '. $where;
+				foreach($this->wheres as $i => $where) {
+					$query .= (($i > 0)?' AND ':' ') . $where;
 				}
 				
 				// attach any where-specific params
@@ -383,7 +388,7 @@
 		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() using adapter
 		 */
 		public function fetch(): array {
-			list($query, $params) = $this->buildQueryAndParams();
+			[$query, $params] = $this->buildQueryAndParams();
 			
 			// reset query builder (to prevent accidental reuse)
 			$this->reset();
@@ -399,12 +404,29 @@
 		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() using adapter
 		 */
 		public function fetchOne(): array {
-			list($query, $params) = $this->buildQueryAndParams();
+			[$query, $params] = $this->buildQueryAndParams();
 			
 			// reset query builder (to prevent accidental reuse)
 			$this->reset();
 			
 			// get a single row
 			return $this->adapter->get_row($query, $params);
+		}
+		
+		/**
+		 * Build the query and fetch a column as a simple array
+		 * @param string|int $column_key The column to use as the array key for the results. If empty, fetches the first column
+		 * @return array
+		 * 
+		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() and fetchCol() using adapter
+		 */
+		public function fetchCol(string|int $column_key=0): array {
+			[$query, $params] = $this->buildQueryAndParams();
+			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+			
+			// get all rows
+			return $this->adapter->get_col($query, $params, $column_key);
 		}
 	}

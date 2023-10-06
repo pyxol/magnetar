@@ -5,6 +5,8 @@
 	
 	use PDO;
 	
+	use Magnetar\Database\Exceptions\DatabaseAdapterException;
+	
 	/**
 	 * Provides quick query methods for a database adapter
 	 * 
@@ -29,7 +31,7 @@
 			
 			// bind any params to the statement
 			if(!empty($params)) {
-				$statement = $this->bindStatementParams($statement, $params);
+				$this->bindStatementParams($statement, $params);
 			}
 			
 			// execute the query
@@ -39,16 +41,16 @@
 				return false;
 			}
 			
-			$rows = [];
+			$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 			
-			if($statement->rowCount()) {
-				while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-					if((false !== $column_key) && isset($row[ $column_key ])) {
-						$rows[ $row[ $column_key ] ] = $row;
-					} else {
-						$rows[] = $row;
-					}
+			if((false !== $column_key) && isset($row[0][ $column_key ])) {
+				$assoc_rows = [];
+				
+				foreach($rows as $row) {
+					$assoc_rows[ $row[ $column_key ] ] = $row;
 				}
+				
+				$rows = $assoc_rows;
 			}
 			
 			return $rows;
@@ -68,7 +70,7 @@
 			
 			// bind any params to the statement
 			if(!empty($params)) {
-				$statement = $this->bindStatementParams($statement, $params);
+				$this->bindStatementParams($statement, $params);
 			}
 			
 			// execute the query
@@ -76,13 +78,15 @@
 				return false;
 			}
 			
-			if(!$statement->rowCount()) {
-				// @TODO log error
-				
-				return false;
-			}
+			//if(!$statement->rowCount()) {
+			//	// @TODO log error
+			//	
+			//	return false;
+			//}
 			
-			return $statement->fetch(PDO::FETCH_ASSOC);
+			$row = $statement->fetchAll(PDO::FETCH_ASSOC);
+			
+			return $row[0] ?? false;
 		}
 		
 		/**
@@ -104,7 +108,7 @@
 			
 			// bind any params to the statement
 			if(!empty($params)) {
-				$statement = $this->bindStatementParams($statement, $params);
+				$this->bindStatementParams($statement, $params);
 			}
 			
 			// execute the query
@@ -114,15 +118,30 @@
 				return false;
 			}
 			
+			if(!$statement->rowCount()) {
+				return [];
+			}
+			
+			// fetch the results
+			$results = $statement->fetchAll(PDO::FETCH_BOTH);
+			
+			// build the array
 			$rows = [];
 			
-			if($statement->rowCount()) {
-				while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-					if(isset($row[ $column_key ])) {
-						$rows[] = $row[ $column_key ];
-					} else {
-						$rows[] = array_shift($row);
-					}
+			if(is_string($column_key)) {
+				// column key is set to a specific named column, throw error if it doesn't exist
+				foreach($results as $result) {
+					$rows[] = $result[ $column_key ] ?? throw new DatabaseAdapterException("Column key ". $column_key ." does not exist in result set");
+				}
+			} elseif(0 !== $column_key) {
+				// column key is set to a specific numbered column, throw error if it doesn't exist
+				foreach($results as $result) {
+					$rows[] = $result[0] ?? throw new DatabaseAdapterException("Column key ". $column_key ." does not exist in result set");
+				}
+			} else {
+				// use the first column
+				foreach($results as $result) {
+					$rows[] = $result[0];
 				}
 			}
 			
@@ -150,7 +169,7 @@
 			
 			// bind any params to the statement
 			if(!empty($params)) {
-				$statement = $this->bindStatementParams($statement, $params);
+				$this->bindStatementParams($statement, $params);
 			}
 			
 			// execute the query
@@ -166,7 +185,9 @@
 				$assoc_col = null;
 				$value_col = null;
 				
-				while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+				$raw_rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+				
+				foreach($raw_rows as $row) {
 					// determine key column
 					if(is_null($assoc_col)) {
 						if(isset($row[ $assoc_key ]) && ($assoc_key !== $column_key)) {
@@ -220,11 +241,7 @@
 			}
 			
 			if(false !== $column_key) {
-				if(isset($row[ $column_key ])) {
-					return $row[ $column_key ];
-				}
-				
-				return false;
+				return $row[ $column_key ] ?? false;
 			}
 			
 			return array_shift($row);
