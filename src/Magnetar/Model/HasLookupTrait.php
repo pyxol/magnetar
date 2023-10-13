@@ -4,6 +4,7 @@
 	namespace Magnetar\Model;
 	
 	use Magnetar\Helpers\Facades\DB;
+	use Magnetar\Model\Exceptions\ModelNotFoundException;
 	
 	/**
 	 * Model trait for lookup functions
@@ -11,16 +12,22 @@
 	trait HasLookupTrait {
 		/**
 		 * Find a model by ID
-		 * @param int $id The ID of the model to find
+		 * @param int|string $id The ID of the model to find
 		 * @return static
+		 * 
+		 * @throws ModelNotFoundException
 		 */
-		public function find(int $id): static {
+		private function find(int|string $id): static {
 			// pull model data
-			$this->_data = DB::connection($this->connection_name)
+			$data = DB::connection($this->connection_name)
 				->table($this->table)
 				->where($this->identifier, $id)
 				->fetchOne();
 			
-			return $this;
+			if(false === $data) {
+				throw new Exceptions\ModelNotFoundException('Model not found in table ['. $this->table .'] with identifier ['. $id .']');
+			}
+			
+			return new static($data);
 		}
 	}

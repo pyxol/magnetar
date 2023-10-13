@@ -8,6 +8,28 @@
 	 */
 	class Str {
 		/**
+		 * Convert a string to snake case
+		 * @param string $str The string to convert
+		 * @return string The converted string
+		 */
+		public static function snake_case(
+			string $str
+		): string {
+			return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $str));
+		}
+		
+		/**
+		 * Convert a string to camel case
+		 * @param string $str The string to convert
+		 * @return string The converted string
+		 */
+		public static function camelCase(
+			string $str
+		): string {
+			return lcfirst(str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $str))));
+		}
+		
+		/**
 		 * Convert a string to a URL-friendly string
 		 * @param string $string The string to convert
 		 * @param string $separator Optional. The separator to use. Defaults to "-".

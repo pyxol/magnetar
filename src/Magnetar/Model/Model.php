@@ -8,6 +8,8 @@
 	use Magnetar\Model\HasDirtyTrait;
 	use Magnetar\Model\HasLookupTrait;
 	use Magnetar\Model\HasMutableTrait;
+	use Magnetar\Utilities\Str;
+	use Magnetar\Utilities\Internals;
 	
 	/**
 	 * Model class for interacting with the database.
@@ -44,18 +46,21 @@
 		protected string $identifier = 'id';
 		
 		/**
-		 * AbstractObject constructor
-		 * @param int|null $id The ID of the object to pull
+		 * Constructor
+		 * @param array|string|int|null $data The ID of the model to pull
 		 */
 		public function __construct(
-			int|null $id=null
+			array|string|int|null $data=null
 		) {
 			// determine table (if not set)
 			$this->_determineModelTable();
 			
-			if(null !== $id) {
+			if(is_array($data)) {
+				// prefill model data
+				$this->_data = $data;
+			} elseif(is_string($data) || is_int($data)) {
 				// pull model data
-				$this->find($id);
+				$this->find($data);
 			}
 		}
 		
@@ -69,15 +74,8 @@
 				return;
 			}
 			
-			// get the class name
-			$class = get_class($this);
-			
-			// get the table name
-			$parts = explode('\\', $class);
-			$class_name = end($parts);
-			
-			// convert to snake_case
-			$this->table = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $class_name));
+			// if not set already, get the class name and convert it to snake case
+			$this->table = Str::snake_case(Internals::class_basename_instance($this));
 		}
 		
 		/**
@@ -149,5 +147,15 @@
 		 */
 		public function __isset(string $key): bool {
 			return isset($this->_data[ $key ]);
+		}
+		
+		/**
+		 * Handle dynamic static method calls
+		 * @param mixed $method The method to call
+		 * @param mixed $arguments The arguments to pass to the method
+		 * @return mixed
+		 */
+		public static function __callStatic(mixed $method, mixed $arguments): mixed {
+			return (new static)->$method(...$arguments);
 		}
 	}

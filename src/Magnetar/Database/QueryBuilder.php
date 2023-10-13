@@ -378,8 +378,6 @@
 		/**
 		 * Build the query and fetch the results
 		 * @return array
-		 * 
-		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() using adapter
 		 */
 		public function fetch(): array {
 			[$query, $params] = $this->buildQueryAndParams();
@@ -393,11 +391,9 @@
 		
 		/**
 		 * Build the query and fetch a single row
-		 * @return array
-		 * 
-		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() using adapter
+		 * @return array|false
 		 */
-		public function fetchOne(): array {
+		public function fetchOne(): array|false {
 			[$query, $params] = $this->buildQueryAndParams();
 			
 			// reset query builder (to prevent accidental reuse)
@@ -410,11 +406,9 @@
 		/**
 		 * Build the query and fetch a column as a simple array
 		 * @param string|int $column_key The column to use as the array key for the results. If empty, fetches the first column
-		 * @return array
-		 * 
-		 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() and fetchCol() using adapter
+		 * @return array|false
 		 */
-		public function fetchCol(string|int $column_key=0): array {
+		public function fetchCol(string|int $column_key=0): array|false {
 			[$query, $params] = $this->buildQueryAndParams();
 			
 			// reset query builder (to prevent accidental reuse)
