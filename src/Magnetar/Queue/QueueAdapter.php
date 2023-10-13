@@ -67,7 +67,7 @@ use RuntimeException;
 		
 		/**
 		 * Validate runtime configuration
-		 * return void
+		 * @return void
 		 * 
 		 * @throws RuntimeException
 		 * @throws QueueAdapterException

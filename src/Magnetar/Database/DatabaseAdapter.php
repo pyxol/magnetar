@@ -5,12 +5,19 @@
 	
 	use RuntimeException;
 	
+	use Magnetar\Database\HasPDOTrait;
+	use Magnetar\Database\HasQuickQueryTrait;
+	use Magnetar\Database\HasQueryBuilderTrait;
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	
 	/**
 	 * Database adapter
 	 */
 	class DatabaseAdapter {
+		use HasPDOTrait,
+			HasQuickQueryTrait,
+			HasQueryBuilderTrait;
+		
 		/**
 		 * Name of the adapter
 		 */
@@ -54,7 +61,7 @@
 		
 		/**
 		 * Validate runtime configuration
-		 * return void
+		 * @return void
 		 * 
 		 * @throws RuntimeException
 		 * @throws DatabaseAdapterException
@@ -64,34 +71,11 @@
 		}
 		
 		/**
-		 * Create the connection to the database
-		 * @return void
-		 */
-		protected function createConnection(): void {
-			// individual adapters should override this method
-			throw new DatabaseAdapterException("Do not use the base DatabaseAdapter class directly. Use a specific adapter instead.");
-		}
-		
-		/**
 		 * Post connection actions (typically character set)
 		 * @return void
 		 */
 		protected function postConnection(): void {
 			// individual adapters may override this method
-		}
-		
-		/**
-		 * Run a standard query. Returns the last inserted ID if an INSERT query is used, the number of affected rows, or false on error
-		 * @param string $sql_query The SQL query to run
-		 * @param array $params Optional. Parameters to bind to the query
-		 * @return int|false The last inserted ID, the number of affected rows, or false on error
-		 * 
-		 * @throws RuntimeException
-		 */
-		public function query(string $sql_query, array $params=[]): int|false {
-			throw new RuntimeException("Do not use the base DatabaseAdapter class directly. Use a specific adapter instead.");
-			
-			return false;
 		}
 		
 		/**

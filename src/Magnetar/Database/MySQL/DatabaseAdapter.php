@@ -6,19 +6,12 @@
 	use RuntimeException;
 	
 	use Magnetar\Database\DatabaseAdapter as BaseDatabaseAdapter;
-	use Magnetar\Database\HasPDOTrait;
-	use Magnetar\Database\HasQuickQueryTrait;
-	use Magnetar\Database\HasQueryBuilderTrait;
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	
 	/**
 	 * Database adapter for MySQL
 	 */
 	class DatabaseAdapter extends BaseDatabaseAdapter {
-		use HasPDOTrait,
-			HasQuickQueryTrait,
-			HasQueryBuilderTrait;
-		
 		/**
 		 * {@inheritDoc}
 		 */

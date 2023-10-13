@@ -6,19 +6,12 @@
 	use RuntimeException;
 	
 	use Magnetar\Database\DatabaseAdapter as BaseDatabaseAdapter;
-	use Magnetar\Database\HasPDOTrait;
-	use Magnetar\Database\HasQuickQueryTrait;
-	use Magnetar\Database\HasQueryBuilderTrait;
 	use Magnetar\Database\Exceptions\DatabaseAdapterException;
 	
 	/**
 	 * Database adapter for SQL Server
 	 */
 	class DatabaseAdapter extends BaseDatabaseAdapter {
-		use HasPDOTrait,
-			HasQuickQueryTrait,
-			HasQueryBuilderTrait;
-		
 		const ADAPTER_NAME = 'sqlserver';
 		
 		/**

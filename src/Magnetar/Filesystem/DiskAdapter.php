@@ -54,7 +54,7 @@
 		
 		/**
 		 * Validate runtime configuration
-		 * return void
+		 * @return void
 		 * 
 		 * @throws RuntimeException
 		 * @throws DiskAdapterException
@@ -67,7 +67,7 @@
 		 * Create the connection to the disk (if necessary)
 		 * @return void
 		 * 
-		 * throws DiskAdapterException
+		 * @throws DiskAdapterException
 		 */
 		protected function createConnection(): void {
 			// individual adapters should override this method

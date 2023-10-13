@@ -9,17 +9,11 @@
 	/**
 	 * Query Builder
 	 * 
+	 * Implies MySQL-like SQL syntax, extend this class to implement other syntaxes.
+	 * 
 	 * @todo Add support for joins
 	 * @todo Add support for group by
 	 * @todo Add support for having
-	 * 
-	 * @todo split off into a separate QueryBuilder, implement fetch() and fetchOne() in adapter-specific classes
-	 * 
-	 * @todo Add support for insert/update/delete
-	 * 
-	 * @todo buildQueryAndParams implies MySQL usage, need to make it adapter-agnostic
-	 * 
-	 * @todo fetch and fetchOne should be rewritten to not rely on use of HasQuickQueryTrait methods
 	 */
 	class QueryBuilder {
 		/**
@@ -47,7 +41,7 @@
 		protected array $whereParams = [];
 		
 		/**
-		 * Order by. Array of strings, like: ["`field1` ASC", "`field2` DESC"]
+		 * Order by. Array of strings, like: ['`field1` ASC', '`field2` DESC']
 		 * @var array
 		 */
 		protected array $orders = [];
@@ -86,9 +80,9 @@
 		public function table(string $table_name): self {
 			// validate table name
 			if(empty($table_name)) {
-				throw new QueryBuilderException("Table name is empty");
-			} elseif(!is_string($table_name) || !preg_match("#^[a-z0-9_]+$#i", $table_name)) {
-				throw new QueryBuilderException("Table name has invalid characters");
+				throw new QueryBuilderException('Table name is empty');
+			} elseif(!is_string($table_name) || !preg_match('#^[a-z0-9_]+$#i', $table_name)) {
+				throw new QueryBuilderException('Table name has invalid characters');
 			}
 			
 			$this->table_name = $table_name;
@@ -103,7 +97,7 @@
 		 */
 		public function select(array|string|null $field_names=null): self {
 			if(null === $field_names) {
-				$this->fields[] = "*";
+				$this->fields[] = '*';
 				
 				return $this;
 			}
@@ -114,10 +108,10 @@
 			}
 			
 			foreach($field_names as $field_name) {
-				$field_name = trim($field_name, " ,`");
+				$field_name = trim($field_name, ' ,`');
 				
 				if('' !== $field_name) {
-					$this->fields[] = "`". $field_name ."`";
+					$this->fields[] = '`'. $field_name .'`';
 				}
 			}
 			
@@ -134,11 +128,11 @@
 			$field = trim($field);
 			
 			if('' === $field) {
-				throw new QueryBuilderException("Field for selectRaw is empty");
+				throw new QueryBuilderException('Field for selectRaw is empty');
 			}
 			
 			if(!is_null($as) && ($as !== $field)) {
-				$this->fields[] = $field ." as `". $as ."`";
+				$this->fields[] = $field .' as `'. $as .'`';
 			} else {
 				$this->fields[] = $field;
 			}
@@ -171,9 +165,9 @@
 			// null value
 			if(null === $value) {
 				if(in_array($comparison_operator, ['!=', 'NOT LIKE', 'NOT IN', 'IS NOT NULL'])) {
-					$this->wheres[] = "`". $column_name ."` IS NOT NULL";
+					$this->wheres[] = '`'. $column_name .'` IS NOT NULL';
 				} else {
-					$this->wheres[] = "`". $column_name ."` IS NULL";
+					$this->wheres[] = '`'. $column_name .'` IS NULL';
 				}
 				
 				return $this;
@@ -181,17 +175,17 @@
 			
 			// validate comparison operator
 			if(!in_array($comparison_operator, ['=', '!=', '<', '>', '<=', '>=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN'])) {
-				throw new QueryBuilderException("Invalid comparison operator");
+				throw new QueryBuilderException('Invalid comparison operator');
 			}
 			
 			// validate value
 			if(is_object($value)) {
-				throw new QueryBuilderException("Invalid value type, must be scalar");
+				throw new QueryBuilderException('Invalid value type, must be scalar');
 			}
 			
 			// if using raw value, do not set value to be escaped
 			if($use_raw_value) {
-				$this->wheres[] = "`". $column_name ."` ". $comparison_operator ." ". $value;
+				$this->wheres[] = '`'. $column_name .'` '. $comparison_operator .' '. $value;
 				
 				return $this;
 			}
@@ -200,29 +194,29 @@
 			if(in_array($comparison_operator, ['IN', 'NOT IN'])) {
 				// value should be an array
 				if(!is_array($value)) {
-					throw new QueryBuilderException("Invalid value type for specified comparison operator, value must be an array");
+					throw new QueryBuilderException('Invalid value type for specified comparison operator, value must be an array');
 				}
 				
 				// record each value
 				$in_vals = [];
 				
 				foreach($value as $val) {
-					$in_vals[] = "?";
+					$in_vals[] = '?';
 					
 					$this->whereParams[] = $val;
 				}
 				
-				$this->wheres[] = "`". $column_name ."` ". $comparison_operator ." (". implode(', ', $in_vals) .")";
+				$this->wheres[] = '`'. $column_name .'` '. $comparison_operator .' ('. implode(', ', $in_vals) .')';
 				
 				return $this;
 			}
 			
 			if(is_array($value)) {
-				throw new QueryBuilderException("Invalid value type, raw arrays cannot be used");
+				throw new QueryBuilderException('Invalid value type, raw arrays cannot be used');
 			}
 			
 			// add where clause
-			$this->wheres[] = "`". $column_name ."` ". $comparison_operator ." ?";
+			$this->wheres[] = '`'. $column_name .'` '. $comparison_operator .' ?';
 			
 			// assign value to params
 			$this->whereParams[] = $value;
@@ -232,7 +226,7 @@
 		
 		/**
 		 * Accept a raw where clause. Using where() is preferred
-		 * @param string $where_clause Raw partial where statement. Effectively a single [...] of "WHERE [...] AND [...]"
+		 * @param string $where_clause Raw partial where statement. Effectively a single [...] of 'WHERE [...] AND [...]'
 		 * @return self
 		 */
 		public function whereRaw(string $where_clause): self {
@@ -248,11 +242,11 @@
 		 * @return self
 		 */
 		public function orderBy(string $column_name, string $direction='ASC'): self {
-			if(!preg_match("#^(?:asc|desc)$#si", $direction)) {
-				throw new QueryBuilderException("Invalid direction param in orderBy method");
+			if(!preg_match('#^(?:asc|desc)$#si', $direction)) {
+				throw new QueryBuilderException('Invalid direction param in orderBy method');
 			}
 			
-			$this->orders[] = "`". $column_name ."` ". strtoupper($direction);
+			$this->orders[] = '`'. $column_name .'` '. strtoupper($direction);
 			
 			return $this;
 		}
@@ -330,11 +324,11 @@
 		 */
 		protected function buildQueryAndParams(): array {
 			if(null === $this->table_name) {
-				throw new QueryBuilderException("Table name is empty");
+				throw new QueryBuilderException('Table name is empty');
 			}
 			
 			// start query
-			$query = "SELECT";
+			$query = 'SELECT';
 			
 			// start the params array
 			$params = [];
@@ -428,5 +422,173 @@
 			
 			// get all rows
 			return $this->adapter->get_col($query, $params, $column_key);
+		}
+		
+		/**
+		 * Insert a row (or rows) into the database table
+		 * @param array $data The data to insert. Keys should be column names, values should be the data to insert. Arrays of data will be inserted as multiple rows
+		 * @param bool $ignoreDuplicate Set to true to ignore duplicate key errors (if a unique index exists) which will prevent the query from failing but will not insert the row
+		 * @return int|array Returns the insert ID. If an array of insert data was provided, returns an array of insert IDs
+		 * 
+		 * @example $db->insert( ['column' => 'value'] );
+		 * @example $db->insert( [ ['column' => 'value'], ['column' => 'value2'] ] );
+		 */
+		public function insert(
+			array $data,
+			bool $ignoreDuplicate=false
+		): int {
+			// insert multiple rows?
+			if(array_is_list($data)) {
+				// keep track of table name since it will be reset after each insert
+				$table_name = $this->table_name;
+				
+				$insert_ids = [];
+				
+				foreach($data as $data_row) {
+					$insert_ids[] = $this->table($table_name)->insert($data_row);
+				}
+				
+				return $insert_ids;
+			}
+			
+			// build query
+			$query = 'INSERT '. ($ignoreDuplicate?'IGNORE ':'');
+			$query .= 'INTO `'. $this->table_name .'`';
+			
+			// build fields
+			$fields = [];
+			$values = [];
+			
+			foreach($data as $field => $value) {
+				$fields[] = '`'. $field .'`';
+				$values[] = '?';
+			}
+			
+			$query .= ' ('. implode(', ', $fields) .')';
+			$query .= ' VALUES ('. implode(', ', $values) .')';
+			
+			// execute query and return last insert ID
+			$insert_id = $this->adapter->query(
+				$query,
+				array_values($data)
+			);
+			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+			
+			// return insert ID
+			return $insert_id;
+		}
+		
+		/**
+		 * Insert a row (or rows) into the database table, ignoring duplicate key errors (if a unique index exists) which will prevent the query from failing but will not insert the row
+		 * @param array $data The data to insert. Keys should be column names, values should be the data to insert. Arrays of data will be inserted as multiple rows
+		 * @return int|array Returns the insert ID. If an array of insert data was provided, returns an array of insert IDs
+		 * 
+		 * @example $db->insertIgnore( ['column' => 'value'] );
+		 * @example $db->insertIgnore( [ ['column' => 'value'], ['column' => 'value2'] ] );
+		 * 
+		 * @see insert()
+		 */
+		public function insertIgnore(array $data): int {
+			return $this->insert($data, true);
+		}
+		
+		/**
+		 * Update a row (or rows) in the database table
+		 * @param array $data The data to update. Keys should be column names, values should be the data to update
+		 * @param bool $bypassThrowingOnNoWhere Safety check. Set to false to allow updating all rows in the table
+		 * @return void
+		 * 
+		 * @throws QueryBuilderException
+		 * @throws DatabaseException
+		 * 
+		 * @example $db->update( ['column' => 'value'] );
+		 */
+		public function update(
+			array $data,
+			bool $bypassThrowingOnNoWhere=true
+		): void {
+			// build query
+			$query = 'UPDATE `'. $this->table_name .'`';
+			
+			// build fields
+			$fields = [];
+			$params = [];
+			
+			foreach($data as $field => $value) {
+				$fields[] = '`'. $field .'` = ?';
+				$params[] = $value;
+			}
+			
+			$query .= ' SET '. implode(', ', $fields);
+			
+			// where
+			if(!empty($this->wheres)) {
+				$query .= ' WHERE';
+				
+				foreach($this->wheres as $i => $where) {
+					$query .= (($i > 0)?' AND ':' ') . $where;
+				}
+				
+				// attach any where-specific params
+				if(!empty($this->whereParams)) {
+					$params = array_merge($params, $this->whereParams);
+				}
+			} elseif($bypassThrowingOnNoWhere) {
+				throw new QueryBuilderException('Cannot update all rows in table without a where clause (or a bypass)');
+			}
+			
+			// execute query and return number of rows affected
+			$this->adapter->query(
+				$query,
+				$params
+			);
+			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+		}
+		
+		
+		/**
+		 * Delete a row (or rows) from the database table
+		 * @param bool $bypassThrowingOnNoWhere Safety check. Set to false to allow deleting all rows in the table
+		 * @return void
+		 * 
+		 * @throws QueryBuilderException
+		 * @throws DatabaseException
+		 * 
+		 * @example $db->delete();
+		 */
+		public function delete(
+			bool $bypassThrowingOnNoWhere=true
+		): void {
+			// build query
+			$query = 'DELETE FROM `'. $this->table_name .'`';
+			
+			// keep track of params
+			$params = [];
+			
+			// where
+			if(!empty($this->wheres)) {
+				$query .= ' WHERE';
+				
+				foreach($this->wheres as $i => $where) {
+					$query .= (($i > 0)?' AND ':' ') . $where;
+				}
+				
+				// attach any where-specific params
+				if(!empty($this->whereParams)) {
+					$params = array_merge($params, $this->whereParams);
+				}
+			} elseif($bypassThrowingOnNoWhere) {
+				throw new QueryBuilderException('Cannot delete all rows in table without a where clause (or a bypass)');
+			}
+			
+			// execute query and return number of rows affected
+			$this->adapter->query($query, $params);
+			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
 		}
 	}
