@@ -20,9 +20,10 @@
 		 * Getter: get cache by key
 		 * @param string $key The key to get
 		 * @param mixed $callback Optional. The value to cache. If callable, this will be called and the value returned is stored in cache. If null, the stored cache value will be returned (defaults to null)
+		 * @param int|false $ttl Optional. The time to live in seconds (defaults to 3600). Set to false to not set an expiration time
 		 * @return mixed The value of the cache
 		 */
-		public function get(string $key, mixed $callback=null): mixed;
+		public function get(string $key, mixed $callback=null, int $ttl=3600): mixed;
 		
 		/**
 		 * Getter: get multiple cache by keys
@@ -65,16 +66,16 @@
 		 * Setter: set a cache value
 		 * @param string $key The key to set
 		 * @param mixed $value The value to set
-		 * @param int $ttl The time to live in seconds
+		 * @param int $ttl The time to live in seconds (defaults to 3600). Set to false to not set an expiration time
 		 * @return mixed The value of the cache
 		 */
-		public function set(string $key, mixed $value, int $ttl=0): mixed;
+		public function set(string $key, mixed $value, int|false $ttl=3600): mixed;
 		
 		/**
 		 * Setter: set multiple cache values
 		 * @param array $values The array of key/value pairs to set
-		 * @param int $ttl The time to live in seconds
+		 * @param int $ttl The time to live in seconds (defaults to 3600). Set to false to not set an expiration time
 		 * @return void
 		 */
-		public function setMany(array $values, int $ttl=0): void;
+		public function setMany(array $values, int|false $ttl=3600): void;
 	}

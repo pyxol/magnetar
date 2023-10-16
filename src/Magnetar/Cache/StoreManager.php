@@ -12,10 +12,16 @@
 	 * Manages cache stores
 	 */
 	class StoreManager {
+		/**
+		 * Array of cache connections
+		 * @var array
+		 */
 		protected array $connections = [];
 		
-		protected array $stores = [];
-		
+		/**
+		 * Constructor
+		 * @param Application $app The application instance
+		 */
 		public function __construct(
 			protected Application $app
 		) {
@@ -57,9 +63,9 @@
 		 */
 		protected function makeConnection(string $driver_name): void {
 			match($driver_name) {
-				'memcached' => $this->connections['memcached'] = new Memcached\MemcachedStore($this->app),   // ->getInstance() ?
-				'inmemory' => $this->connections['inmemory'] = new InMemory\InMemoryStore($this->app),   // ->getInstance() ?
-				'null' => $this->connections['null'] = new Null\NullStore($this->app),   // ->getInstance() ?
+				'memcached' => $this->connections['memcached'] = new Memcached\MemcachedStore($this->app),
+				'inmemory' => $this->connections['inmemory'] = new InMemory\InMemoryStore($this->app),
+				'null' => $this->connections['null'] = new Null\NullStore($this->app),
 				default => throw new Exception('Invalid cache driver ('. $driver_name .')')
 			};
 		}
