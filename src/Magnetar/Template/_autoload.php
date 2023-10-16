@@ -2,6 +2,7 @@
 	declare(strict_types=1);
 	
 	use Magnetar\Helpers\Facades\Theme;
+	use Magnetar\Http\Response;
 	
 	if(!function_exists('esc_attr')) {
 		/**
@@ -77,6 +78,18 @@
 			$string = strtolower(preg_replace("#[^A-Za-z0-9_:]#i", '', $string));
 			
 			return $string;
+		}
+	}
+	
+	if(!function_exists('display')) {
+		/**
+		 * Generate a Response by processing a template from the active theme
+		 * @param string $template_name Template name
+		 * @param mixed $data Optional. Data to pass to the template file
+		 * @return Response
+		 */
+		function display(string $template_name, mixed $data=[]): Response {
+			return Theme::renderResponse($template_name, $data);
 		}
 	}
 	

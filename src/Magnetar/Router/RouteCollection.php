@@ -105,12 +105,12 @@
 		}
 		
 		/**
-		 * Format a path with the path prefix
+		 * Format a path with the path prefix. Returns path with no leading or trailing slashes
 		 * @param string $path
 		 * @return string
 		 */
 		public function formatPathWithPrefix(string $path): string {
-			return rtrim($this->pathPrefix, '/') .'/'. ltrim($path, '/');
+			return trim(rtrim($this->pathPrefix, '/') .'/'. ltrim($path, '/'), '/');
 		}
 		
 		/**

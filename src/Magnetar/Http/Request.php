@@ -72,21 +72,23 @@
 			$path = $_SERVER['REQUEST_URI'];
 			
 			// sanitize request path
-			$path = '/'. ltrim($path, "/");
 			$path = rtrim($path, '?&');
 			
-			$this->path = $path;
-			
-			if(false !== ($q_pos = strpos($this->path, '?'))) {
+			if(false !== ($q_pos = strpos($path, '?'))) {
 				// request has ?, save to request and parse parameters
 				parse_str(
-					substr($this->path, ($q_pos + 1)),
+					substr($path, ($q_pos + 1)),
 					$this->parameters
 				);
 				
 				// chop off query string from request path
-				$this->path = substr($this->path, 0, $q_pos);
+				$path = substr($path, 0, $q_pos);
 			}
+			
+			// trim leading and trailing slashes
+			$path = trim($path, '/');
+			
+			$this->path = $path;
 		}
 		
 		/**
