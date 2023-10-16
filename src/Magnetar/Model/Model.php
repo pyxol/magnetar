@@ -47,10 +47,10 @@
 		
 		/**
 		 * Constructor
-		 * @param array|string|int|null $data The ID of the model to pull
+		 * @param array|null $data The ID of the model to pull
 		 */
 		public function __construct(
-			array|string|int|null $data=null
+			array|null $data=null
 		) {
 			// determine table (if not set)
 			$this->_determineModelTable();
@@ -58,9 +58,6 @@
 			if(is_array($data)) {
 				// prefill model data
 				$this->_data = $data;
-			} elseif(is_string($data) || is_int($data)) {
-				// pull model data
-				$this->find($data);
 			}
 		}
 		
