@@ -6,16 +6,16 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method create(): Magnetar\Http\Request;
-	 * @method headers(): array;
-	 * @method header(string $name): ?string;
-	 * @method hasHeader(string $name): bool;
-	 * @method path(): string;
-	 * @method method(): ?Magnetar\Router\Enums\HTTPMethodEnum;
-	 * @method assignOverrideParameters(array $parameters): void;
-	 * @method parameter(string $name, mixed $default=null): mixed;
-	 * @method parameters(): array;
-	 * @method body(): string;
+	 * @method create(): Magnetar\Http\Request
+	 * @method headers(): array
+	 * @method header(string $name): ?string
+	 * @method hasHeader(string $name): bool
+	 * @method path(): string
+	 * @method method(): ?Magnetar\Router\Enums\HTTPMethodEnum
+	 * @method assignOverrideParameters(array $parameters): void
+	 * @method parameter(string $name, mixed $default=null): mixed
+	 * @method parameters(): array
+	 * @method body(): string
 	 * 
 	 * @see Magnetar\Http\Request
 	 */

@@ -6,10 +6,10 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method connection(?string $connection_name=null): Magnetar\Queue\QueueAdapter;
-	 * @method getDefaultConnectionName(): ?string;
-	 * @method getConnected(): array;
-	 * @method adapter(string $connection_name): Magnetar\Queue\QueueAdapter;
+	 * @method connection(?string $connection_name=null): Magnetar\Queue\QueueAdapter
+	 * @method getDefaultConnectionName(): ?string
+	 * @method getConnected(): array
+	 * @method adapter(string $connection_name): Magnetar\Queue\QueueAdapter
 	 * 
 	 * @see Magnetar\Queue\QueueManager
 	 */

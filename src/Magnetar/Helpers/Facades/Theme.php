@@ -6,8 +6,8 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method theme(?string $theme_name=null): Magnetar\Template\Template;
-	 * @method tpl(string $tpl_name, array $view_data=[]): string;
+	 * @method theme(?string $theme_name=null): Magnetar\Template\Template
+	 * @method tpl(string $tpl_name, array $view_data=[]): string
 	 * 
 	 * @see Magnetar\Template\ThemeManager
 	 */

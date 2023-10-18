@@ -6,7 +6,7 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method connection(?string $driver_name=null): Magnetar\Cache\AbstractCacheStore;
+	 * @method connection(?string $driver_name=null): Magnetar\Cache\AbstractCacheStore
 	 * 
 	 * @see Magnetar\Cache\StoreManager
 	 */
