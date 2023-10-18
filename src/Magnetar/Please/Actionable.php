@@ -3,18 +3,19 @@
 	
 	namespace Magnetar\Please;
 	
-	use Magnetar\Please\AbstractActionable;
 	use Magnetar\Please\Please;
 	use Magnetar\Console\Output;
 	use Magnetar\Console\ErrorOutput;
 	
-	class Actionable extends AbstractActionable {
+	class Actionable {
 		/**
-		 * {@inheritDoc}
+		 * Handle the action
+		 * @param Please $please The Please instance
+		 * @return Output
 		 */
 		public function handle(
 			Please $please
 		): Output {
-			return new ErrorOutput('Please implement the handle method');
+			return new ErrorOutput('The actionable called does not provide a handle method');
 		}
 	}
