@@ -64,7 +64,10 @@
 		 * 
 		 * @see \Magnetar\Database\MySQL::query() for $params usage with $sql_query
 		 */
-		public function get_row(string $sql_query, array $params=[]): array|false {
+		public function get_row(
+			string $sql_query,
+			array $params=[]
+		): array|false {
 			// prepare the query
 			$statement = $this->dbh->prepare($sql_query);
 			
@@ -77,12 +80,6 @@
 			if(false === $statement->execute()) {
 				return false;
 			}
-			
-			//if(!$statement->rowCount()) {
-			//	// @TODO log error
-			//	
-			//	return false;
-			//}
 			
 			$row = $statement->fetchAll(PDO::FETCH_ASSOC);
 			
@@ -236,14 +233,30 @@
 			string|int|false $column_key=false
 		): string|int|false {
 			// prepare the query
-			if(false === ($row = $this->get_row($sql_query, $params))) {
+			// prepare the query
+			$statement = $this->dbh->prepare($sql_query);
+			
+			// bind any params to the statement
+			if(!empty($params)) {
+				$this->bindStatementParams($statement, $params);
+			}
+			
+			// execute the query
+			if(false === $statement->execute()) {
 				return false;
 			}
 			
-			if(false !== $column_key) {
-				return $row[ $column_key ] ?? false;
+			// fetch the results
+			$results = $statement->fetchAll(PDO::FETCH_BOTH);
+			
+			// get the requested column
+			if(is_string($column_key)) {
+				return $results[0][ $column_key ] ?? false;
+			} elseif(0 !== $column_key) {
+				return $results[0][ $column_key ] ?? false;
 			}
 			
-			return array_shift($row);
+			// default to first column
+			return $results[0][0] ?? false;
 		}
 	}

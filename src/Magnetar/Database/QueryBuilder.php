@@ -434,6 +434,33 @@
 		}
 		
 		/**
+		 * Count the number of rows matching the query
+		 * @return int
+		 */
+		public function count(): int {
+			// set fields to only be COUNT(*)
+			$this->fields = ['COUNT(*)'];
+			
+			// reset order by, limit, and offset
+			$this->orders = [];
+			$this->limit = 0;
+			$this->offset = 0;
+			
+			// build query
+			[$query, $params] = $this->buildQueryAndParams();
+			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+			
+			// get all rows
+			if(false === ($count = $this->adapter->get_var($query, $params, 0))) {
+				return 0;
+			}
+			
+			return $count;
+		}
+		
+		/**
 		 * Insert a row (or rows) into the database table
 		 * @param array $data The data to insert. Keys should be column names, values should be the data to insert. Arrays of data will be inserted as multiple rows
 		 * @param bool $ignoreDuplicate Set to true to ignore duplicate key errors (if a unique index exists) which will prevent the query from failing but will not insert the row
