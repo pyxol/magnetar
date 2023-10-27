@@ -419,6 +419,21 @@
 		}
 		
 		/**
+		 * Build the query and fetch the value of the first row's specified column
+		 * @param string|int $column_key The column to use as the array key for the results. If empty, fetches the first column
+		 * @return string|int|false
+		 */
+		public function fetchVar(string|int $column_key=0): string|int|false {
+			[$query, $params] = $this->buildQueryAndParams();
+			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+			
+			// get all rows
+			return $this->adapter->get_var($query, $params, $column_key);
+		}
+		
+		/**
 		 * Insert a row (or rows) into the database table
 		 * @param array $data The data to insert. Keys should be column names, values should be the data to insert. Arrays of data will be inserted as multiple rows
 		 * @param bool $ignoreDuplicate Set to true to ignore duplicate key errors (if a unique index exists) which will prevent the query from failing but will not insert the row
@@ -461,14 +476,14 @@
 			$query .= ' ('. implode(', ', $fields) .')';
 			$query .= ' VALUES ('. implode(', ', $values) .')';
 			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+			
 			// execute query and return last insert ID
 			$insert_id = $this->adapter->query(
 				$query,
 				array_values($data)
 			);
-			
-			// reset query builder (to prevent accidental reuse)
-			$this->reset();
 			
 			// return insert ID
 			return $insert_id;
@@ -533,14 +548,14 @@
 				throw new QueryBuilderException('Cannot update all rows in table without a where clause (or a bypass)');
 			}
 			
+			// reset query builder (to prevent accidental reuse)
+			$this->reset();
+			
 			// execute query and return number of rows affected
 			$this->adapter->query(
 				$query,
 				$params
 			);
-			
-			// reset query builder (to prevent accidental reuse)
-			$this->reset();
 		}
 		
 		
@@ -579,10 +594,10 @@
 				throw new QueryBuilderException('Cannot delete all rows in table without a where clause (or a bypass)');
 			}
 			
-			// execute query and return number of rows affected
-			$this->adapter->query($query, $params);
-			
 			// reset query builder (to prevent accidental reuse)
 			$this->reset();
+			
+			// execute query and return number of rows affected
+			$this->adapter->query($query, $params);
 		}
 	}
