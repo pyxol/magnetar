@@ -6,6 +6,7 @@
 	use Magnetar\Http\Response;
 	use Magnetar\Http\Exceptions\InvalidRedirectURLException;
 	use Magnetar\Http\Exceptions\InvalidResponseCodeException;
+	use Magnetar\Helpers\Facades\URL;
 	
 	/**
 	 * An HTTP response that redirects to a URL
@@ -31,12 +32,16 @@
 		
 		/**
 		 * Set the redirect URL
-		 * @param string $url
+		 * @param string $url The URL to redirect to. If it does not start with http:// or https://, it will be prepended with the current domain
 		 * @return self
 		 * 
 		 * @throws InvalidRedirectURLException
 		 */
 		public function setURL(string $url): self {
+			if(!preg_match('/^https?:\/\//', $url)) {
+				$url = URL::to($url);
+			}
+			
 			if(!filter_var($url, FILTER_VALIDATE_URL)) {
 				throw new InvalidRedirectURLException('Invalid redirect URL');
 			}
@@ -44,6 +49,15 @@
 			$this->url = $url;
 			
 			return $this;
+		}
+		
+		/**
+		 * Simplified alias for setURL()
+		 * @param string $url The URL to redirect to
+		 * @return self
+		 */
+		public function to(string $url): self {
+			return $this->setURL($url);
 		}
 		
 		/**
