@@ -506,7 +506,7 @@
 		/**
 		 * Update a row (or rows) in the database table
 		 * @param array $data The data to update. Keys should be column names, values should be the data to update
-		 * @param bool $bypassThrowingOnNoWhere Safety check. Set to false to allow updating all rows in the table
+		 * @param bool $allowEmptyWhere Safety check. Set to true to allow the update with no where values (will update all rows)
 		 * @return void
 		 * 
 		 * @throws QueryBuilderException
@@ -516,7 +516,7 @@
 		 */
 		public function update(
 			array $data,
-			bool $bypassThrowingOnNoWhere=true
+			bool $allowEmptyWhere=false
 		): void {
 			// build query
 			$query = 'UPDATE `'. $this->table_name .'`';
@@ -544,7 +544,7 @@
 				if(!empty($this->whereParams)) {
 					$params = array_merge($params, $this->whereParams);
 				}
-			} elseif($bypassThrowingOnNoWhere) {
+			} elseif(!$allowEmptyWhere) {
 				throw new QueryBuilderException('Cannot update all rows in table without a where clause (or a bypass)');
 			}
 			
@@ -561,7 +561,7 @@
 		
 		/**
 		 * Delete a row (or rows) from the database table
-		 * @param bool $bypassThrowingOnNoWhere Safety check. Set to false to allow deleting all rows in the table
+		 * @param bool $allowEmptyWhere Safety check. Set to true to allow deletes with no where values (allowing all rows to be deleted)
 		 * @return void
 		 * 
 		 * @throws QueryBuilderException
@@ -570,7 +570,7 @@
 		 * @example $db->delete();
 		 */
 		public function delete(
-			bool $bypassThrowingOnNoWhere=true
+			bool $allowEmptyWhere=false
 		): void {
 			// build query
 			$query = 'DELETE FROM `'. $this->table_name .'`';
@@ -590,7 +590,7 @@
 				if(!empty($this->whereParams)) {
 					$params = array_merge($params, $this->whereParams);
 				}
-			} elseif($bypassThrowingOnNoWhere) {
+			} elseif(!$allowEmptyWhere) {
 				throw new QueryBuilderException('Cannot delete all rows in table without a where clause (or a bypass)');
 			}
 			
