@@ -67,6 +67,10 @@
 				// this allows us to catch any exceptions thrown by the template
 				ob_start();
 				
+				// extract the data to local variables
+				// @todo test
+				extract($this->data, EXTR_SKIP);
+				
 				include($this->template_path);
 				
 				return ob_get_clean();
