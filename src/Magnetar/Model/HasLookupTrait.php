@@ -30,4 +30,36 @@
 			
 			return new static($data);
 		}
+		
+		/**
+		 * Find a model by ID or return a specified default value
+		 * @param int|string $id The ID of the model to find
+		 * @param mixed $default The default value to return if the model is not found
+		 * @return mixed
+		 */
+		private function findOr(int|string $id, mixed $default): mixed {
+			try {
+				return $this->find($id);
+			} catch(ModelNotFoundException $e) {
+				return $default;
+			}
+		}
+		
+		/**
+		 * Find a model by ID or return null
+		 * @param int|string $id The ID of the model to find
+		 * @return static|null
+		 */
+		private function findOrNull(int|string $id): ?static {
+			return $this->findOr($id, null);
+		}
+		
+		/**
+		 * Find a model by ID or return false
+		 * @param int|string $id The ID of the model to find
+		 * @return static|false
+		 */
+		private function findOrFalse(int|string $id): static|false {
+			return $this->findOr($id, false);
+		}
 	}
