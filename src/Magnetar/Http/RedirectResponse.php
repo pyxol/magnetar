@@ -148,6 +148,7 @@
 					<head>
 						<title>Redirecting...</title>
 						<meta http-equiv="refresh" content="{$this->delaySeconds};url={$escaped_url}">
+						<meta name="robots" content="noindex,follow">
 					</head>
 					<body>
 						<p>Redirecting to <a href="{$escaped_url}">{$url}</a></p>
