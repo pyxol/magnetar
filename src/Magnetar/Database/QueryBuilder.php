@@ -79,9 +79,7 @@
 		 */
 		public function table(string $table_name): self {
 			// validate table name
-			if(empty($table_name)) {
-				throw new QueryBuilderException('Table name is empty');
-			} elseif(!is_string($table_name) || !preg_match('#^[a-z0-9_]+$#i', $table_name)) {
+			if(!preg_match('#^[a-z0-9_]+$#i', $table_name)) {
 				throw new QueryBuilderException('Table name has invalid characters');
 			}
 			
@@ -92,7 +90,7 @@
 		
 		/**
 		 * Add field(s) to select. If no fields are provided, all fields will be selected
-		 * @param array|string|null $field_names
+		 * @param array|string|null $field_names Optional. The field(s) to pull. If empty, all fields will be selected. If a string, it will be converted to an array by splitting columns by comma. Defaults to null
 		 * @return self
 		 */
 		public function select(array|string|null $field_names=null): self {
@@ -102,8 +100,11 @@
 				return $this;
 			}
 			
-			// convert comma separated field list string to array
-			if(!is_array($field_names)) {
+			if(func_num_args() > 1) {
+				// multiple arguments were passed, use them as field names
+				$field_names = func_get_args();
+			} elseif(!is_array($field_names)) {
+				// convert comma separated field list string to array
 				$field_names = explode(',', $field_names);
 			}
 			

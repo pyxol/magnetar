@@ -1,6 +1,8 @@
 <?php
 	declare(strict_types=1);
 	
+	use Exception;
+	
 	use Magnetar\Container\Container;
 	use Magnetar\Helpers\Env;
 	use Magnetar\Helpers\Facades\Config;
@@ -50,7 +52,9 @@
 		 * @todo implement
 		 */
 		function asset(string $rel_path=''): string {
-			throw new \Exception("Global function 'asset()' has not been implemented yet");
+			//throw new Exception("Global function 'asset()' has not been implemented yet");
+			
+			return URL::to('/static/' . $rel_path);
 		}
 	}
 	
@@ -130,6 +134,30 @@
 		 */
 		function data_path(string $rel_path=''): string {
 			return app()->pathData($rel_path);
+		}
+	}
+	
+	if(!function_exists('display')) {
+		/**
+		 * Generate a Response by processing a template from the active theme
+		 * @param string $template_name Template name
+		 * @param mixed $data Optional. Data to pass to the template file
+		 * @return Response
+		 */
+		function display(string $template_name, mixed $data=[]): Response {
+			return app('theme')->renderResponse($template_name, $data);
+		}
+	}
+	
+	if(!function_exists('display_tpl')) {
+		/**
+		 * Render a template from the active theme
+		 * @param string $template_name Template name
+		 * @param mixed $data Optional. Data to pass to the template file
+		 * @return void
+		 */
+		function display_tpl(string $template_name, mixed $data=[]): void {
+			print Theme::tpl($template_name, $data);
 		}
 	}
 	
