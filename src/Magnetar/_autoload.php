@@ -1,8 +1,6 @@
 <?php
 	declare(strict_types=1);
 	
-	use Exception;
-	
 	use Magnetar\Container\Container;
 	use Magnetar\Helpers\Env;
 	use Magnetar\Helpers\Facades\Config;
@@ -52,8 +50,6 @@
 		 * @todo implement
 		 */
 		function asset(string $rel_path=''): string {
-			//throw new Exception("Global function 'asset()' has not been implemented yet");
-			
 			return URL::to('/static/' . $rel_path);
 		}
 	}
