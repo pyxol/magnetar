@@ -8,6 +8,7 @@
 	use Magnetar\Model\HasDirtyTrait;
 	use Magnetar\Model\HasLookupTrait;
 	use Magnetar\Model\HasMutableTrait;
+	use Magnetar\Model\HasComparableTrait;
 	use Magnetar\Utilities\Str;
 	use Magnetar\Utilities\Internals;
 	
@@ -19,7 +20,8 @@
 	class Model implements ArrayAccess {
 		use HasDirtyTrait,
 			HasLookupTrait,
-			HasMutableTrait;
+			HasMutableTrait,
+			HasComparableTrait;
 		
 		/**
 		 * The model's data array

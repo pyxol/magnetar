@@ -3,12 +3,34 @@
 	
 	namespace Magnetar\Model;
 	
+	use Magnetar\Model\Model;
+	use Magnetar\Model\Exceptions\ModelException;
 	use Magnetar\Helpers\Facades\DB;
 	
 	/**
 	 * Model trait for mutable functions
 	 */
 	trait HasMutableTrait {
+		/**
+		 * Create a new model instance using the provided attributes and save it to the database. Only accessed statically
+		 * @param array $attributes The attributes to use for the model
+		 * @return Model
+		 */
+		private function create(array $attributes): Model {
+			if(!empty($attributes[ $this->identifier ])) {
+				throw new ModelException('Cannot create a model using attributes that include the identifier');
+			}
+			
+			$this->_data = $attributes;
+			
+			// save
+			$this->_data[ $this->identifier ] = DB::connection($this->connection_name)
+				->table($this->table)
+				->insert($attributes);
+			
+			return $this;
+		}
+		
 		/**
 		 * Save the model to the database. If the model has no ID, creates a new record, otherwise update
 		 * @return void
@@ -54,7 +76,6 @@
 				->table($this->table)
 				->where($this->identifier, $this->_data[ $this->identifier ])
 				->update($this->getDirtyAttributes());
-			
 		}
 		
 		/**

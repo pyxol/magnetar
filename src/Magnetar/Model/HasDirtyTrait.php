@@ -32,6 +32,15 @@
 		}
 		
 		/**
+		 * Determine if the model (attribute) is clean
+		 * @param string|null $attribute The attribute name to check for dirtiness
+		 * @return bool
+		 */
+		public function isClean(string|null $attribute=null): bool {
+			return !$this->isDirty($attribute);
+		}
+		
+		/**
 		 * Get the dirty attributes for the model
 		 * @return array
 		 */
@@ -41,7 +50,7 @@
 		
 		/**
 		 * Determine if the model has a dirty attribute
-		 * @param string $attribute
+		 * @param string $attribute The attribute name to check for dirtiness
 		 * @return bool
 		 */
 		public function hasDirtyAttribute(string $attribute): bool {
@@ -50,8 +59,8 @@
 		
 		/**
 		 * Set a dirty attribute
-		 * @param string $attribute
-		 * @param mixed $value
+		 * @param string $attribute The attribute name to mark as dirty
+		 * @param mixed $value The value to set
 		 * @return void
 		 */
 		public function setDirtyAttribute(string $attribute, mixed $value): void {
@@ -61,8 +70,8 @@
 		}
 		
 		/**
-		 * Remove a dirty attribute
-		 * @param string $attribute
+		 * Remove a dirty attribute from the model
+		 * @param string $attribute The attribute name to mark as clean
 		 * @return void
 		 */
 		public function removeDirtyAttribute(string $attribute): void {
