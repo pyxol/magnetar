@@ -5,6 +5,7 @@
 	
 	use Magnetar\Router\Enums\HTTPMethodEnum;
 	use Magnetar\Router\Helpers\HTTPMethodEnumResolver;
+	use Magnetar\Http\UploadedFile;
 	
 	class Request {
 		/**
@@ -212,5 +213,76 @@
 		 */
 		public function body(): string {
 			return file_get_contents('php://input') ?: '';
+		}
+		
+		/**
+		 * Get an instance of UploadedFile for the specified input name. If the input name that was sent is an array, an array of UploadedFile instances will be returned. If the input name is not found, null is returned.
+		 * @param string $input_name The name of the input to get the uploaded file for
+		 * @return UploadedFile|array|null
+		 */
+		public function file(string $input_name): UploadedFile|array|null {
+			if(!isset($_FILES[ $input_name ])) {
+				return null;
+			}
+			
+			$file = $_FILES[ $input_name ];
+			
+			if(is_array($file['tmp_name'])) {
+				$files = [];
+				
+				foreach($file['tmp_name'] as $index => $tmp_name) {
+					$files[] = new UploadedFile(
+						$tmp_name,
+						$file['name'][ $index ],
+						$file['type'][ $index ],
+						$file['size'][ $index ],
+						$file['error'][ $index ]
+					);
+				}
+				
+				return $files;
+			}
+			
+			return new UploadedFile(
+				$file['tmp_name'],
+				$file['name'],
+				$file['type'],
+				$file['size'],
+				$file['error']
+			);
+		}
+		
+		/**
+		 * Get all uploaded files
+		 * @return array
+		 */
+		public function files(): array {
+			$files = [];
+			
+			foreach($_FILES as $input_name => $file) {
+				if(is_array($file['tmp_name'])) {
+					$files[ $input_name ] = [];
+					
+					foreach(array_keys($file['tmp_name']) as $key) {
+						$files[ $input_name ][ $key ] = new UploadedFile(
+							$file['tmp_name'][ $key ],
+							$file['name'][ $key ],
+							$file['type'][ $key ],
+							$file['size'][ $key ],
+							$file['error'][ $key ]
+						);
+					}
+				} else {
+					$files[ $input_name ] = new UploadedFile(
+						$file['tmp_name'],
+						$file['name'],
+						$file['type'],
+						$file['size'],
+						$file['error']
+					);
+				}
+			}
+			
+			return $files;
 		}
 	}
