@@ -282,11 +282,16 @@
 		
 		/**
 		 * Set the limit
-		 * @param int $limit
+		 * @param int $limit The number of rows to return
+		 * @param int|null $offset Optional. The offset to start at. Defaults to null (do not alter offset)
 		 * @return self
 		 */
-		public function limit(int $limit): self {
+		public function limit(int $limit, int|null $offset=null): self {
 			$this->limit = $limit;
+			
+			if(null !== $offset) {
+				return $this->offset($offset);
+			}
 			
 			return $this;
 		}
