@@ -237,6 +237,24 @@
 		}
 		
 		/**
+		 * Only use rows where column value is null
+		 * @param string $column Column name
+		 * @return self
+		 */
+		public function whereNull(string $column): self {
+			return $this->where($column, null);
+		}
+		
+		/**
+		 * Only use rows where column value is not null
+		 * @param string $column Column name
+		 * @return self
+		 */
+		public function whereNotNull(string $column): self {
+			return $this->where($column, '!=', null);
+		}
+		
+		/**
 		 * Define the order by clause
 		 * @param string $column_name Column name to order by
 		 * @param string $direction ASC or DESC
