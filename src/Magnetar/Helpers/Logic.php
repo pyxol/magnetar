@@ -9,7 +9,7 @@
 		 * @param string|int|bool $value Value to check
 		 * @return bool
 		 */
-		public static function isTrue($value): bool {
+		public static function isTrue(string|int|bool $value): bool {
 			return ($value === true) || (1 === $value) || ('1' === $value) || ('true' === strtolower($value));
 		}
 		
@@ -18,7 +18,7 @@
 		 * @param string|int|bool $value Value to check
 		 * @return bool
 		 */
-		public static function isFalse($value): bool {
+		public static function isFalse(string|int|bool $value): bool {
 			return ($value === false) || (0 === $value) || ('0' === $value) || ('false' === strtolower($value));
 		}
 	}
