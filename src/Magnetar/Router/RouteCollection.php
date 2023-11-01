@@ -8,7 +8,7 @@
 	use Magnetar\Router\Router;
 	use Magnetar\Router\Route;
 	use Magnetar\Router\Enums\HTTPMethodEnum;
-	
+
 	/**
 	 * A collection manager for Route objects. Subsequent instances are typically shortlived and allow for grouping routes together
 	 */

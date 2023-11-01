@@ -273,7 +273,48 @@
 		 * @todo make this more efficient (maybe have a unique id for each route)
 		 */
 		public function getName(): string {
-			return $this->name ??= md5($this->path_basic);
+			return $this->name ??= $this->generateName();
+		}
+		
+		/**
+		 * Generate a name for this route
+		 * @return string The generated name
+		 */
+		protected function generateName(): string {
+			if(null === $this->methods) {
+				// any method
+				return md5($this->path_basic);
+			}
+			
+			// specific method(s) - use pipe-delimited list of methods as a prefix
+			return md5(implode('|', array_map(
+				fn(HTTPMethodEnum $method): string => HTTPMethodEnumResolver::resolveToString($method),
+				$this->methods
+			)) .':'. $this->path_basic);
+		}
+		
+		/**
+		 * Get the route's methods
+		 * @return array The route's methods as HTTPMethodEnum values
+		 */
+		public function getMethods(): array {
+			return $this->methods ?? [];
+		}
+		
+		/**
+		 * Get the route's path
+		 * @return string The route's path
+		 */
+		public function getPath(): string {
+			return $this->path_basic;
+		}
+		
+		/**
+		 * Get the route's path regex
+		 * @return string The route's path regex
+		 */
+		public function getPathRegex(): string {
+			return $this->path_regex;
 		}
 		
 		/**
