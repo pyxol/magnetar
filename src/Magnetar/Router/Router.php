@@ -10,6 +10,7 @@
 	use Magnetar\Http\Response;
 	use Magnetar\Router\RouteCollection;
 	use Magnetar\Router\Enums\HTTPMethodEnum;
+	use Magnetar\Http\RedirectResponse;
 	use Magnetar\Router\Exceptions\RouteUnassignedException;
 	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 	
@@ -330,19 +331,49 @@
 		}
 		
 		/**
-		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against
+		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against. Returns the contextualized route collection
 		 * @param string $pattern The pattern to match against
 		 * @param string $method The HTTP method to match against
-		 * @return void
+		 * @return RouteCollection
 		 */
-		public function group(string $pathPrefix, callable $callback): void {
+		public function group(string $pathPrefix, callable $callback): RouteCollection {
 			// instantiate a route collection, pass in the context, path prefix, and callback that will
 			// use a temporary router context to define routes. Automatically reverts context when finished
-			new RouteCollection(
+			return new RouteCollection(
 				$this,
 				$this->routeCollection,
 				$pathPrefix,
 				$callback
+			);
+		}
+		
+		/**
+		 * Assign a redirect rule for a given path
+		 * @param string $pattern The pattern to match against
+		 * @param string $redirect_path The URI to redirect to
+		 * @param int $status The HTTP status code to use. Defaults to 302
+		 * @return Route
+		 */
+		public function redirect(string $pattern, string $redirect_path, int $status=302): Route {
+			return $this->assignRoute(
+				null,
+				$pattern,
+				fn() => $this->container->instance('response', (new RedirectResponse)->to($redirect_path)->status($status))
+			);
+		}
+		
+		/**
+		 * Assign a permanent redirect (301) rule for a given path
+		 * @param string $pattern The pattern to match against
+		 * @param string $redirect_path The URI to redirect to
+		 * @param int $status The HTTP status code to use
+		 * @return Route
+		 */
+		public function permanentRedirect(string $pattern, string $redirect_path): Route {
+			return $this->assignRoute(
+				null,
+				$pattern,
+				fn() => $this->container->instance('response', (new RedirectResponse)->to($redirect_path)->permanent())
 			);
 		}
 		

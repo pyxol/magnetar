@@ -353,29 +353,26 @@
 			HTTPMethodEnum $method,
 			string $path
 		): bool {
-			//print "Checking path[". $path ."] against ". $this->path_basic ." [". $this->path_regex ."]<br>\n";
-			
 			// check method
-			// @todo use a bitwise match operation instead of in_array()?
-			if(!in_array($method, $this->methods)) {
+			// @TODO maybe something more performant like a bitwise match instead of in_array()
+			if((null !== $this->methods) && !in_array($method, $this->methods)) {
 				// request method isn't the same
 				return false;
 			}
 			
 			// check path
 			if($this->path_is_regex) {
+				// regex path match?
 				if(!preg_match($this->path_regex, $path, $matches)) {
 					return false;
 				}
-				
-				// path matches
 				
 				// parse path matches
 				$this->parseMatchedPathVariables($matches);
 				
 				return true;
 			} else {
-				// basic path match
+				// basic path match?
 				if($path !== $this->path_basic) {
 					return false;
 				}
