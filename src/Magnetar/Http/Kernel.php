@@ -192,7 +192,7 @@
 		 */
 		protected function panic(Exception $e): Response {
 			// send 503 response
-			$response = (new Response())->status(503)->setBody(
+			return (new Response())->responseCode(503)->body(
 				$this->app->make('theme')->tpl('errors/503', [
 					'message' => $e->getMessage(),
 					'file' => $e->getFile(),
@@ -200,8 +200,6 @@
 					'trace' => $e->getTraceAsString()
 				])
 			);
-			
-			return $response;
 		}
 		
 		/**
@@ -211,13 +209,11 @@
 		 */
 		public function handle404(string $message=''): Response {
 			// send 404 response
-			$response = (new Response())->status(404)->setBody(
+			return (new Response())->responseCode(404)->body(
 				$this->app->make('theme')->tpl('errors/404', [
 					'message' => $message
 				])
 			);
-			
-			return $response;
 		}
 		
 		/**

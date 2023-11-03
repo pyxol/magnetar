@@ -6,10 +6,34 @@
 	use Magnetar\Http\HeaderCollection;
 	
 	class Response {
+		/**
+		 * The response headers
+		 * @var HeaderCollection
+		 */
 		protected HeaderCollection $headers;
-		protected int $statusCode = 200;
+		
+		/**
+		 * The HTTP Response Code
+		 * @var int
+		 */
+		protected int $response_code = 200;
+		
+		/**
+		 * The response body
+		 * @var string
+		 */
 		protected string $body = '';
-		protected bool $headersSent = false;
+		
+		/**
+		 * Whether the response headers have been sent
+		 * @var bool
+		 */
+		protected bool $sent_headers = false;
+		
+		/**
+		 * Whether the response has been sent (headers and body)
+		 * @var bool
+		 */
 		protected bool $sent = false;
 		
 		/**
@@ -24,11 +48,34 @@
 		
 		/**
 		 * Set the HTTP Response Code
-		 * @param int $code The HTTP Response Code. Defaults to 200
+		 * @param int $response_code The HTTP Response Code. Defaults to 200
 		 * @return self
 		 */
-		public function status(int $code=200): self {
-			$this->statusCode = $code;
+		public function responseCode(int $response_code=200): self {
+			$this->response_code = $response_code;
+			
+			return $this;
+		}
+		
+		/**
+		 * Set the response body
+		 * @param string $body The response body
+		 * @return self
+		 */
+		public function body(string $body=''): self {
+			$this->body = $body;
+			
+			return $this;
+		}
+		
+		/**
+		 * Print the response body to the output buffer
+		 * @return self
+		 */
+		public function sendBody(): self {
+			print $this->body;
+			
+			$this->sent = true;
 			
 			return $this;
 		}
@@ -65,57 +112,6 @@
 		}
 		
 		/**
-		 * Redirect to a specific URL
-		 */
-		public function redirect(string $path, int $response_code=302): void {
-			// sanitize response code
-			if(!in_array($response_code, [300, 301, 302, 303, 304, 307, 308])) {
-				$response_code = 302;
-			}
-			
-			// sanitize path
-			if(!preg_match("#^https?\://#si", $path)) {
-				//$path = ABS_URI . $path;
-				$path = config('app.url') . $path;
-			}
-			
-			// send location header
-			$this->header(
-				'Location',
-				$path,
-				true,
-				$response_code
-			);
-		}
-		
-		/**
-		 * Set the response body
-		 * @param string $body
-		 * @return self
-		 */
-		public function setBody(string $body=''): self {
-			$this->body = $body;
-			
-			return $this;
-		}
-		
-		/**
-		 * Set JSON header and prints JSON response
-		 * @param mixed $body The JSON body to print
-		 * @return void
-		 */
-		public function json(mixed $body): self {
-			// @TODO turn into a factory method that clones itself and returns
-			// a JsonResponse object instead
-			
-			$this->header('Content-Type', 'application/json');
-			
-			$this->setBody(json_encode($body));
-			
-			return $this;
-		}
-		
-		/**
 		 * Send the response to the client
 		 * @return self
 		 */
@@ -141,43 +137,15 @@
 			}
 			
 			// send status code
-			http_response_code($this->statusCode);
+			http_response_code($this->response_code);
 			
 			// send headers
 			$this->headers->send();
 			
 			// mark headers as sent
-			$this->headersSent = true;
+			$this->sent_headers = true;
 			
 			return $this;
-		}
-		
-		/**
-		 * Print the response body to the output buffer
-		 * @return self
-		 */
-		public function sendBody(): self {
-			print $this->body;
-			
-			$this->sent = true;
-			
-			return $this;
-		}
-		
-		/**
-		 * Get the response body
-		 * @return string
-		 */
-		public function body(): string {
-			return $this->body;
-		}
-		
-		/**
-		 * Get the response status code
-		 * @return int
-		 */
-		public function statusCode(): int {
-			return $this->statusCode;
 		}
 		
 		/**
@@ -208,12 +176,20 @@
 		}
 		
 		/**
+		 * Get the response headers
+		 * @return array
+		 */
+		public function headers(): array {
+			return $this->headers->all();
+		}
+		
+		/**
 		 * Set multiple headers at once. Note, this will replace any existing headers with the same name
 		 * @param array $headers An associative array of headers to set. Key is the header name, value is the header value
 		 * @return self
 		 */
 		public function setHeaders(array $headers): self {
-			if($this->headersSent) {
+			if($this->sent_headers) {
 				return $this;
 			}
 			
@@ -225,11 +201,32 @@
 		}
 		
 		/**
-		 * Get the response headers
-		 * @return array
+		 * Remove a response header by name
+		 * @param string $name The header name
+		 * @return self
 		 */
-		public function headers(): array {
-			return $this->headers->all();
+		public function removeHeader(string $name): self {
+			if($this->sent_headers) {
+				return $this;
+			}
+			
+			$this->headers->remove($name);
+			
+			return $this;
+		}
+		
+		/**
+		 * Clear all unsent response headers
+		 * @return self
+		 */
+		public function clearHeaders(): self {
+			if($this->sent_headers) {
+				return $this;
+			}
+			
+			$this->headers->clear();
+			
+			return $this;
 		}
 		
 		/**
@@ -251,40 +248,11 @@
 		}
 		
 		/**
-		 * Remove a response header by name
-		 * @param string $name The header name
-		 * @return self
-		 */
-		public function removeHeader(string $name): self {
-			if($this->headersSent) {
-				return $this;
-			}
-			
-			$this->headers->remove($name);
-			
-			return $this;
-		}
-		
-		/**
-		 * Clear all unsent response headers
-		 * @return self
-		 */
-		public function clearHeaders(): self {
-			if($this->headersSent) {
-				return $this;
-			}
-			
-			$this->headers->clear();
-			
-			return $this;
-		}
-		
-		/**
 		 * Check if the response headers have been sent
 		 * @return bool
 		 */
-		public function headersSent(): bool {
-			return $this->headersSent;
+		public function sentHeaders(): bool {
+			return $this->sent_headers;
 		}
 		
 		/**
@@ -293,5 +261,24 @@
 		 */
 		public function sent(): bool {
 			return $this->sent;
+		}
+		
+		/**
+		 * Redirect to a specific URL
+		 * @param string $path The URL to redirect to
+		 * @param int $response_code Optional. HTTP status code. Defaults to 302
+		 * @return self
+		 */
+		public function redirect(string $path, int $response_code=302): self {
+			return (new RedirectResponse($path, $response_code))->responseCode($response_code);
+		}
+		
+		/**
+		 * Set JSON header and prints JSON response
+		 * @param mixed $body The JSON body to print
+		 * @return self
+		 */
+		public function json(mixed $body): self {
+			return (new JsonResponse)->json($body);
 		}
 	}

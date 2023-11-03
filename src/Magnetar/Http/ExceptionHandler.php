@@ -49,7 +49,7 @@
 				$response_status = 404;
 			}
 			
-			$response = (new Response())->status($response_status)->setBody(
+			return (new Response())->responseCode($response_status)->body(
 				$this->app->make('theme')->tpl($theme_file, [
 					'request' => $request,
 					'message' => $e->getMessage(),
@@ -58,7 +58,5 @@
 					'trace' => $e->getTraceAsString()
 				])
 			);
-			
-			return $response;
 		}
 	}

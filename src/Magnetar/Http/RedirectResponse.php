@@ -19,25 +19,17 @@
 		protected string|null $url = null;
 		
 		/**
-		 * The HTTP Response Code
+		 * How many seconds to delay the redirect, showing a "Redirecting..." page during instead of an instant redirect
 		 * @var int
 		 */
-		protected int $statusCode = 307;
+		protected int $delay_seconds = 0;
 		
 		/**
-		 * How long to delay the redirect in seconds, showing a "Redirecting..." page during the delay
-		 * @var int
-		 */
-		protected int $delaySeconds = 0;
-		
-		/**
-		 * Set the redirect URL
-		 * @param string $url The URL to redirect to. If it does not start with http:// or https://, it will be prepended with the current domain
+		 * Simplified alias for setURL()
+		 * @param string $url The URL to redirect to
 		 * @return self
-		 * 
-		 * @throws InvalidRedirectURLException
 		 */
-		public function setURL(string $url): self {
+		public function to(string $url): self {
 			if(!preg_match('/^https?:\/\//', $url)) {
 				$url = URL::to($url);
 			}
@@ -52,27 +44,28 @@
 		}
 		
 		/**
-		 * Simplified alias for setURL()
-		 * @param string $url The URL to redirect to
+		 * Set the redirect URL
+		 * @param string $url The URL to redirect to. If it does not start with http:// or https://, it will be prepended with the current domain
 		 * @return self
+		 * 
+		 * @throws InvalidRedirectURLException
 		 */
-		public function to(string $url): self {
-			return $this->setURL($url);
+		public function url(string $url): self {
+			return $this->to($url);
 		}
 		
 		/**
-		 * Set the response code
-		 * @param int $code The HTTP Response Code for the redirect. Only allows 301, 302, and 307. Defaults to 307
-		 * @return self
+		 * {@inheritDoc}
 		 * 
 		 * @throws InvalidResponseCodeException
 		 */
-		public function setCode(int $code=307): self {
-			if(!in_array($code, [301, 302, 307])) {
+		public function responseCode(int $response_code=307): self {
+			// sanitize response code
+			if(!in_array($response_code, [300, 301, 302, 303, 304, 307, 308])) {
 				throw new InvalidResponseCodeException('Invalid redirect code');
 			}
 			
-			return $this;
+			return parent::responseCode($response_code);
 		}
 		
 		/**
@@ -80,9 +73,7 @@
 		 * @return self
 		 */
 		public function permanent(): self {
-			$this->statusCode = 301;
-			
-			return $this;
+			return $this->responseCode(301);
 		}
 		
 		/**
@@ -90,9 +81,7 @@
 		 * @return self
 		 */
 		public function temporary(): self {
-			$this->statusCode = 307;
-			
-			return $this;
+			return $this->responseCode(307);
 		}
 		
 		/**
@@ -101,7 +90,7 @@
 		 * @return self
 		 */
 		public function delay(int $seconds=0): self {
-			$this->delaySeconds = abs($seconds);
+			$this->delay_seconds = abs($seconds);
 			
 			return $this;
 		}
@@ -110,37 +99,38 @@
 		 * Resets the delay to the default of 0 seconds
 		 * @return self
 		 */
-		public function nodelay(): self {
-			$this->delaySeconds = 0;
+		public function noDelay(): self {
+			$this->delay_seconds = 0;
 			
 			return $this;
 		}
 		
 		/**
 		 * {@inheritDoc}
+		 * 
+		 * @throws InvalidRedirectURLException
 		 */
 		public function send(): self {
 			// check for valid URL
 			if(null === $this->url) {
-				throw new \Exception('No URL set');
+				throw new InvalidRedirectURLException('No URL set');
 			}
 			
 			// send the redirect header if there is no delay
-			if(0 === $this->delaySeconds) {
-				$this->header('Location', $this->url, true, $this->statusCode);
+			if(0 === $this->delay_seconds) {
+				$this->header(
+					'Location',
+					$this->url,
+					true,
+					$this->response_code
+				);
 			}
 			
 			// set body to a basic redirect page
-			$this->setBody(
-				$this->generateRedirecPage($this->url)
-			);
+			$this->body( $this->generateRedirecHTMLPage($this->url) );
 			
-			$this->sendHeaders();
-			$this->sendBody();
-			
-			$this->sent = true;
-			
-			return $this;
+			// send the response
+			return parent::send();
 		}
 		
 		/**
@@ -148,7 +138,7 @@
 		 * @param string|null $url The URL to redirect to. Defaults to the URL set in the response
 		 * @return string
 		 */
-		protected function generateRedirecPage(string|null $url=null): string {
+		protected function generateRedirecHTMLPage(string|null $url=null): string {
 			// sanitize url
 			$url ??= $this->url;
 			
@@ -161,7 +151,7 @@
 				<html>
 					<head>
 						<title>Redirecting...</title>
-						<meta http-equiv="refresh" content="{$this->delaySeconds};url={$escaped_url}">
+						<meta http-equiv="refresh" content="{$this->delay_seconds};url={$escaped_url}">
 						<meta name="robots" content="noindex,follow">
 					</head>
 					<body>

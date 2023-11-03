@@ -351,14 +351,14 @@
 		 * Assign a redirect rule for a given path
 		 * @param string $pattern The pattern to match against
 		 * @param string $redirect_path The URI to redirect to
-		 * @param int $status The HTTP status code to use. Defaults to 302
+		 * @param int $response_code The HTTP response code to use. Defaults to 302
 		 * @return Route
 		 */
-		public function redirect(string $pattern, string $redirect_path, int $status=302): Route {
+		public function redirect(string $pattern, string $redirect_path, int $response_code=302): Route {
 			return $this->assignRoute(
 				null,
 				$pattern,
-				fn() => $this->container->instance('response', (new RedirectResponse)->to($redirect_path)->status($status))
+				fn() => $this->container->instance('response', (new RedirectResponse)->responseCode($response_code)->to($redirect_path))
 			);
 		}
 		
@@ -366,14 +366,13 @@
 		 * Assign a permanent redirect (301) rule for a given path
 		 * @param string $pattern The pattern to match against
 		 * @param string $redirect_path The URI to redirect to
-		 * @param int $status The HTTP status code to use
 		 * @return Route
 		 */
 		public function permanentRedirect(string $pattern, string $redirect_path): Route {
 			return $this->assignRoute(
 				null,
 				$pattern,
-				fn() => $this->container->instance('response', (new RedirectResponse)->to($redirect_path)->permanent())
+				fn() => $this->container->instance('response', (new RedirectResponse)->permanent()->to($redirect_path))
 			);
 		}
 		

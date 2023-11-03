@@ -173,10 +173,10 @@
 		/**
 		 * Make a JSON Response instance with the specified data
 		 * @param mixed $data Data to set for the response
-		 * @return \Magnetar\Http\JsonResponse
+		 * @return JsonResponse
 		 */
 		function json(mixed $data): JsonResponse {
-			return (new JsonResponse())->setData($data);
+			return (new JsonResponse)->json($data);
 		}
 	}
 	
@@ -215,10 +215,13 @@
 		/**
 		 * Make a Redirect Response instance and tell it to redirect to the specified URL
 		 * @param string $url URL to redirect to
+		 * @param int $response_code Optional. HTTP status code. Defaults to 307. Any non-3xx code will throw an exception
 		 * @return RedirectResponse
+		 * 
+		 * @throws \Magnetar\Http\Exceptions\InvalidRedirectURLException
 		 */
-		function redirect(string $url): RedirectResponse {
-			return (new RedirectResponse())->setURL($url);
+		function redirect(string $url, int $response_code=307): RedirectResponse {
+			return (new RedirectResponse)->responseCode($response_code)->to($url);
 		}
 	}
 	
@@ -226,16 +229,16 @@
 		/**
 		 * Make a Response instance and set various properties
 		 * @param string $body Response body
-		 * @param int $status_code Optional. HTTP status code. Defaults to 200
+		 * @param int $response_code Optional. HTTP status code. Defaults to 200
 		 * @param array $headers Optional. HTTP headers to set. Defaults to an empty array
 		 * @return Response
 		 */
 		function response(
 			string $body,
-			int $status_code=200,
+			int $response_code=200,
 			array $headers=[]
 		): Response {
-			return (new Response())->setBody($body)->status($status_code)->setHeaders($headers);
+			return (new Response)->responseCode($response_code)->setHeaders($headers)->body($body);
 		}
 	}
 	
