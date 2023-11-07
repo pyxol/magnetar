@@ -3,6 +3,7 @@
 		"php-server": "cd ./dev/public/ && php -S localhost:8001",
 		"docker-compose": "docker-compose up",
 		"generate-docs": "docker run --rm -v \"$(pwd):/data\" \"phpdoc/phpdoc:3\"",
-		"preview-docs": "php -S localhost:8000 -t ./docs/.output/"
+		"preview-docs": "php -S localhost:8000 -t ./docs/.output/",
+		"host-docs": "docker run --rm -v \"${PWD}/docs/:/usr/local/apache2/htdocs/\" --network=\"gateway\" --label traefik.enable=true --label traefik.http.routers.magnetar-docs.rule=Host\\(\\`magnetar-docs.lan\\`\\) \"httpd:2.4-alpine\""
 	}
 }

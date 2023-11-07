@@ -14,6 +14,7 @@
 	 * @method method(): ?Magnetar\Router\Enums\HTTPMethodEnum
 	 * @method assignOverrideParameters(array $parameters): void
 	 * @method parameter(string $name, mixed $default=null): mixed
+	 * @method get(string $name, mixed $default=null): mixed
 	 * @method parameters(): array
 	 * @method body(): string
 	 * @method file(string $input_name): Magnetar\Http\UploadedFile|array|null

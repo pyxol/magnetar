@@ -200,6 +200,16 @@
 		}
 		
 		/**
+		 * Alias of Request::parameter()
+		 * @param string $name The name of the parameter to get
+		 * @param mixed $default Optional. Return this if requested parameter isn't set
+		 * @return mixed The parameter value
+		 */
+		public function get(string $name, mixed $default=null): mixed {
+			return $this->parameter($name, $default);
+		}
+		
+		/**
 		 * Get all parameters from the request
 		 * @return array
 		 */

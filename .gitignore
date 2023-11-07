@@ -11,6 +11,7 @@ vendor/
 
 # phpDocumentor
 /phpdoc.phar
+.phpdoc/
 docs/
 
 # database files
@@ -23,7 +24,7 @@ docs/
 *.log
 
 # tmp files
-tmp/*
+tmp/
 
 # ideas
-.idea/*
+.idea/
