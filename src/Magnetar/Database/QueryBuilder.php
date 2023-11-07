@@ -457,6 +457,16 @@
 			return $this->adapter->get_var($query, $params, $column_key);
 		}
 		
+		
+		/**
+		 * Alias for fetchVar()
+		 * @param string|int $column_key The column to use as the array key for the results. If empty, fetches the first column
+		 * @return string|int|false
+		 */
+		public function value(string|int $column_key=0): string|int|false {
+			return $this->fetchVar($column_key);
+		}
+		
 		/**
 		 * Count the number of rows matching the query
 		 * @return int

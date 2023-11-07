@@ -210,6 +210,15 @@
 		}
 		
 		/**
+		 * Determine if a parameter exists
+		 * @param string $name The name of the parameter to check
+		 * @return bool True if the parameter exists, false otherwise
+		 */
+		public function isset(string $name): bool {
+			return isset($this->parameters[ $name ]);
+		}
+		
+		/**
 		 * Get all parameters from the request
 		 * @return array
 		 */
