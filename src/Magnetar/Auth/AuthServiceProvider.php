@@ -1,22 +1,22 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Database;
+	namespace Magnetar\Auth;
 	
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Helpers\DeferrableServiceInterface;
-	use Magnetar\Database\ConnectionManager;
+	use Magnetar\Auth\AuthManager;
 	
 	/**
-	 * Database service provider
+	 * Auth service provider
 	 */
-	class DatabaseServiceProvider extends ServiceProvider implements DeferrableServiceInterface {
+	class AuthServiceProvider extends ServiceProvider implements DeferrableServiceInterface {
 		/**
 		 * {@inheritDoc}
 		 */
 		public function register(): void {
 			// register connection services
-			$this->app->singleton('database', fn ($app) => new ConnectionManager($app));
+			$this->app->singleton('auth', fn ($app) => new AuthManager($app));
 		}
 		
 		/**
@@ -24,7 +24,7 @@
 		 */
 		public function provides(): array {
 			return [
-				ConnectionManager::class,
+				AuthManager::class,
 			];
 		}
 	}

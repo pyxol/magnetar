@@ -31,7 +31,7 @@
 		];
 		
 		/**
-		 * ConnectionManager constructor
+		 * Constructor
 		 */
 		public function __construct(
 			/**
