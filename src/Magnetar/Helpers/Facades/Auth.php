@@ -10,8 +10,11 @@
 	 * @method getDefaultConnectionName(): ?string
 	 * @method getConnected(): array
 	 * @method adapter(string $connection_name): Magnetar\Auth\AuthenticationAdapter
+	 * @method getAdapterName(): string
+	 * @method setModelClass(string $model_class): void
 	 * 
-	 * @see Magnetar\Auth\AuthManager
+	 * @see \Magnetar\Auth\AuthManager
+	 * @see \Magnetar\Auth\AuthenticationAdapter
 	 */
 	class Auth extends Facade {
 		/**

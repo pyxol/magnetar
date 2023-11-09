@@ -90,7 +90,7 @@
 	 * @method offsetSet(mixed $key, mixed $value): void
 	 * @method offsetUnset(mixed $key): void
 	 * 
-	 * @see Magnetar\Application
+	 * @see \Magnetar\Application
 	 */
 	class App extends Facade {
 		/**

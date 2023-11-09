@@ -20,9 +20,12 @@
 		
 		/**
 		 * Constructor
-		 * @param Application $app The application instance
 		 */
 		public function __construct(
+			/**
+			 * The application instance
+			 * @var Application
+			 */
 			protected Application $app
 		) {
 			
@@ -75,6 +78,8 @@
 		 * @param string $method
 		 * @param array $args
 		 * @return mixed
+		 * 
+		 * @see \Magnetar\Cache\AbstractCacheStore
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);

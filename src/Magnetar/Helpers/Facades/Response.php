@@ -24,7 +24,7 @@
 	 * @method redirect(string $path, int $response_code=302): self
 	 * @method json(mixed $body): self
 	 * 
-	 * @see Magnetar\Http\Response
+	 * @see \Magnetar\Http\Response
 	 */
 	class Response extends Facade {
 		/**

@@ -128,12 +128,12 @@
 		}
 		
 		/**
-		 * Passes method calls to the default disk adapter
+		 * Passes method calls to the default disk adapter. Different methods are available based on the type of adapter used
 		 * @param string $method The method name
 		 * @param array $args The method arguments
 		 * @return mixed
 		 * 
-		 * @see DiskAdapter
+		 * @see \Magnetar\Filesystem\Disk\DiskAdapter
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);

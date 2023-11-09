@@ -127,7 +127,7 @@
 		 * @param array $args
 		 * @return mixed
 		 * 
-		 * @see DatabaseAdapter
+		 * @see \Magnetar\Database\DatabaseAdapter
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);

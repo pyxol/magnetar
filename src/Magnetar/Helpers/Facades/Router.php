@@ -21,7 +21,7 @@
 	 * @method redirect(string $pattern, string $redirect_path, int $response_code=302): Magnetar\Router\Route
 	 * @method permanentRedirect(string $pattern, string $redirect_path): Magnetar\Router\Route
 	 * 
-	 * @see Magnetar\Router\Router
+	 * @see \Magnetar\Router\Router
 	 */
 	class Router extends Facade {
 		/**

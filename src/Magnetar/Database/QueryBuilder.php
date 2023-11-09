@@ -558,7 +558,7 @@
 		 * @example $db->insertIgnore( ['column' => 'value'] );
 		 * @example $db->insertIgnore( [ ['column' => 'value'], ['column' => 'value2'] ] );
 		 * 
-		 * @see insert()
+		 * @see \Magnetar\Database\QueryBuilder
 		 */
 		public function insertIgnore(array $data): int {
 			return $this->insert($data, true);

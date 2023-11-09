@@ -10,7 +10,7 @@
 	 * @method getLogs(int $minLevel=0): array
 	 * @method dump(int $minLevel=0, bool $return=false): mixed
 	 * 
-	 * @see Magnetar\Log\Logger
+	 * @see \Magnetar\Log\Logger
 	 */
 	class Log extends Facade {
 		/**

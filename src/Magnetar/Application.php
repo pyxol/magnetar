@@ -506,7 +506,7 @@
 		 * Register the container's core list of aliases
 		 * @return void
 		 * 
-		 * @see Magnetar\Helpers\Facades\Facade::defaultAliases()
+		 * @see \Magnetar\Helpers\Facades\Facade::defaultAliases()
 		 */
 		public function registerCoreContainerAliases(): void {
 			foreach([

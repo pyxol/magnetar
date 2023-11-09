@@ -11,7 +11,7 @@
 	/**
 	 * Authentication manager
 	 * 
-	 * @see AuthenticationAdapter
+	 * @see \Magnetar\Auth\AuthenticationAdapter
 	 */
 	class AuthManager {
 		/**
@@ -128,7 +128,7 @@
 		 * @param array $args
 		 * @return mixed
 		 * 
-		 * @see AuthenticationAdapter
+		 * @see \Magnetar\Auth\AuthenticationAdapter
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);

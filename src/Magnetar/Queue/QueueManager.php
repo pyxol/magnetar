@@ -124,6 +124,8 @@
 		 * @param string $method
 		 * @param array $args
 		 * @return mixed
+		 * 
+		 * @see \Magnetar\Queue\QueueAdapter
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->connection()->$method(...$args);

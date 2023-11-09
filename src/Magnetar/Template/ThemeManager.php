@@ -71,6 +71,8 @@
 		 * @param string $method The method name to call
 		 * @param array $args The arguments to pass to the method
 		 * @return mixed
+		 * 
+		 * @see \Magnetar\Template\Template
 		 */
 		public function __call(string $method, array $args): mixed {
 			return $this->theme()->$method(...$args);

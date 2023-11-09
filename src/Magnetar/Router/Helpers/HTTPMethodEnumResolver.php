@@ -18,7 +18,7 @@
 		 * 
 		 * @throws Exception If the method is unknown and no default value is provided
 		 * 
-		 * @see Magnetar\Router\Enums\HTTPMethodEnum
+		 * @see \Magnetar\Router\Enums\HTTPMethodEnum
 		 */
 		public static function resolve(string $method, mixed $default=null): HTTPMethodEnum {
 			return match($method) {

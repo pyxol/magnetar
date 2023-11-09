@@ -49,7 +49,7 @@
 		 * 
 		 * @throws Exception If the type is unknown and no default value is provided
 		 * 
-		 * @see Magnetar\Helpers\Enums\TypedEnum
+		 * @see \Magnetar\Helpers\Enums\TypedEnum
 		 */
 		public static function typeByName(string $named_type, mixed $default=null): TypedEnum {
 			return match($named_type) {

@@ -14,6 +14,8 @@
 	
 	use Magnetar\Helpers\Facades\Log;
 	
+	// @NOTE this is outdated, only here temporarily for reference
+	
 	class UpdateFacadePHPDocs extends Actionable {
 		/**
 		 * {@inheritDoc}

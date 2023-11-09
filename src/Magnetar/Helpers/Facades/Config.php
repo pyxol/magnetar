@@ -19,7 +19,7 @@
 	 * @method offsetSet(mixed $key, mixed $value): void
 	 * @method offsetUnset(mixed $key): void
 	 * 
-	 * @see Magnetar\Config\Config
+	 * @see \Magnetar\Config\Config
 	 */
 	class Config extends Facade {
 		/**

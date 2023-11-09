@@ -21,7 +21,7 @@
 	 * @method file(string $input_name): Magnetar\Http\UploadedFile|array|null
 	 * @method files(): array
 	 * 
-	 * @see Magnetar\Http\Request
+	 * @see \Magnetar\Http\Request
 	 */
 	class Request extends Facade {
 		/**
