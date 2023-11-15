@@ -6,6 +6,7 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
+	 * @method processRequestCookies(): void
 	 * @method create(): Magnetar\Http\Request
 	 * @method headers(): array
 	 * @method header(string $name): ?string
@@ -17,6 +18,7 @@
 	 * @method get(string $name, mixed $default=null): mixed
 	 * @method isset(string $name): bool
 	 * @method parameters(): array
+	 * @method cookies(): array
 	 * @method body(): string
 	 * @method file(string $input_name): Magnetar\Http\UploadedFile|array|null
 	 * @method files(): array

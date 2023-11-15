@@ -521,6 +521,9 @@
 				'config' => [
 					\Magnetar\Config\Config::class,
 				],
+				'cookie' => [
+					\Magnetar\Http\CookieJar\CookieJar::class,
+				],
 				'database' => [
 					\Magnetar\Database\ConnectionManager::class,
 				],

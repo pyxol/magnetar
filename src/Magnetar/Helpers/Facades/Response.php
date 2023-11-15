@@ -9,7 +9,7 @@
 	 * @method responseCode(int $response_code=200): self
 	 * @method body(string $body=''): self
 	 * @method sendBody(): self
-	 * @method setCookie(string $name, ?string $value=null, int $expires=0, string $path='', string $domain='', bool $secure=false, bool $httponly=false): self
+	 * @method setCookie(string $name, ?string $value=null, ?int $expires=null): self
 	 * @method send(): self
 	 * @method sendHeaders(): self
 	 * @method header(string $header, ?string $value=null, int|bool $replace=true, ?int $response_code=0): self|string

@@ -4,6 +4,7 @@
 	namespace Magnetar\Http\CookieJar;
 	
 	use Magnetar\Http\Request;
+	use Magnetar\Http\CookieJar\Cookie;
 	
 	class CookieJar {
 		/**
@@ -134,12 +135,20 @@
 		public function set(
 			string $name,
 			string $value,
-			int|null $expires_seconds=null
+			int|null $expires_seconds=null,
+			string|null $path=null,
+			string|null $domain=null,
+			bool|null $secure=null,
+			bool|null $httponly=null
 		): self {
 			$this->cookie_queue[ $name ] = new Cookie(
 				$name,
 				$value,
-				$expires_seconds ?? $this->default_expires_seconds
+				$expires_seconds,
+				$path,
+				$domain,
+				$secure,
+				$httponly
 			);
 			
 			return $this;
@@ -167,16 +176,13 @@
 			return $this;
 		}
 		
-		
-		public function getDefaultExpiresSeconds(): int {
-			return $this->default_expires_seconds;
-		}
-		
 		/**
-		 * Set the default cookie settings
-		 * @param int $expires_seconds The default expiration time in seconds
-		 * @param string $path The default path
-		 * @param string $domain The default domain
+		 * Set the default cookie settings. If a param is left null, no change is made
+		 * @param int|null $expires_seconds The default expiration time in seconds
+		 * @param string|null $path The default path
+		 * @param string|null $domain The default domain
+		 * @param bool|null $secure The default secure flag
+		 * @param bool|null $httponly The default httponly flag
 		 * @return self
 		 */
 		public function setDefaults(
@@ -214,6 +220,14 @@
 			$this->defaults_set = true;
 			
 			return $this;
+		}
+		
+		/**
+		 * Get the default expiration time in seconds
+		 * @return int
+		 */
+		public function getDefaultExpiresSeconds(): int {
+			return $this->default_expires_seconds;
 		}
 		
 		/**

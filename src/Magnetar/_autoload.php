@@ -122,6 +122,49 @@
 		}
 	}
 	
+	if(!function_exists('cookie')) {
+		/**
+		 * Get or set a cookie. If $value is null, the cookie value from the request is returned. If $value is false, the cookie will be deleted
+		 * @param string $name Cookie name
+		 * @param string|bool|null $value Optional. Cookie value. If null, the cookie value will be returned. If false, the cookie will be deleted. Defaults to null
+		 * @param int|null $expires_seconds Optional. Number of seconds until the cookie expires. If null, the default expiration time from config will be used. Defaults to null
+		 * @param string|null $path Optional. Cookie path. If null, the default path from config will be used. Defaults to null
+		 * @param string|null $domain Optional. Cookie domain. If null, the default domain from config will be used. Defaults to null
+		 * @param bool|null $secure Optional. Whether the cookie should only be sent over HTTPS. If null, the default secure setting from config will be used. Defaults to null
+		 * @param bool|null $httponly Optional. Whether the cookie should only be accessible over HTTP. If null, the default httponly setting from config will be used. Defaults to null
+		 * @return mixed
+		 * 
+		 * @see \Magnetar\Http\CookieJar\CookieJar::get
+		 */
+		function cookie(
+			string $name,
+			string|bool|null $value=null,
+			int|null $expires_seconds=null,
+			string|null $path=null,
+			string|null $domain=null,
+			bool|null $secure=null,
+			bool|null $httponly=null
+		): mixed {
+			if(null === $value) {
+				// get the cookie value
+				return app('cookie')->get($name);
+			} elseif(false === $value) {
+				// delete the cookie
+				return app('cookie')->remove($name);
+			}
+			
+			return app('cookie')->get(
+				$name,
+				$value,
+				$expires_seconds,
+				$path,
+				$domain,
+				$secure,
+				$httponly
+			);
+		}
+	}
+	
 	if(!function_exists('data_path')) {
 		/**
 		 * Get the path to a file in the data directory
