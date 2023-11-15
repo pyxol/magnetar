@@ -29,7 +29,7 @@
 		public static function decode(string $str): string|false {
 			$string = Str::flipCase($str);
 			$string = strrev($string);
-			//$string = trim($string, "=");
+			//$string = trim($string, '=');
 			return base64_decode($string);
 		}
 	}

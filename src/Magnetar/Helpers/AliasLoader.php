@@ -149,7 +149,7 @@
 		}
 		
 		/**
-		 * Set the "loaded" state of the loader
+		 * Set the 'loaded' state of the loader
 		 * @param bool $value
 		 * @return void
 		 */

@@ -32,9 +32,9 @@
 		/**
 		 * Convert a string to a URL-friendly string
 		 * @param string $string The string to convert
-		 * @param string $separator Optional. The separator to use. Defaults to "-".
-		 * @param bool $lowercase Optional. Whether to lowercase the string. Defaults to true.
-		 * @param string $default Optional. The default string to return if the string is empty. Defaults to an empty string.
+		 * @param string $separator Optional. The separator to use. Defaults to '-'
+		 * @param bool $lowercase Optional. Whether to lowercase the string. Defaults to true
+		 * @param string $default Optional. The default string to return if the string is empty. Defaults to an empty string
 		 * @return string
 		 */
 		public static function mkurl(
@@ -50,15 +50,14 @@
 			$string = trim($string);
 			$string = str_replace(["'"], '', $string);
 			$string = preg_replace(
-				"#([^A-Za-z0-9". (('-' !== $separator)?preg_quote($separator, '#'):'') ."])#si",
+				'#([^A-Za-z0-9'. (('-' !== $separator)?preg_quote($separator, '#'):'') .'])#si',
 				$separator,
 				$string
 			);
 			
-			$string = preg_replace("#". preg_quote($separator, "#") ."{2,}#si", $separator, $string);
-			//$string = preg_replace("#". preg_quote($separator, "#") ."(". preg_quote($separator, "#") ."+)#si", $separator, $string);
+			$string = preg_replace('#'. preg_quote($separator, '#') .'{2,}#si', $separator, $string);
 			
-			if("" === ($string = trim($string, $separator))) {
+			if('' === ($string = trim($string, $separator))) {
 				return $default;
 			}
 			
@@ -127,34 +126,35 @@
 			
 			$hard_replacers = [
 				// quotation marks
-				"‘" => "\"",
-				"’" => "\"",
-				"“" => "\"",
-				"”" => "\"",
-				"‹" => "\"",
-				"›" => "\"",
-				"«" => "\"",
-				"»" => "\"",
-				"''" => "\"",
+				'‘'			=> '"',
+				'’'			=> '"',
+				'“'			=> '"',
+				'”'			=> '"',
+				'‹'			=> '"',
+				'›'			=> '"',
+				'«'			=> '"',
+				'»'			=> '"',
+				"''"		=> '"',
 				
-				'—' => "-",
-				'&emdash;' => "-",
-				'&dash;' => "-",
+				'—'			=> '-',
+				'&emdash;'	=> '-',
+				'&dash;'	=> '-',
 				
-				"..." => "&#133;",
+				'...'		=> '&#133;',
+				'…'			=> '&#133;',
 				
-				"U.S.A." => "U&#046;S&#046;A&#046;",
-				"U.S.A" => "U&#046;S&#046;A",
-				"U.S." => "U&#046;S&#046;",
-				"U.S" => "U&#046;S",
-				"B.B." => "B&#046;B&#046;",
-				"B.B" => "B&#046;B&#046;",
-				"B. B." => "B&#046;B&#046;",
-				"B. B" => "B&#046;B&#046;",
-				"a.m." => "a&#046;m&#046;",
-				"a.m" => "a&#046;m&#046;",
-				"p.m." => "a&#046;m&#046;",
-				"p.m" => "a&#046;m&#046;",
+				'U.S.A.'	=> 'U&#046;S&#046;A&#046;',
+				'U.S.A'		=> 'U&#046;S&#046;A',
+				'U.S.'		=> 'U&#046;S&#046;',
+				'U.S'		=> 'U&#046;S',
+				'B.B.'		=> 'B&#046;B&#046;',
+				'B.B'		=> 'B&#046;B&#046;',
+				'B. B.'		=> 'B&#046;B&#046;',
+				'B. B'		=> 'B&#046;B&#046;',
+				'a.m.'		=> 'a&#046;m&#046;',
+				'a.m'		=> 'a&#046;m&#046;',
+				'p.m.'		=> 'a&#046;m&#046;',
+				'p.m'		=> 'a&#046;m&#046;',
 			];
 			
 			
@@ -166,8 +166,8 @@
 			], $user_encasings);
 			
 			foreach($encasings as $encasing_open => $encasing_close) {
-				$text = preg_replace_callback("#". preg_quote($encasing_open, "#") ."([^". preg_quote($encasing_close, "#") ."]+?)". preg_quote($encasing_close, "#") ."#si", function($matches) {
-					return str_replace(".", "&#046;", $matches[0]);
+				$text = preg_replace_callback('#'. preg_quote($encasing_open, '#') .'([^'. preg_quote($encasing_close, '#') .']+?)'. preg_quote($encasing_close, '#') .'#si', function($matches) {
+					return str_replace('.', '&#046;', $matches[0]);
 				}, $text);
 			}
 			
@@ -216,10 +216,10 @@
 			$milliseconds = ($seconds - floor($seconds));
 			
 			if(!empty($hours)) {
-				return sprintf('%02d:%02d:%02d', $hours, $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', (string)$milliseconds), 0, $precision):"");
+				return sprintf('%02d:%02d:%02d', $hours, $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', (string)$milliseconds), 0, $precision):'');
 			}
 			
-			return sprintf('%02d:%02d', $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', (string)$milliseconds), 0, $precision):"");
+			return sprintf('%02d:%02d', $mins, $secs) . (($include_ms && ($precision > 0))?'.'. substr(preg_replace("#^0\.#si", '', (string)$milliseconds), 0, $precision):'');
 		}
 		
 		/**
@@ -237,7 +237,7 @@
 			$secs = floor($seconds % 60);
 			//$milliseconds = ($seconds - floor($seconds));
 			
-			//return sprintf('%02d:%02d:%02d', $hours, $mins, $secs) . (!empty($milliseconds)?".". substr(preg_replace("#^0\.#si", "", $milliseconds), 0, 3):"");
+			//return sprintf('%02d:%02d:%02d', $hours, $mins, $secs) . (!empty($milliseconds)?'.'. substr(preg_replace("#^0\.#si", '', $milliseconds), 0, 3):'');
 			return sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 		}
 		
@@ -262,7 +262,7 @@
 		}
 		
 		/**
-		 * Flip the case of a string, character by character. Example: "This is a 12345 TEST" returns "tHIS IS A 12345 test"
+		 * Flip the case of a string, character by character. Example: 'This is a 12345 TEST' returns 'tHIS IS A 12345 test'
 		 * @param string $str Raw string
 		 * @return string
 		 */
@@ -283,7 +283,7 @@
 				}
 			}
 			
-			return implode("", $final);
+			return implode('', $final);
 		}
 		
 		/**
@@ -294,17 +294,19 @@
 		public static function replaceFancyTextToWebText(string $text): string {
 			// Quotes cleanup
 			return strtr($text, [
-				"‘"				=> "'",
-				"’"				=> "'",
-				"&#8216;"		=> "'",
-				"&#8217;"		=> "'",
-				"&rsquo;"		=> "'",
-				"&#132;"		=> "'",
+				// single quotes
+				'‘'				=> "'",
+				'’'				=> "'",
+				'&#8216;'		=> "'",
+				'&#8217;'		=> "'",
+				'&rsquo;'		=> "'",
+				'&#132;'		=> "'",
 				
-				"“"				=> "\"",
-				"”"				=> "\"",
-				"&#8220;"		=> "\"",
-				"&#8221;"		=> "\"",
+				// double quotes
+				'“'				=> '"',
+				'”'				=> '"',
+				'&#8220;'		=> '"',
+				'&#8221;'		=> '"',
 			]);
 		}
 		
@@ -315,34 +317,27 @@
 		 * @return string
 		 * @see https://stackoverflow.com/a/68155491/103337
 		 */
-		public static function stripEmojis(string $str, string $replace_with=""): string {
+		public static function stripEmojis(string $str, string $replace_with=''): string {
 			// Match Enclosed Alphanumeric Supplement
-			$regex_alphanumeric = '/[\x{1F100}-\x{1F1FF}]/u';
-			$str = preg_replace($regex_alphanumeric, $replace_with, $str);
+			$str = preg_replace('/[\x{1F100}-\x{1F1FF}]/u', $replace_with, $str);
 			
 			// Match Miscellaneous Symbols and Pictographs
-			$regex_symbols = '/[\x{1F300}-\x{1F5FF}]/u';
-			$str = preg_replace($regex_symbols, $replace_with, $str);
+			$str = preg_replace('/[\x{1F300}-\x{1F5FF}]/u', $replace_with, $str);
 			
 			// Match Emoticons
-			$regex_emoticons = '/[\x{1F600}-\x{1F64F}]/u';
-			$str = preg_replace($regex_emoticons, $replace_with, $str);
+			$str = preg_replace('/[\x{1F600}-\x{1F64F}]/u', $replace_with, $str);
 			
 			// Match Transport And Map Symbols
-			$regex_transport = '/[\x{1F680}-\x{1F6FF}]/u';
-			$str = preg_replace($regex_transport, $replace_with, $str);
+			$str = preg_replace('/[\x{1F680}-\x{1F6FF}]/u', $replace_with, $str);
 			
 			// Match Supplemental Symbols and Pictographs
-			$regex_supplemental = '/[\x{1F900}-\x{1F9FF}]/u';
-			$str = preg_replace($regex_supplemental, $replace_with, $str);
+			$str = preg_replace('/[\x{1F900}-\x{1F9FF}]/u', $replace_with, $str);
 			
 			// Match Miscellaneous Symbols
-			$regex_misc = '/[\x{2600}-\x{26FF}]/u';
-			$str = preg_replace($regex_misc, $replace_with, $str);
+			$str = preg_replace('/[\x{2600}-\x{26FF}]/u', $replace_with, $str);
 			
 			// Match Dingbats
-			$regex_dingbats = '/[\x{2700}-\x{27BF}]/u';
-			$str = preg_replace($regex_dingbats, $replace_with, $str);
+			$str = preg_replace('/[\x{2700}-\x{27BF}]/u', $replace_with, $str);
 			
 			return $str;
 		}
@@ -354,7 +349,7 @@
 		 * @return string
 		 */
 		public static function seconds_to_hhmmss(int $sec, bool $padHours=false): string {
-			$hms = "";
+			$hms = '';
 			
 			//$hours = intval(intval($sec) / 3600);
 			$hours = intval($sec / 3600);

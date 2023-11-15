@@ -71,7 +71,7 @@
 		 */
 		protected function createConnection(): void {
 			// individual adapters should override this method
-			throw new DiskAdapterException("Do not use the base DiskAdapter class directly. Use a specific adapter instead.");
+			throw new DiskAdapterException('Do not use the base DiskAdapter class directly. Use a specific adapter instead.');
 		}
 		
 		/**

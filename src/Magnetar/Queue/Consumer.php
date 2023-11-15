@@ -57,7 +57,7 @@
 		 * @return string
 		 */
 		public function getExchangeName(): string {
-			throw new Exception("Do not call the base Consumer class directly. Use a queue-specific Consumer class that overrides getExchangeName().");
+			throw new Exception('Do not call the base Consumer class directly. Use a queue-specific Consumer class that overrides getExchangeName().');
 		}
 		
 		/**
@@ -65,7 +65,7 @@
 		 * @return string
 		 */
 		public function getQueueName(): string {
-			throw new Exception("Do not call the base Consumer class directly. Use a queue-specific Consumer class that overrides getQueueName().");
+			throw new Exception('Do not call the base Consumer class directly. Use a queue-specific Consumer class that overrides getQueueName().');
 		}
 		
 		/**
@@ -74,7 +74,7 @@
 		 * @return void
 		 */
 		public function process(Message $message): void {
-			throw new Exception("Do not call the base Consumer class directly. Use a queue-specific Consumer class.");
+			throw new Exception('Do not call the base Consumer class directly. Use a queue-specific Consumer class.');
 		}
 		
 		

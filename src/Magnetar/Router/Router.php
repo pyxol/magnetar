@@ -394,7 +394,7 @@
 				//'patch' => $this->assignRoute(HTTPMethodEnum::PATCH, ...$arguments),
 				//'delete' => $this->assignRoute(HTTPMethodEnum::DELETE, ...$arguments),
 				//'options' => $this->assignRoute(HTTPMethodEnum::OPTIONS, ...$arguments),
-				default => throw new Exception("Router method ". $name ." does not exist")
+				default => throw new Exception('Router method ['. $name .'] does not exist')
 			};
 		}
 	}

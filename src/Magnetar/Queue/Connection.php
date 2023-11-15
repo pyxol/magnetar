@@ -31,7 +31,7 @@
 		 * @throws ConnectionException if the handler could not be created
 		 */
 		public function makeHandler(): mixed {
-			throw new ConnectionException("Do not use the base DatabaseAdapter class directly. Use a specific adapter instead.");
+			throw new ConnectionException('Do not use the base DatabaseAdapter class directly. Use a specific adapter instead.');
 		}
 		
 		/**

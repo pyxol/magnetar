@@ -87,11 +87,7 @@
 				ob_start();
 			}
 			
-			//if(function_exists('jbdump')) {
-			//	jbdump($this->getLogs($minLevel), false, 'Logger::dump');
-			//} else {
-				print "<pre>". htmlentities(print_r($this->getLogs($minLevel), true)) ."</pre>";
-			//}
+			print '<pre>'. htmlentities(print_r($this->getLogs($minLevel), true)) .'</pre>';
 			
 			if($return) {
 				return ob_get_clean();

@@ -16,7 +16,7 @@
 		 */
 		public function __call(string $method, array $args): mixed {
 			throw new BadMethodCallException(sprintf(
-				"The method %s does not exist for controller %s.",
+				'The method %s does not exist for controller %s.',
 				$method,
 				static::class
 			));

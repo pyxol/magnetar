@@ -69,7 +69,7 @@
 			
 			// check if the connection configuration has a default bucket
 			//if(!isset($config['use_path_style_endpoint'])) {
-			//	throw new DiskAdapterException('Value for "use path style endpoint" not set');
+			//	throw new DiskAdapterException('Value for use_path_style_endpoint not set');
 			//}
 		}
 		
@@ -88,7 +88,7 @@
 		 */
 		protected function prepareS3ClientConfig(): array {
 			$cfg = [
-				'version' => "latest",
+				'version' => 'latest',
 				'region' => $this->config['region'],
 				'credentials' => [
 					'key' => $this->config['key'],

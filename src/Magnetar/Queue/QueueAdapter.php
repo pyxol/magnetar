@@ -82,7 +82,7 @@ use RuntimeException;
 		 */
 		protected function createConnection(): void {
 			// individual adapters should override this method
-			throw new QueueAdapterException("Do not use the base QueueAdapter class directly. Use a specific adapter instead.");
+			throw new QueueAdapterException('Do not use the base QueueAdapter class directly. Use a specific adapter instead.');
 		}
 		
 		/**
@@ -165,6 +165,6 @@ use RuntimeException;
 			mixed $message,
 			string $exchange=''
 		): bool {
-			throw new RuntimeException("Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides publish().");
+			throw new RuntimeException('Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides publish().');
 		}
 	}

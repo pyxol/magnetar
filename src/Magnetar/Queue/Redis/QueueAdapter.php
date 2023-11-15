@@ -23,26 +23,26 @@
 		protected function validateRuntime(): void {
 			parent::validateRuntime();
 			
+			// check if the library for Redis is installed
+			if(!class_exists('Redis')) {
+				throw new RuntimeException('The required Redis extension was not found');
+			}
+			
 			if(!isset($this->connection_config['host'])) {
-				throw new QueueAdapterException("Queue configuration is missing host");
+				throw new QueueAdapterException('Queue configuration is missing host');
 			}
 			
 			if(!isset($this->connection_config['port'])) {
-				throw new QueueAdapterException("Queue configuration is missing port");
+				throw new QueueAdapterException('Queue configuration is missing port');
 			}
 			
 			//if(!isset($this->connection_config['user'])) {
-			//	throw new QueueAdapterException("Queue configuration is missing user");
+			//	throw new QueueAdapterException('Queue configuration is missing user');
 			//}
 			//
 			//if(!isset($this->connection_config['password'])) {
-			//	throw new QueueAdapterException("Queue configuration is missing password");
+			//	throw new QueueAdapterException('Queue configuration is missing password');
 			//}
-			
-			// check if the library for Redis is installed
-			if(!class_exists('Redis')) {
-				throw new RuntimeException("The required Redis extension was not found");
-			}
 		}
 		
 		/**

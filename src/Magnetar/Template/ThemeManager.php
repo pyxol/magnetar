@@ -42,7 +42,7 @@
 		public function theme(string|null $theme_name=null): Template {
 			if(is_null($theme_name)) {
 				if(null === ($theme_name = $this->app->make('config')->get('theme.default', null))) {
-					throw new Exception("No default theme folder name specified");
+					throw new Exception('No default theme folder name specified');
 				}
 			}
 			

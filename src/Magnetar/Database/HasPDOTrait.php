@@ -54,7 +54,7 @@
 		 */
 		protected function generateDSN(): string {
 			// individual adapters must override this method
-			throw new DatabaseAdapterException("Database adapter needs to override the generateDSN method.");
+			throw new DatabaseAdapterException('Database adapter needs to override the generateDSN method.');
 		}
 		
 		/**
@@ -76,7 +76,7 @@
 				} else {
 					if($prepend_param_key_with_colon) {
 						// prepend the param key with a colon
-						$param_key = ":". $param_key;
+						$param_key = ':'. $param_key;
 					}
 				}
 				
@@ -110,9 +110,9 @@
 		 * @see https://www.php.net/manual/en/pdo.exec.php
 		 * @see https://www.php.net/manual/en/pdo.prepare.php
 		 * 
-		 * @example $db->query("INSERT INTO `table` (`column`, `column2`) VALUES (:value, :value2)", ['value' => 'test', 'value2' => 'test2']);
-		 * @example $db->query("INSERT INTO `table` (`column`, `column2`) VALUES (?, ?)", ['test', 'test2']);
-		 * @example $db->query("INSERT INTO `table` (`column`, `column2`) VALUES ('test', 'test2')");
+		 * @example $db->query('INSERT INTO `table` (`column`, `column2`) VALUES (:value, :value2)', ['value' => 'test', 'value2' => 'test2']);
+		 * @example $db->query('INSERT INTO `table` (`column`, `column2`) VALUES (?, ?)', ['test', 'test2']);
+		 * @example $db->query('INSERT INTO `table` (`column`, `column2`) VALUES ('test', 'test2')');
 		 */
 		public function query(string $sql_query, array $params=[]): int|false {
 			if(!empty($params)) {

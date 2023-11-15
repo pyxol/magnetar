@@ -39,7 +39,7 @@
 				
 				return true;
 			} catch(Exception $e) {
-				//throw new RuntimeException("Failed to publish message to queue: ". $e->getMessage(), $e->getCode(), $e);
+				//throw new RuntimeException('Failed to publish message to queue: '. $e->getMessage(), $e->getCode(), $e);
 				
 				// @todo logger
 				
@@ -85,7 +85,7 @@
 					$callback
 				);
 			} else {
-				throw new Exception("Invalid callback type");
+				throw new Exception('Invalid callback type');
 			}
 		}
 	}

@@ -649,7 +649,7 @@
 		}
 		
 		/**
-		 * Set the environment ("dev", "prod", etc)
+		 * Set the environment ('dev', 'prod', etc)
 		 * @param string $env The environment to set
 		 * @return void
 		 */
@@ -658,7 +658,7 @@
 		}
 		
 		/**
-		 * Get the environment ("dev", "prod", etc)
+		 * Get the environment ('dev', 'prod', etc)
 		 * @return string The environment
 		 */
 		public function environment(): string {

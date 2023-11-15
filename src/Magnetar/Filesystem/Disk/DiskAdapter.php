@@ -76,7 +76,7 @@
 			bool $overwrite=false
 		): bool {
 			if(!$overwrite && $this->isFile($path)) {
-				throw new DestinationExistsException("File already exists");
+				throw new DestinationExistsException('File already exists');
 			}
 			
 			if(!$this->isDirectory(dirname($path))) {
@@ -95,11 +95,11 @@
 			bool $overwrite=false
 		): bool {
 			if(!$this->isFile($source)) {
-				throw new SourceNotFoundException("Source file does not exist");
+				throw new SourceNotFoundException('Source file does not exist');
 			}
 			
 			if(!$overwrite && $this->isFile($destination)) {
-				throw new DestinationExistsException("Destination file already exists");
+				throw new DestinationExistsException('Destination file already exists');
 			}
 			
 			return (false !== file_put_contents($this->path($destination), $this->read($source)));
@@ -192,11 +192,11 @@
 		 */
 		public function move(string $source, string $destination, bool $overwrite=false): bool {
 			if(!$this->isFile($source)) {
-				throw new FileNotFoundException("Source file does not exist");
+				throw new FileNotFoundException('Source file does not exist');
 			}
 			
 			if(!$overwrite && $this->isFile($destination)) {
-				throw new DestinationExistsException("Destination file already exists");
+				throw new DestinationExistsException('Destination file already exists');
 			}
 			
 			return (false !== file_put_contents($this->path($destination), $this->read($source)));
@@ -262,12 +262,12 @@
 			$destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 			
 			if(!$this->isDirectory($source)) {
-				throw new SourceNotFoundException("Source directory does not exist");
+				throw new SourceNotFoundException('Source directory does not exist');
 			}
 			
 			if($this->isDirectory($destination)) {
 				if(!$overwrite) {
-					throw new DestinationExistsException("Destination directory already exists");
+					throw new DestinationExistsException('Destination directory already exists');
 				}
 				
 				$this->deleteDirectory($destination);
@@ -302,7 +302,7 @@
 		 */
 		public function emptyDirectory(string $path): bool {
 			if(!$this->isDirectory($path)) {
-				throw new DirectoryNotFoundException("Directory does not exist");
+				throw new DirectoryNotFoundException('Directory does not exist');
 			}
 			
 			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -343,7 +343,7 @@
 		 */
 		public function url(string $path): string {
 			if(false === $this->publicPath) {
-				throw new NoPublicEndpointException("Public path not set");
+				throw new NoPublicEndpointException('Public path not set');
 			}
 			
 			return $this->publicPath .'/'. ltrim($path, '/');

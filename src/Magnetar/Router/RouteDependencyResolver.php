@@ -123,7 +123,7 @@
 				}
 				
 				// @TODO needs further testing
-				throw new UnresolvableRouteParameterException("Unable to resolve parameter: ". $parameter->getName());
+				throw new UnresolvableRouteParameterException('Unable to resolve parameter: '. $parameter->getName());
 			}
 			
 			// matched path parameter -> return type casted value
@@ -138,7 +138,7 @@
 			
 			// @TODO needs further testing
 			
-			throw new UnresolvableRouteParameterException("Unable to resolve parameter: ". $parameter->getName());
+			throw new UnresolvableRouteParameterException('Unable to resolve parameter: '. $parameter->getName());
 		}
 		
 		/**

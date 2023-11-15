@@ -4,7 +4,11 @@
 	namespace Magnetar\Http;
 	
 	use Magnetar\Http\HeaderCollection;
+	use Magnetar\Http\CookieJar\Cookie;
 	
+	/**
+	 * Represents an HTTP response to be sent to the client
+	 */
 	class Response {
 		/**
 		 * The response headers
@@ -97,7 +101,7 @@
 		 * 
 		 * @TODO needs a cookie management class
 		 */
-		public function setCookie(
+		/* public function setCookie(
 			string $name,
 			string|null $value=null,
 			int $expires=0,
@@ -107,6 +111,16 @@
 			bool $httponly=false
 		): self {
 			setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
+			
+			return $this;
+		} */
+		
+		public function setCookie(
+			string $name,
+			string|null $value=null,
+			int|null $expires=null
+		): self {
+			// @TODO
 			
 			return $this;
 		}

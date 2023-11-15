@@ -11,7 +11,7 @@
 		 * Use specified HTML tags to hHighlight a string in a body of text
 		 * @param string $string The string to highlight
 		 * @param string $text The text to highlight the string in
-		 * @param string $hilight_element Optional. The element to use for highlighting. Defaults to "mark".
+		 * @param string $hilight_element Optional. The element to use for highlighting. Defaults to 'mark'
 		 * @return string
 		 */
 		public static function highlightText(
@@ -32,8 +32,8 @@
 				}
 				
 				$text = preg_replace(
-					"#(". preg_quote($string, "#") .")#si",
-					"<". $hilight_element .">\\1</". $hilight_element .">",
+					'#('. preg_quote($string, '#') .')#si',
+					'<'. $hilight_element .">\\1</". $hilight_element .'>',
 					$text
 				);
 			}

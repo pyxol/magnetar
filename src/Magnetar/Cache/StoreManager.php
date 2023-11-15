@@ -46,7 +46,7 @@
 				$driver_name = $this->app->make('config')->get('cache.default', null);
 				
 				if(is_null($driver_name)) {
-					throw new Exception("No default cache driver specified");
+					throw new Exception('No default cache driver specified');
 				}
 			}
 			

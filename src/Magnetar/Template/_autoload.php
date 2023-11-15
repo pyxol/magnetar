@@ -50,7 +50,7 @@
 			
 			$url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\\x80-\\xff]|i', '', $url);
 			$strip = array('%0d', '%0a', '%0D', '%0A');
-			$url = str_replace($strip, "", $url);
+			$url = str_replace($strip, '', $url);
 			$url = str_replace(';//', '://', $url);
 			
 			if(strpos($url, ':') === false && !in_array($url[0], array( '/', '#', '?')) && !preg_match('/^[a-z0-9-]+?\.php/i', $url)) {
@@ -72,7 +72,7 @@
 				return '';
 			}
 			
-			$string = strtolower(preg_replace("#[^A-Za-z0-9_:]#i", '', $string));
+			$string = strtolower(preg_replace('#[^A-Za-z0-9_:]#i', '', $string));
 			
 			return $string;
 		}

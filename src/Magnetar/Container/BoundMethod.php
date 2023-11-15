@@ -66,7 +66,7 @@
 			
 			// We will assume an @ sign is used to delimit the class name from the method
 			// name. We will split on this @ sign and then build a callable array that
-			// we can pass right back into the "call" method for dependency binding.
+			// we can pass right back into the 'call' method for dependency binding.
 			$method = ((count($segments) === 2)?$segments[1]:$defaultMethod);
 			
 			if(is_null($method)) {
@@ -116,7 +116,7 @@
 		protected static function normalizeMethod(callable $callback): string {
 			$class = is_string($callback[0]) ? $callback[0] : get_class($callback[0]);
 			
-			return "{$class}@{$callback[1]}";
+			return $class .'@'. $callback[1];
 		}
 		
 		/**
@@ -205,9 +205,7 @@
 			} elseif($parameter->isDefaultValueAvailable()) {
 				$dependencies[] = $parameter->getDefaultValue();
 			} elseif(!$parameter->isOptional() && !array_key_exists($paramName, $parameters)) {
-				$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
-				
-				throw new BuildResolutionException($message);
+				throw new BuildResolutionException('Unable to resolve dependency ['. $parameter .'] in class '. $parameter->getDeclaringClass()->getName());
 			}
 		}
 		

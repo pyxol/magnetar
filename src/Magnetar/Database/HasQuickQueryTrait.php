@@ -128,12 +128,12 @@
 			if(is_string($column_key)) {
 				// column key is set to a specific named column, throw error if it doesn't exist
 				foreach($results as $result) {
-					$rows[] = $result[ $column_key ] ?? throw new DatabaseAdapterException("Column key ". $column_key ." does not exist in result set");
+					$rows[] = $result[ $column_key ] ?? throw new DatabaseAdapterException('Column key ['. $column_key .'] does not exist in result set');
 				}
 			} elseif(0 !== $column_key) {
 				// column key is set to a specific numbered column, throw error if it doesn't exist
 				foreach($results as $result) {
-					$rows[] = $result[0] ?? throw new DatabaseAdapterException("Column key ". $column_key ." does not exist in result set");
+					$rows[] = $result[0] ?? throw new DatabaseAdapterException('Column key ['. $column_key .'] does not exist in result set');
 				}
 			} else {
 				// use the first column

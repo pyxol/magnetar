@@ -135,10 +135,10 @@
 		public function getTargetPath(string $directory, string $name): string {
 			if(!is_dir($directory)) {
 				if(false === mkdir($directory, 0777, true)) {
-					throw new Exception(sprintf('Unable to create the "%s" directory', $directory));
+					throw new Exception(sprintf('Unable to create the [%s] directory', $directory));
 				}
 			} elseif(!is_writable($directory)) {
-				throw new Exception(sprintf('Unable to write in the "%s" directory', $directory));
+				throw new Exception(sprintf('Unable to write in the [%s] directory', $directory));
 			}
 			
 			return rtrim($directory, '/\\') . \DIRECTORY_SEPARATOR . $name;
@@ -181,7 +181,7 @@
 				if(!$this->moved) {
 					throw new MoveUploadedFileException(
 						sprintf(
-							'Could not move uploaded file "%s" to "%s": %s',
+							'Could not move uploaded file [%s] to [%s]: %s',
 							$this->getClientOriginalName(),
 							$targetPath,
 							strip_tags($error)

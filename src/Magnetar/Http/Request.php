@@ -7,12 +7,15 @@
 	use Magnetar\Router\Helpers\HTTPMethodEnumResolver;
 	use Magnetar\Http\UploadedFile;
 	
+	/**
+	 * Represents an HTTP request from the client
+	 */
 	class Request {
 		/**
 		 * The requested path (without query string)
 		 * @var string
 		 */
-		protected string $path = "";
+		protected string $path = '';
 		
 		/**
 		 * The pattern that was matched
@@ -39,6 +42,12 @@
 		protected ?HeaderCollection $headers = null;
 		
 		/**
+		 * Request cookies
+		 * @var array Assoc array of cookies
+		 */
+		protected array $cookies = [];
+		
+		/**
 		 * Create a new Request object
 		 * @param string $path The requested path (without query string)
 		 */
@@ -48,6 +57,9 @@
 			
 			// parse the request path and query string
 			$this->processRequestPath();
+			
+			// parse the request's cookies
+			$this->processRequestCookies();
 			
 			// record request headers
 			$this->recordHeaders();
@@ -90,6 +102,20 @@
 			$path = trim($path, '/');
 			
 			$this->path = $path;
+		}
+		
+		/**
+		 * Process the cookies sent along with the request
+		 * @return void
+		 */
+		public function processRequestCookies(): void {
+			$cookies = [];
+			
+			foreach($_COOKIE as $name => $value) {
+				$cookies[ $name ] = $value;
+			}
+			
+			$this->cookies = $cookies;
 		}
 		
 		/**
@@ -177,7 +203,7 @@
 		 */
 		public function assignOverrideParameters(array $parameters): void {
 			foreach($parameters as $name => $value) {
-				if("" === ($name = strtolower(trim($name)))) {
+				if('' === ($name = strtolower(trim($name)))) {
 					continue;
 				}
 				
@@ -192,7 +218,7 @@
 		 * @return mixed
 		 */
 		public function parameter(string $name, mixed $default=null): mixed {
-			//if("" === ($name = strtolower(trim($name)))) {
+			//if('' === ($name = strtolower(trim($name)))) {
 			//	return $default;
 			//}
 			
@@ -224,6 +250,14 @@
 		 */
 		public function parameters(): array {
 			return $this->parameters;
+		}
+		
+		/**
+		 * Get the request's cookies as an associative array
+		 * @return array
+		 */
+		public function cookies(): array {
+			return $this->cookies;
 		}
 		
 		/**

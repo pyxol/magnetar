@@ -23,7 +23,7 @@
 			int|false $relative_timestamp=false,
 			string $just_now='just now'
 		): string|false {
-			if(!preg_match("#^([0-9]+)$#si", $timestamp)) {
+			if(!preg_match('#^([0-9]+)$#si', $timestamp)) {
 				$timestamp = strtotime($timestamp);
 			}
 			

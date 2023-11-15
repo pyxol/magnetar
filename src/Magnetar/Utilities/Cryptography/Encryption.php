@@ -52,7 +52,7 @@
 				$enc_key,
 				0,
 				$enc_iv
-			) . "::" . bin2hex($enc_iv);
+			) .'::'. bin2hex($enc_iv);
 		}
 		
 		/**
@@ -61,7 +61,7 @@
 		 * @return string|false
 		 */
 		public function decrypt(string $crypted_string): string|false {
-			list($crypted_token, $enc_iv) = explode("::", $crypted_string, 2);
+			list($crypted_token, $enc_iv) = explode('::', $crypted_string, 2);
 			$enc_key = openssl_digest($this->salt, $this->digest_method, true);
 			
 			return openssl_decrypt(

@@ -416,7 +416,7 @@
 		}
 		
 		/**
-		 * "Extend" an abstract type in the container
+		 * 'Extend' an abstract type in the container
 		 * @param string $abstract The abstract type to extend
 		 * @param Closure $closure The closure to use to extend the type
 		 * @return void
@@ -528,7 +528,7 @@
 		 */
 		public function alias(string $abstract, string $alias): void {
 			if($alias === $abstract) {
-				throw new SelfAliasException("[". $abstract ."] is aliased to itself.");
+				throw new SelfAliasException('['. $abstract .'] is aliased to itself.');
 			}
 			
 			$this->aliases[ $alias ] = $abstract;
@@ -726,7 +726,7 @@
 		): mixed {
 			$abstract = $this->getAlias($abstract);
 			
-			// First we'll fire any event handlers which handle the "before" resolving of
+			// First we'll fire any event handlers which handle the 'before' resolving of
 			// specific types. This gives some hooks the chance to add various extends
 			// calls to change the resolution of objects that they're interested in.
 			if($raiseEvents) {
@@ -849,7 +849,7 @@
 			try {
 				$reflector = new ReflectionClass($concrete);
 			} catch(ReflectionException $e) {
-				throw new BuildResolutionException("Target class [$concrete] does not exist.", 0, $e);
+				throw new BuildResolutionException('Target class ['. $concrete .'] does not exist.', 0, $e);
 			}
 			
 			// If the type is not instantiable, the developer is attempting to resolve
@@ -1025,12 +1025,10 @@
 			if(!empty($this->buildStack)) {
 				$previous = implode(', ', $this->buildStack);
 				
-				$message = "Target [$concrete] is not instantiable while building [$previous].";
-			} else {
-				$message = "Target [$concrete] is not instantiable.";
+				throw new UninstantiableException('Target ['. $concrete .'] is not instantiable while building ['. $previous .'].');
 			}
 			
-			throw new UninstantiableException($message);
+			throw new UninstantiableException('Target ['. $concrete .'] is not instantiable.');
 		}
 		
 		/**
@@ -1041,9 +1039,7 @@
 		 * @throws BuildResolutionException
 		 */
 		protected function unresolvablePrimitive(ReflectionParameter $parameter): void {
-			$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
-			
-			throw new BuildResolutionException($message);
+			throw new BuildResolutionException('Unresolvable dependency resolving ['. $parameter .'] in class '. $parameter->getDeclaringClass()->getName());
 		}
 		
 		/**

@@ -69,7 +69,7 @@
 			bool $overwrite=false
 		): bool {
 			if(!$overwrite && $this->isFile($path)) {
-				throw new DestinationExistsException("File already exists");
+				throw new DestinationExistsException('File already exists');
 			}
 			
 			try {
@@ -91,11 +91,11 @@
 		): bool {
 			try {
 				if(!$this->isFile($source)) {
-					throw new SourceNotFoundException("Source file does not exist");
+					throw new SourceNotFoundException('Source file does not exist');
 				}
 				
 				if(!$overwrite && $this->isFile($destination)) {
-					throw new DestinationExistsException("Destination file already exists");
+					throw new DestinationExistsException('Destination file already exists');
 				}
 				
 				return $this->s3->copy(
@@ -218,11 +218,11 @@
 		public function move(string $source, string $destination, bool $overwrite=false): bool {
 			try {
 				if(!$this->isFile($source)) {
-					throw new SourceNotFoundException("Source file does not exist");
+					throw new SourceNotFoundException('Source file does not exist');
 				}
 				
 				if(!$overwrite && $this->isFile($destination)) {
-					throw new DestinationExistsException("Destination file already exists");
+					throw new DestinationExistsException('Destination file already exists');
 				}
 				
 				return $this->s3->move(

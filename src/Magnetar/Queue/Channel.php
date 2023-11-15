@@ -46,7 +46,7 @@
 			Message $message,
 			string $exchange=''
 		): bool {
-			throw new RuntimeException("Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides publish().");
+			throw new RuntimeException('Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides publish().');
 		}
 		
 		/**
@@ -57,6 +57,6 @@
 		 * @throws RuntimeException
 		 */
 		public function consume(callable|array|string $callback): void {
-			throw new RuntimeException("Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides getMessage().");
+			throw new RuntimeException('Do not call the base QueueAdapter class directly. Use a queue-specific QueueAdapter class that overrides getMessage().');
 		}
 	}

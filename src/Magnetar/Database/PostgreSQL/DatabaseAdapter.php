@@ -23,29 +23,29 @@
 		protected function validateRuntime(): void {
 			parent::validateRuntime();
 			
+			// check if the PDO PostgreSQL extension is loaded
+			if(!extension_loaded('pdo_pgsql')) {
+				throw new RuntimeException('The PDO PostgreSQL extension (pdo_pgsql) is not loaded');
+			}
+			
 			if(!isset($this->connection_config['host'])) {
-				throw new DatabaseAdapterException("Database configuration is missing host");
+				throw new DatabaseAdapterException('Database configuration is missing host');
 			}
 			
 			if(!isset($this->connection_config['port'])) {
-				throw new DatabaseAdapterException("Database configuration is missing port");
+				throw new DatabaseAdapterException('Database configuration is missing port');
 			}
 			
 			//if(!isset($this->connection_config['user'])) {
-			//	throw new DatabaseAdapterException("Database configuration is missing user");
+			//	throw new DatabaseAdapterException('Database configuration is missing user');
 			//}
 			//
 			//if(!isset($this->connection_config['password'])) {
-			//	throw new DatabaseAdapterException("Database configuration is missing password");
+			//	throw new DatabaseAdapterException('Database configuration is missing password');
 			//}
 			
 			if(!isset($this->connection_config['database'])) {
-				throw new DatabaseAdapterException("Database configuration is missing database");
-			}
-			
-			// check if the PDO PostgreSQL extension is loaded
-			if(!extension_loaded('pdo_pgsql')) {
-				throw new RuntimeException("The PDO PostgreSQL extension (pdo_pgsql) is not loaded");
+				throw new DatabaseAdapterException('Database configuration is missing database');
 			}
 		}
 		
@@ -64,8 +64,7 @@
 			
 			// optional charset settings
 			if(isset($this->connection_config['charset'])) {
-				//$this->pdo->prepare("SET CLIENT_ENCODING TO ?")->execute([$this->connection_config['charset']]);
-				$this->dbh->prepare("SET NAMES ?")->execute([$this->connection_config['charset']]);
+				$this->dbh->prepare('SET NAMES ?')->execute([$this->connection_config['charset']]);
 			}
 		}
 	}

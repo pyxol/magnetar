@@ -75,7 +75,7 @@
 		 * @return string The name of the resolved instance
 		 */
 		protected static function getFacadeKey(): string {
-			throw new Exception("Base Facade class should not be directly used");
+			throw new Exception('Base Facade class should not be directly used');
 		}
 		
 		/**

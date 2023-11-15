@@ -19,7 +19,7 @@
 		protected string|null $url = null;
 		
 		/**
-		 * How many seconds to delay the redirect, showing a "Redirecting..." page during instead of an instant redirect
+		 * How many seconds to delay the redirect, showing a 'Redirecting...' page during instead of an instant redirect
 		 * @var int
 		 */
 		protected int $delay_seconds = 0;

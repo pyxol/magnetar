@@ -45,7 +45,7 @@
 		 * @throws Exception
 		 */
 		protected function parseMessage(): void {
-			throw new Exception("Do not use the base Message class directly. Use a queue-specific Message class.");
+			throw new Exception('Do not use the base Message class directly. Use a queue-specific Message class.');
 		}
 		
 		/**
