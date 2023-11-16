@@ -6,34 +6,34 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method connection(?string $connection_name=null): Magnetar\Filesystem\DiskAdapter
-	 * @method getDefaultDriveName(): ?string
-	 * @method getConnected(): array
-	 * @method adapter(string $name): Magnetar\Filesystem\DiskAdapter
-	 * @method drive(string $name): Magnetar\Filesystem\DiskAdapter
-	 * @method path(string $rel_path=''): string
-	 * @method write(string $path, string $contents, bool $overwrite=false): bool
-	 * @method copy(string $source, string $destination, bool $overwrite=false): bool
-	 * @method read(string $path): string|false
-	 * @method exists(string $path): bool
-	 * @method isFile(string $path): bool
-	 * @method name(string $path): string
-	 * @method basename(string $path): string
-	 * @method extension(string $path): string
-	 * @method size(string $path): int
-	 * @method mimetype(string $path): string|false
-	 * @method lastModified(string $path): string|false
-	 * @method append(string $path, string $contents): bool
-	 * @method prepend(string $path, string $contents): bool
-	 * @method move(string $source, string $destination, bool $overwrite=false): bool
-	 * @method delete(array|string $paths): bool
-	 * @method directoryExists(string $path): bool
-	 * @method isDirectory(string $path): bool
-	 * @method makeDirectory(string $path, int $mode=511, bool $recursive=false): bool
-	 * @method copyDirectory(string $source, string $destination, bool $overwrite=false): bool
-	 * @method emptyDirectory(string $path): bool
-	 * @method deleteDirectory(string $path): bool
-	 * @method url(string $path): string
+	 * @method static \Magnetar\Filesystem\DiskAdapter connection(?string $connection_name)
+	 * @method static ?string getDefaultDriveName()
+	 * @method static array getConnected()
+	 * @method static \Magnetar\Filesystem\DiskAdapter adapter(string $name)
+	 * @method static \Magnetar\Filesystem\DiskAdapter drive(string $name)
+	 * @method static string path(string $rel_path)
+	 * @method static bool write(string $path, string $contents, bool $overwrite)
+	 * @method static bool copy(string $source, string $destination, bool $overwrite)
+	 * @method static string|false read(string $path)
+	 * @method static bool exists(string $path)
+	 * @method static bool isFile(string $path)
+	 * @method static string name(string $path)
+	 * @method static string basename(string $path)
+	 * @method static string extension(string $path)
+	 * @method static int size(string $path)
+	 * @method static string|false mimetype(string $path)
+	 * @method static string|false lastModified(string $path)
+	 * @method static bool append(string $path, string $contents)
+	 * @method static bool prepend(string $path, string $contents)
+	 * @method static bool move(string $source, string $destination, bool $overwrite)
+	 * @method static bool delete(array|string $paths)
+	 * @method static bool directoryExists(string $path)
+	 * @method static bool isDirectory(string $path)
+	 * @method static bool makeDirectory(string $path, int $mode, bool $recursive)
+	 * @method static bool copyDirectory(string $source, string $destination, bool $overwrite)
+	 * @method static bool emptyDirectory(string $path)
+	 * @method static bool deleteDirectory(string $path)
+	 * @method static string url(string $path)
 	 * 
 	 * @see \Magnetar\Filesystem\ConnectionManager
 	 * @see \Magnetar\Filesystem\Disk\DiskAdapter

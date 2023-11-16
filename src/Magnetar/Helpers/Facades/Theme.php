@@ -6,13 +6,13 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method theme(?string $theme_name=null): Magnetar\Template\Template
-	 * @method tpl(string $tpl_name, array $view_data=[]): string
-	 * @method getViewPath(string $tpl_name): string
-	 * @method render(string $tpl_name, array $view_data=[]): string
-	 * @method display(string $tpl_name): void
-	 * @method renderResponse(string $tpl_name, array $view_data=[]): Magnetar\Http\Response
-	 * @method getData(): array
+	 * @method static \Magnetar\Template\Template theme(?string $theme_name)
+	 * @method static string tpl(string $tpl_name, array $view_data)
+	 * @method static string getViewPath(string $tpl_name)
+	 * @method static string render(string $tpl_name, array $view_data)
+	 * @method static void display(string $tpl_name)
+	 * @method static \Magnetar\Http\Response renderResponse(string $tpl_name, array $view_data)
+	 * @method static array getData()
 	 * 
 	 * @see \Magnetar\Template\ThemeManager
 	 * @see \Magnetar\Template\Template

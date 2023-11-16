@@ -11,6 +11,7 @@
 	use Magnetar\Router\RouteCollection;
 	use Magnetar\Router\Enums\HTTPMethodEnum;
 	use Magnetar\Http\RedirectResponse;
+	use Magnetar\Pipeline\Pipeline;
 	use Magnetar\Router\Exceptions\RouteUnassignedException;
 	use Magnetar\Router\Exceptions\CannotProcessRouteException;
 	
@@ -29,6 +30,12 @@
 		 * @var string|null
 		 */
 		protected ?string $requestMethod = null;
+		
+		/**
+		 * Router middleware stack
+		 * @var array
+		 */
+		protected array $middleware = [];
 		
 		/**
 		 * The route action registry
@@ -119,21 +126,32 @@
 			
 			// pass resolved parameters, execute callback, and return response
 			if(is_array($callback)) {
-				// class reference and method
-				list($instance, $method) = $callback;
+				//// class reference and method
+				//list($instance, $method) = $callback;
 				
-				if(is_string($instance)) {
-					$instance = new ($instance)($this);
+				if(isset($callback[0]) && is_string($callback[0])) {
+					$callback[0] = new ($callback[0])($this);
 				}
 				
-				return $this->container->instance('response', call_user_func([$instance, $method], ...$resolved_parameters));
-			} elseif(is_callable($callback)) {
-				// callable/closure
-				return $this->container->instance('response', call_user_func($callback, ...$resolved_parameters));
-			} else {
+				//return $this->container->instance('response', call_user_func([$instance, $method], ...$resolved_parameters));
+			}
+			
+			// ensure the callback is callable
+			if(!is_callable($callback)) {
 				// unknown callback method
 				throw new CannotProcessRouteException('Route matched has an unprocessable callback');
 			}
+			
+			// generate the response by calling the callback with the resolved parameters
+			//return $this->container->instance('response', call_user_func($callback, ...$resolved_parameters));
+			
+			// send the request through the route middleware stack, generating and returning the callback response instance
+			return $this->container->instance('response',
+				(new Pipeline($this->container))
+					->send($this->container->instance('request', $request))
+					->through($this->middleware)
+					->then(fn ($request) => call_user_func($callback, ...$resolved_parameters))
+			);
 		}
 		
 		/**

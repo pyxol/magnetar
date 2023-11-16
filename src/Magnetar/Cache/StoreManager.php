@@ -42,10 +42,10 @@
 			// interfaces with the app's configuration to create the default cache store
 			// unless overwritten by driver_name
 			
-			if(is_null($driver_name)) {
+			if(null === $driver_name) {
 				$driver_name = $this->app->make('config')->get('cache.default', null);
 				
-				if(is_null($driver_name)) {
+				if(null === $driver_name) {
 					throw new Exception('No default cache driver specified');
 				}
 			}

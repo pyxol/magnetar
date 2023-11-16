@@ -6,18 +6,18 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method set(string $key, mixed $value): void
-	 * @method get(string $key, mixed $default=null): mixed
-	 * @method has(string $key): bool
-	 * @method all(): array
-	 * @method setAll(array $values): void
-	 * @method remove(string $key): void
-	 * @method removeAll(): void
-	 * @method load(string $file, string|false $key=false): void
-	 * @method offsetExists(mixed $key): bool
-	 * @method offsetGet(mixed $key): mixed
-	 * @method offsetSet(mixed $key, mixed $value): void
-	 * @method offsetUnset(mixed $key): void
+	 * @method static void set(string $key, mixed $value)
+	 * @method static mixed get(string $key, mixed $default)
+	 * @method static bool has(string $key)
+	 * @method static array all()
+	 * @method static void setAll(array $values)
+	 * @method static void remove(string $key)
+	 * @method static void removeAll()
+	 * @method static void load(string $file, string|false $key)
+	 * @method static bool offsetExists(mixed $key)
+	 * @method static mixed offsetGet(mixed $key)
+	 * @method static void offsetSet(mixed $key, mixed $value)
+	 * @method static void offsetUnset(mixed $key)
 	 * 
 	 * @see \Magnetar\Config\Config
 	 */

@@ -6,23 +6,23 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method responseCode(int $response_code=200): self
-	 * @method body(string $body=''): self
-	 * @method sendBody(): self
-	 * @method setCookie(string $name, ?string $value=null, ?int $expires=null): self
-	 * @method send(): self
-	 * @method sendHeaders(): self
-	 * @method header(string $header, ?string $value=null, int|bool $replace=true, ?int $response_code=0): self|string
-	 * @method headers(): array
-	 * @method setHeaders(array $headers): self
-	 * @method removeHeader(string $name): self
-	 * @method clearHeaders(): self
-	 * @method getHeader(string $name): ?string
-	 * @method hasHeader(string $name): bool
-	 * @method sentHeaders(): bool
-	 * @method sent(): bool
-	 * @method redirect(string $path, int $response_code=302): self
-	 * @method json(mixed $body): self
+	 * @method static self responseCode(int $response_code)
+	 * @method static self body(string $body)
+	 * @method static self sendBody()
+	 * @method static self setCookie(string $name, ?string $value, ?int $expires)
+	 * @method static self send()
+	 * @method static self sendHeaders()
+	 * @method static self|string header(string $header, ?string $value, int|bool $replace, ?int $response_code)
+	 * @method static array headers()
+	 * @method static self setHeaders(array $headers)
+	 * @method static self removeHeader(string $name)
+	 * @method static self clearHeaders()
+	 * @method static ?string getHeader(string $name)
+	 * @method static bool hasHeader(string $name)
+	 * @method static bool sentHeaders()
+	 * @method static bool sent()
+	 * @method static self redirect(string $path, int $response_code)
+	 * @method static self json(mixed $body)
 	 * 
 	 * @see \Magnetar\Http\Response
 	 */

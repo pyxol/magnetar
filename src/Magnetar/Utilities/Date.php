@@ -31,7 +31,7 @@
 				return false;
 			}
 			
-			if((false === $relative_timestamp) || is_null($relative_timestamp)) {
+			if((false === $relative_timestamp) || (null === $relative_timestamp)) {
 				$relative_timestamp = time();
 			}
 			

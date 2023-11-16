@@ -6,89 +6,89 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method setBasePath(string $base_path): void
-	 * @method pathBase(string $rel_path=''): string
-	 * @method setAppPath(string $path): self
-	 * @method pathApp(string $rel_path=''): string
-	 * @method setConfigPath(string $path): self
-	 * @method pathConfig(string $rel_path=''): string
-	 * @method setDataPath(string $path): self
-	 * @method pathData(string $rel_path=''): string
-	 * @method setPublicPath(string $path): self
-	 * @method pathPublic(string $rel_path=''): string
-	 * @method setAssetsPath(string $path): self
-	 * @method pathAssets(string $rel_path=''): string
-	 * @method setStoragePath(string $path): self
-	 * @method pathStorage(string $rel_path=''): string
-	 * @method setRoutingPath(string $path): self
-	 * @method pathRouting(string $rel_path=''): string
-	 * @method setThemesPath(string $path): self
-	 * @method pathThemes(string $rel_path=''): string
-	 * @method joinPath(string $base_path, string $rel_path=''): string
-	 * @method hasBeenBootstrapped(): bool
-	 * @method bootstrapWith(array $bootstrappers): void
-	 * @method hasBootedServiceProviders(): bool
-	 * @method registerConfiguredServiceProviders(): void
-	 * @method bootServiceProviders(): void
-	 * @method bootServiceProvider(Magnetar\Helpers\ServiceProvider|string $provider): void
-	 * @method registerServiceProvider(Magnetar\Helpers\ServiceProvider|string $provider): Magnetar\Helpers\ServiceProvider
-	 * @method resolveServiceProvider(string $provider): Magnetar\Helpers\ServiceProvider
-	 * @method getServiceProvider(Magnetar\Helpers\ServiceProvider|string $provider): ?Magnetar\Helpers\ServiceProvider
-	 * @method getServiceProviders(Magnetar\Helpers\ServiceProvider|string $provider): array
-	 * @method registerCoreContainerAliases(): void
-	 * @method make(callable|string $abstract, array $parameters=[]): mixed
-	 * @method bound(string $abstract): bool
-	 * @method flush(): void
-	 * @method registerTerminateCallback(callable|array|string $callback): void
-	 * @method terminate(): void
-	 * @method setEnvironment(string $env): void
-	 * @method environment(): string
-	 * @method isDevEnv(): bool
-	 * @method isTestEnv(): bool
-	 * @method isLiveEnv(): bool
-	 * @method when( $concrete): Magnetar\Container\ContextualBindingBuilder
-	 * @method has(string $id): bool
-	 * @method resolved(string $abstract): bool
-	 * @method isShared(string $abstract): bool
-	 * @method isAlias(string $name): bool
-	 * @method bind(string $abstract, Closure|string|null $concrete=null, bool $shared=false): void
-	 * @method hasMethodBinding(string $method): bool
-	 * @method bindMethod(array|string $method, Closure $callback): void
-	 * @method callMethodBinding(string $method, mixed $instance): mixed
-	 * @method addContextualBinding(string $concrete, string $abstract, Closure|string $implementation): void
-	 * @method bindIf(string $abstract, Closure|string|null $concrete=null, bool $shared=false): void
-	 * @method singleton(string $abstract, Closure|string|null $concrete=null): void
-	 * @method singletonIf(string $abstract, Closure|string|null $concrete=null): void
-	 * @method scoped(string $abstract, Closure|string|null $concrete=null): void
-	 * @method scopedIf(string $abstract, Closure|string|null $concrete=null): void
-	 * @method extend(string $abstract, Closure $closure): void
-	 * @method instance(string $abstract, mixed $instance): mixed
-	 * @method tag(array|string $abstracts, mixed $tags): void
-	 * @method tagged(string $tag): iterable
-	 * @method alias(string $abstract, string $alias): void
-	 * @method rebinding(string $abstract, Closure $callback): mixed
-	 * @method refresh(string $abstract, mixed $target, string $method): mixed
-	 * @method wrap(Closure $callback, array $parameters=[]): Closure
-	 * @method call(callable|array|string $callback, array $parameters=[], ?string $defaultMethod=null): mixed
-	 * @method factory(string $abstract): Closure
-	 * @method makeWith(callable|string $abstract, array $parameters=[]): mixed
-	 * @method get(string $id): mixed
-	 * @method build(Closure|string $concrete): mixed
-	 * @method beforeResolving(Closure|string $abstract, ?Closure $callback=null): void
-	 * @method resolving(Closure|string $abstract, ?Closure $callback=null): void
-	 * @method afterResolving(Closure|string $abstract, ?Closure $callback=null): void
-	 * @method getBindings(): array
-	 * @method getAlias(string $abstract): string
-	 * @method forgetExtenders(string $abstract): void
-	 * @method forgetInstance(string $abstract): void
-	 * @method forgetInstances(): void
-	 * @method forgetScopedInstances(): void
-	 * @method getInstance(): static
-	 * @method setInstance(?Magnetar\Container\Container $container=null): Magnetar\Container\Container|static
-	 * @method offsetExists(mixed $key): bool
-	 * @method offsetGet(mixed $key): mixed
-	 * @method offsetSet(mixed $key, mixed $value): void
-	 * @method offsetUnset(mixed $key): void
+	 * @method static void setBasePath(string $base_path)
+	 * @method static string pathBase(string $rel_path)
+	 * @method static self setAppPath(string $path)
+	 * @method static string pathApp(string $rel_path)
+	 * @method static self setConfigPath(string $path)
+	 * @method static string pathConfig(string $rel_path)
+	 * @method static self setDataPath(string $path)
+	 * @method static string pathData(string $rel_path)
+	 * @method static self setPublicPath(string $path)
+	 * @method static string pathPublic(string $rel_path)
+	 * @method static self setAssetsPath(string $path)
+	 * @method static string pathAssets(string $rel_path)
+	 * @method static self setStoragePath(string $path)
+	 * @method static string pathStorage(string $rel_path)
+	 * @method static self setRoutingPath(string $path)
+	 * @method static string pathRouting(string $rel_path)
+	 * @method static self setThemesPath(string $path)
+	 * @method static string pathThemes(string $rel_path)
+	 * @method static string joinPath(string $base_path, string $rel_path)
+	 * @method static bool hasBeenBootstrapped()
+	 * @method static void bootstrapWith(array $bootstrappers)
+	 * @method static bool hasBootedServiceProviders()
+	 * @method static void registerConfiguredServiceProviders()
+	 * @method static void bootServiceProviders()
+	 * @method static void bootServiceProvider(\Magnetar\Helpers\ServiceProvider|string $provider)
+	 * @method static \Magnetar\Helpers\ServiceProvider registerServiceProvider(\Magnetar\Helpers\ServiceProvider|string $provider)
+	 * @method static \Magnetar\Helpers\ServiceProvider resolveServiceProvider(string $provider)
+	 * @method static ?\Magnetar\Helpers\ServiceProvider getServiceProvider(\Magnetar\Helpers\ServiceProvider|string $provider)
+	 * @method static array getServiceProviders(\Magnetar\Helpers\ServiceProvider|string $provider)
+	 * @method static void registerCoreContainerAliases()
+	 * @method static mixed make(callable|string $abstract, array $parameters)
+	 * @method static bool bound(string $abstract)
+	 * @method static void flush()
+	 * @method static void registerTerminateCallback(callable|array|string $callback)
+	 * @method static void terminate()
+	 * @method static void setEnvironment(string $env)
+	 * @method static string environment()
+	 * @method static bool isDevEnv()
+	 * @method static bool isTestEnv()
+	 * @method static bool isLiveEnv()
+	 * @method static \Magnetar\Container\ContextualBindingBuilder when( $concrete)
+	 * @method static bool has(string $id)
+	 * @method static bool resolved(string $abstract)
+	 * @method static bool isShared(string $abstract)
+	 * @method static bool isAlias(string $name)
+	 * @method static void bind(string $abstract, Closure|string|null $concrete, bool $shared)
+	 * @method static bool hasMethodBinding(string $method)
+	 * @method static void bindMethod(array|string $method, Closure $callback)
+	 * @method static mixed callMethodBinding(string $method, mixed $instance)
+	 * @method static void addContextualBinding(string $concrete, string $abstract, Closure|string $implementation)
+	 * @method static void bindIf(string $abstract, Closure|string|null $concrete, bool $shared)
+	 * @method static void singleton(string $abstract, Closure|string|null $concrete)
+	 * @method static void singletonIf(string $abstract, Closure|string|null $concrete)
+	 * @method static void scoped(string $abstract, Closure|string|null $concrete)
+	 * @method static void scopedIf(string $abstract, Closure|string|null $concrete)
+	 * @method static void extend(string $abstract, Closure $closure)
+	 * @method static mixed instance(string $abstract, mixed $instance)
+	 * @method static void tag(array|string $abstracts, mixed $tags)
+	 * @method static iterable tagged(string $tag)
+	 * @method static void alias(string $abstract, string $alias)
+	 * @method static mixed rebinding(string $abstract, Closure $callback)
+	 * @method static mixed refresh(string $abstract, mixed $target, string $method)
+	 * @method static Closure wrap(Closure $callback, array $parameters)
+	 * @method static mixed call(callable|array|string $callback, array $parameters, ?string $defaultMethod)
+	 * @method static Closure factory(string $abstract)
+	 * @method static mixed makeWith(callable|string $abstract, array $parameters)
+	 * @method static mixed get(string $id)
+	 * @method static mixed build(Closure|string $concrete)
+	 * @method static void beforeResolving(Closure|string $abstract, ?Closure $callback)
+	 * @method static void resolving(Closure|string $abstract, ?Closure $callback)
+	 * @method static void afterResolving(Closure|string $abstract, ?Closure $callback)
+	 * @method static array getBindings()
+	 * @method static string getAlias(string $abstract)
+	 * @method static void forgetExtenders(string $abstract)
+	 * @method static void forgetInstance(string $abstract)
+	 * @method static void forgetInstances()
+	 * @method static void forgetScopedInstances()
+	 * @method static static getInstance()
+	 * @method static \Magnetar\Container\Container|static setInstance(?\Magnetar\Container\Container $container)
+	 * @method static bool offsetExists(mixed $key)
+	 * @method static mixed offsetGet(mixed $key)
+	 * @method static void offsetSet(mixed $key, mixed $value)
+	 * @method static void offsetUnset(mixed $key)
 	 * 
 	 * @see \Magnetar\Application
 	 */

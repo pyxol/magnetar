@@ -6,8 +6,8 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method to(string $path, array $params=[]): string
-	 * @method from(string $url): Magnetar\Router\URLBuilder
+	 * @method static string to(string $path, array $params)
+	 * @method static \Magnetar\Router\URLBuilder from(string $url)
 	 * 
 	 * @see \Magnetar\Router\URLGenerator
 	 */

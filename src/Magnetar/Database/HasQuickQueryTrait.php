@@ -186,7 +186,7 @@
 				
 				foreach($raw_rows as $row) {
 					// determine key column
-					if(is_null($assoc_col)) {
+					if(null === $assoc_col) {
 						if(isset($row[ $assoc_key ]) && ($assoc_key !== $column_key)) {
 							$assoc_col = $assoc_key;
 						} else {
@@ -197,7 +197,7 @@
 					}
 					
 					// determine value column
-					if(is_null($value_col)) {
+					if(null === $value_col) {
 						if(isset($row[ $column_key ])) {
 							$value_col = $column_key;
 						} else {

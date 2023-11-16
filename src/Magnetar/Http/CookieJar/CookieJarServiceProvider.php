@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Template;
+	namespace Magnetar\Http\CookieJar;
 	
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Application;
@@ -10,7 +10,7 @@
 	/**
 	 * Registers the cookie jar service
 	 */
-	class CookieServiceProvider extends ServiceProvider {
+	class CookieJarServiceProvider extends ServiceProvider {
 		/**
 		 * {@inheritDoc}
 		 */

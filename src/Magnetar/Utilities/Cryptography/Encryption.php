@@ -28,11 +28,11 @@
 			string|null $digest_method=null,
 			string|null $cipher_method=null
 		) {
-			if(!is_null($digest_method)) {
+			if(null !== $digest_method) {
 				$this->digest_method = $digest_method;
 			}
 			
-			if(!is_null($cipher_method)) {
+			if(null !== $cipher_method) {
 				$this->cipher_method = $cipher_method;
 			}
 		}

@@ -132,7 +132,7 @@
 				throw new QueryBuilderException('Field for selectRaw is empty');
 			}
 			
-			if(!is_null($as) && ($as !== $field)) {
+			if((null !== $as) && ($as !== $field)) {
 				$this->fields[] = $field .' as `'. $as .'`';
 			} else {
 				$this->fields[] = $field;

@@ -46,7 +46,7 @@
 			
 			$decoded = @json_decode($var, true);
 			
-			if(is_null($decoded)) {
+			if(null === $decoded) {
 				return $var;
 			}
 			

@@ -240,7 +240,7 @@
 			// forget old references
 			$this->dropStaleInstances($abstract);
 			
-			if(is_null($concrete)) {
+			if(null === $concrete) {
 				$concrete = $abstract;
 			}
 			
@@ -736,7 +736,7 @@
 			$concrete = $this->getContextualConcrete($abstract);
 			
 			// if parameters are provided, we need to create a contextualized instance
-			$needsContextualBuild = (!empty($parameters) || !is_null($concrete));
+			$needsContextualBuild = (!empty($parameters) || (null !== $concrete));
 			
 			// if the instance is already resolved and there's no context, return it
 			if(isset($this->instances[ $abstract ]) && !$needsContextualBuild) {
@@ -745,7 +745,7 @@
 			
 			$this->with[] = $parameters;
 			
-			if(is_null($concrete)) {
+			if(null === $concrete) {
 				$concrete = $this->getConcrete($abstract);
 			}
 			
@@ -796,7 +796,7 @@
 		 * @return Closure|string|array|null The concrete instance
 		 */
 		protected function getContextualConcrete(string|callable $abstract): Closure|string|array|null {
-			if(!is_null($binding = $this->findInContextualBindings($abstract))) {
+			if(null !== ($binding = $this->findInContextualBindings($abstract))) {
 				return $binding;
 			}
 			
@@ -805,7 +805,7 @@
 			}
 			
 			foreach($this->abstractAliases[ $abstract ] as $alias) {
-				if(!is_null($binding = $this->findInContextualBindings($alias))) {
+				if(null !== ($binding = $this->findInContextualBindings($alias))) {
 					return $binding;
 				}
 			}
@@ -866,7 +866,7 @@
 			// If there are no constructors, that means there are no dependencies then
 			// we can just resolve the instances of the objects right away, without
 			// resolving any other types or dependencies out of these containers.
-			if(is_null($constructor)) {
+			if(null === $constructor) {
 				array_pop($this->buildStack);
 				
 				return new $concrete;
@@ -905,7 +905,7 @@
 					continue;
 				}
 				
-				$result = is_null(Helper::getParameterClassName($dependency))
+				$result = (null === Helper::getParameterClassName($dependency))
 					? $this->resolvePrimitive($dependency)
 					: $this->resolveClass($dependency);
 				
@@ -953,7 +953,7 @@
 		 * @throws ResolvingDependenciesException
 		 */
 		protected function resolvePrimitive(ReflectionParameter $parameter): mixed {
-			if(!is_null($concrete = $this->getContextualConcrete('$'. $parameter->getName()))) {
+			if(null !== ($concrete = $this->getContextualConcrete('$'. $parameter->getName()))) {
 				return Helper::unwrapIfClosure($concrete, $this);
 			}
 			
@@ -1056,7 +1056,7 @@
 				$abstract = $this->getAlias($abstract);
 			}
 			
-			if(($abstract instanceof Closure) && is_null($callback)) {
+			if(($abstract instanceof Closure) && (null === $callback)) {
 				$this->globalBeforeResolvingCallbacks[] = $abstract;
 			} else {
 				$this->beforeResolvingCallbacks[ $abstract ][] = $callback;
@@ -1077,7 +1077,7 @@
 				$abstract = $this->getAlias($abstract);
 			}
 			
-			if(is_null($callback) && ($abstract instanceof Closure)) {
+			if((null === $callback) && ($abstract instanceof Closure)) {
 				$this->globalResolvingCallbacks[] = $abstract;
 			} else {
 				$this->resolvingCallbacks[ $abstract ][] = $callback;
@@ -1098,7 +1098,7 @@
 				$abstract = $this->getAlias($abstract);
 			}
 			
-			if(($abstract instanceof Closure) && is_null($callback)) {
+			if(($abstract instanceof Closure) && (null === $callback)) {
 				$this->globalAfterResolvingCallbacks[] = $abstract;
 			} else {
 				$this->afterResolvingCallbacks[ $abstract ][] = $callback;
@@ -1299,7 +1299,7 @@
 		 * @return static
 		 */
 		public static function getInstance(): static {
-			if(is_null(static::$instance)) {
+			if(null === static::$instance) {
 				static::$instance = new static;
 			}
 			
@@ -1308,8 +1308,8 @@
 		
 		/**
 		 * Set the shared instance of the container
-		 * @param Container|null $container The container to set as the shared instance
-		 * @return Container|static The shared instance
+		 * @param \Magnetar\Container\Container|null $container The container to set as the shared instance
+		 * @return \Magnetar\Container\Container|static The shared instance
 		 */
 		public static function setInstance(Container|null $container = null): Container|static {
 			return static::$instance = $container;

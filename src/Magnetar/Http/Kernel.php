@@ -17,10 +17,23 @@
 	
 	class Kernel {
 		/**
-		 * Middleware stack to process requests through
+		 * Middleware stack to process requests into responses
 		 * @var array
 		 */
 		protected array $middleware = [];
+		
+		/**
+		 * A prioritized list of middleware classes.
+		 * The middleware stack will be sorted using this array as a guide. Lookups for
+		 * a middleware's interface or parent class is done for matching purposes. This
+		 * allows for App-namespaced classes to match with their framework-namespaced counterparts
+		 * 
+		 * @var array
+		 */
+		protected array $middlewareSorted = [
+			\Magnetar\Http\CoookieJar\Middleware\EncryptCookies::class,
+			\Magnetar\Http\CookieJar\Middleware\AddQueuedCookiesToResponse::class,
+		];
 		
 		/**
 		 * Array of classes to instantiate and call using kernel->bootstrap()
@@ -76,6 +89,15 @@
 			Facade::clearResolvedInstance('request');
 			
 			$this->bootstrap();
+			
+			$this->sortMiddleware();
+			
+			//die("<pre>". print_r([
+			//	'called_from' => 'Kernel::process()',
+			//	'middleware' => $this->middleware,
+			//	'request' => $request,
+			//	'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
+			//], true) ."</pre>");
 			
 			try {
 				$response = (new Pipeline($this->app))
@@ -170,6 +192,17 @@
 					$instance->terminate($request, $response);
 				}
 			}
+		}
+		
+		/**
+		 * Sorts the middleware using the pre-arranged middleware array as a prioritized guide
+		 * @return void
+		 */
+		protected function sortMiddleware(): void {
+			$this->middleware = (new MiddlewareSorter(
+				$this->middleware,
+				$this->middlewareSorted
+			))->sorted();
 		}
 		
 		/**

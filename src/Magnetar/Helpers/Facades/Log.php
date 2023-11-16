@@ -6,9 +6,9 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method log(string $level, string $message, array $context=[]): void
-	 * @method getLogs(int $minLevel=0): array
-	 * @method dump(int $minLevel=0, bool $return=false): mixed
+	 * @method static void log(string $level, string $message, array $context)
+	 * @method static array getLogs(int $minLevel)
+	 * @method static mixed dump(int $minLevel, bool $return)
 	 * 
 	 * @see \Magnetar\Log\Logger
 	 */

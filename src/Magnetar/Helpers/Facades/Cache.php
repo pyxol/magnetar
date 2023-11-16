@@ -6,17 +6,17 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method connection(?string $driver_name=null): Magnetar\Cache\AbstractCacheStore
-	 * @method clear(): void
-	 * @method delete(string $key): bool
-	 * @method get(string $key, mixed $callback=null, int $ttl=3600): mixed
-	 * @method getMany(array $keys): array
-	 * @method increment(string $key, int $step=1): int|false
-	 * @method decrement(string $key, int $step=1): int|false
-	 * @method has(string $key): bool
-	 * @method hasMany(array $keys): array
-	 * @method set(string $key, mixed $value, int|false $ttl=3600): mixed
-	 * @method setMany(array $values, int|false $ttl=3600): void
+	 * @method static \Magnetar\Cache\AbstractCacheStore connection(?string $driver_name)
+	 * @method static void clear()
+	 * @method static bool delete(string $key)
+	 * @method static mixed get(string $key, mixed $callback, int $ttl)
+	 * @method static array getMany(array $keys)
+	 * @method static int|false increment(string $key, int $step)
+	 * @method static int|false decrement(string $key, int $step)
+	 * @method static bool has(string $key)
+	 * @method static array hasMany(array $keys)
+	 * @method static mixed set(string $key, mixed $value, int|false $ttl)
+	 * @method static void setMany(array $values, int|false $ttl)
 	 * 
 	 * @see \Magnetar\Cache\StoreManager
 	 * @see \Magnetar\Cache\AbstractCacheStore

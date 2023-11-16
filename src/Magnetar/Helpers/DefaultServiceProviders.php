@@ -21,9 +21,12 @@
 			?array $providers=null
 		) {
 			$this->providers = $providers ?? [
+				\Magnetar\Auth\AuthServiceProvider::class,
 				\Magnetar\Cache\CacheServiceProvider::class,
+				\Magnetar\Http\CookieJar\CookieJarServiceProvider::class,
 				\Magnetar\Database\DatabaseServiceProvider::class,
 				\Magnetar\Filesystem\FilesystemServiceProvider::class,
+				\Magnetar\Queue\QueueServiceProvider::class,
 				\Magnetar\Template\TemplateServiceProvider::class,
 			];
 		}

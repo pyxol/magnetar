@@ -20,7 +20,7 @@
 		 * @return array
 		 */
 		public static function arrayWrap(mixed $value) {
-			if(is_null($value)) {
+			if(null === $value) {
 				return [];
 			}
 			
@@ -51,7 +51,7 @@
 			
 			$name = $type->getName();
 			
-			if(!is_null($class = $parameter->getDeclaringClass())) {
+			if(null !== ($class = $parameter->getDeclaringClass())) {
 				if('self' === $name) {
 					return $class->getName();
 				}

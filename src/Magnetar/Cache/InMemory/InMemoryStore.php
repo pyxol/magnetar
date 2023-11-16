@@ -51,7 +51,7 @@
 				return $this->store[ $key ];
 			}
 			
-			if(is_null($callback)) {
+			if(null === $callback) {
 				return null;
 			}
 			

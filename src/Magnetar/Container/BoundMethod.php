@@ -69,7 +69,7 @@
 			// we can pass right back into the 'call' method for dependency binding.
 			$method = ((count($segments) === 2)?$segments[1]:$defaultMethod);
 			
-			if(is_null($method)) {
+			if(null === $method) {
 				throw new InvalidArgumentException('Method not provided.');
 			}
 			
@@ -188,7 +188,7 @@
 				$dependencies[] = $parameters[ $paramName ];
 				
 				unset($parameters[ $paramName ]);
-			} elseif(!is_null($className = Helper::getParameterClassName($parameter))) {
+			} elseif(null !== ($className = Helper::getParameterClassName($parameter))) {
 				if(array_key_exists($className, $parameters)) {
 					$dependencies[] = $parameters[ $className ];
 					

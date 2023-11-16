@@ -6,20 +6,20 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method importCookiesFromRequest(Magnetar\Http\Request $request): void
-	 * @method getCookies(): array
-	 * @method getQueuedCookies(): array
-	 * @method get(string $name): ?Magnetar\Http\CookieJar\Cookie
-	 * @method getValue(string $name): ?string
-	 * @method set(string $name, string $value, ?int $expires_seconds=null, ?string $path=null, ?string $domain=null, ?bool $secure=null, ?bool $httponly=null): self
-	 * @method setCookie(Magnetar\Http\CookieJar\Cookie $cookie): self
-	 * @method remove(string $name): self
-	 * @method setDefaults(?int $expires_seconds=null, ?string $path=null, ?string $domain=null, ?bool $secure=null, ?bool $httponly=null): self
-	 * @method getDefaultExpiresSeconds(): int
-	 * @method getDefaultPath(): string
-	 * @method getDefaultDomain(): string
-	 * @method getDefaultSecure(): bool
-	 * @method getDefaultHttpOnly(): bool
+	 * @method static void importCookiesFromRequest(\Magnetar\Http\Request $request)
+	 * @method static array getCookies()
+	 * @method static array getQueuedCookies()
+	 * @method static ?\Magnetar\Http\CookieJar\Cookie get(string $name)
+	 * @method static ?string getValue(string $name)
+	 * @method static self set(string $name, mixed $value, ?int $expires_seconds, ?string $path, ?string $domain, ?bool $secure, ?bool $httponly)
+	 * @method static self setCookie(\Magnetar\Http\CookieJar\Cookie $cookie)
+	 * @method static self remove(string $name)
+	 * @method static self setDefaults(?int $expires_seconds, ?string $path, ?string $domain, ?bool $secure, ?bool $httponly)
+	 * @method static int getDefaultExpiresSeconds()
+	 * @method static string getDefaultPath()
+	 * @method static string getDefaultDomain()
+	 * @method static bool getDefaultSecure()
+	 * @method static bool getDefaultHttpOnly()
 	 * 
 	 * @see \Magnetar\Http\CookieJar\CookieJar
 	 */

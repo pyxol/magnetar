@@ -134,7 +134,7 @@
 		 */
 		public function set(
 			string $name,
-			string $value,
+			mixed $value,
 			int|null $expires_seconds=null,
 			string|null $path=null,
 			string|null $domain=null,
@@ -143,7 +143,7 @@
 		): self {
 			$this->cookie_queue[ $name ] = new Cookie(
 				$name,
-				$value,
+				(string)$value,
 				$expires_seconds,
 				$path,
 				$domain,
