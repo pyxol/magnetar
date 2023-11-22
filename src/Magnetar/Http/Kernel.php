@@ -92,13 +92,6 @@
 			
 			$this->sortMiddleware();
 			
-			//die("<pre>". print_r([
-			//	'called_from' => 'Kernel::process()',
-			//	'middleware' => $this->middleware,
-			//	'request' => $request,
-			//	'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
-			//], true) ."</pre>");
-			
 			try {
 				$response = (new Pipeline($this->app))
 					->send($request)

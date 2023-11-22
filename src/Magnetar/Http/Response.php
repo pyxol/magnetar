@@ -23,16 +23,22 @@
 		protected int $response_code = 200;
 		
 		/**
-		 * The response body
-		 * @var string
+		 * Array of Cookie instances to send with the respones
+		 * @var array
 		 */
-		protected string $body = '';
+		protected array $cookies = [];
 		
 		/**
 		 * Whether the response headers have been sent
 		 * @var bool
 		 */
 		protected bool $sent_headers = false;
+		
+		/**
+		 * The response body
+		 * @var string
+		 */
+		protected string $body = '';
 		
 		/**
 		 * Whether the response has been sent (headers and body)
@@ -85,42 +91,14 @@
 		}
 		
 		/**
-		 * Set a cookie
-		 * @param string $name The cookie name
-		 * @param string|null $value The cookie value
-		 * @param int $expires The cookie expiration time
-		 * 		0 = expire at end of session
-		 * 		>0 = expire in $expires seconds
-		 * 		<0 = expire in abs($expires) seconds
-		 * @param string $path The cookie path
-		 * @param string $domain The cookie domain
-		 * @param bool $secure Whether the cookie should only be sent over HTTPS
-		 * @param bool $httponly Whether the cookie should only be accessible over HTTP
-		 * @return Response
-		 * @note This method is a wrapper for PHP's setcookie() function
-		 * 
-		 * @TODO needs a cookie management class
+		 * Send a cookie through the response. Not intended to be used directly, use cookie() instead
+		 * @param Cookie $cookie
+		 * @return self
 		 */
-		/* public function setCookie(
-			string $name,
-			string|null $value=null,
-			int $expires=0,
-			string $path='',
-			string $domain='',
-			bool $secure=false,
-			bool $httponly=false
-		): self {
-			setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
-			
-			return $this;
-		} */
-		
 		public function setCookie(
-			string $name,
-			string|null $value=null,
-			int|null $expires=null
+			Cookie $cookie
 		): self {
-			// @TODO
+			$this->cookies[ $cookie->getName() ] = $cookie;
 			
 			return $this;
 		}
@@ -155,6 +133,11 @@
 			
 			// send headers
 			$this->headers->send();
+			
+			// send cookies
+			foreach($this->cookies as $cookie) {
+				$cookie->send();
+			}
 			
 			// mark headers as sent
 			$this->sent_headers = true;

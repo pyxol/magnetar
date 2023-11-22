@@ -5,6 +5,12 @@
 	
 	class Cookie {
 		/**
+		 * Whether the cookie has been sent
+		 * @var bool
+		 */
+		protected bool $sent = false;
+		
+		/**
 		 * Cookie constructor
 		 */
 		public function __construct(
@@ -51,6 +57,28 @@
 			protected bool|null $httponly=null
 		) {
 			
+		}
+		
+		/**
+		 * Set the cookie using the PHP setcookie() function
+		 * @return void
+		 */
+		public function send(): void {
+			if($this->sent) {
+				return;
+			}
+			
+			setcookie(
+				$this->name,
+				$this->value,
+				(time() + $this->expires_seconds),
+				$this->path,
+				$this->domain,
+				$this->secure,
+				$this->httponly
+			);
+			
+			$this->sent = true;
 		}
 		
 		/**
@@ -104,7 +132,7 @@
 		 * @param int $expires_seconds The expiration time in seconds. If null, the default will be used
 		 * @return self
 		 */
-		public function setExpires(int|null $expires_seconds=null): self {
+		public function setExpires(int $expires_seconds): self {
 			$this->expires_seconds = $expires_seconds;
 			
 			return $this;

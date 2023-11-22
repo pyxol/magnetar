@@ -21,7 +21,9 @@
 				return (new CookieJar)->setDefaults(
 					$config['expires_seconds'] ?? 3600,
 					$config['path'] ?? '',
-					$config['domain'] ?? ''
+					$config['domain'] ?? '',
+					$config['secure'] ?? false,
+					$config['httponly'] ?? false
 				);
 			});
 		}

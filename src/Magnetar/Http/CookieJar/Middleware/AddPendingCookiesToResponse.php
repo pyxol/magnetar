@@ -30,23 +30,8 @@
 		public function handle(Request $request, Closure $next): Response {
 			$response = $next($request);
 			
-			//print('<pre>'. print_r([
-			//	'called_from' => 'AddPendingCookiesToResponse::handle()',
-			//	//'response' => $response,
-			//	'pending_cookies' => $this->cookieJar->getQueuedCookies(),
-			//	'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
-			//], true) .'</pre>');
-			
 			foreach($this->cookieJar->getQueuedCookies() as $cookie) {
-				// @TODO
-				$response->setCookie(
-					$cookie,
-					$this->cookieJar->getDefaultExpiresSeconds(),
-					$this->cookieJar->getDefaultPath(),
-					$this->cookieJar->getDefaultDomain(),
-					$this->cookieJar->getDefaultSecure(),
-					$this->cookieJar->getDefaultHttpOnly()
-				);
+				$response->setCookie($cookie);
 			}
 			
 			return $response;

@@ -2,8 +2,9 @@
 	declare(strict_types=1);
 	
 	namespace Magnetar\Http\CookieJar;
-	
-	use Magnetar\Http\Request;
+
+use Magnetar\Application;
+use Magnetar\Http\Request;
 	use Magnetar\Http\CookieJar\Cookie;
 	
 	class CookieJar {
@@ -144,11 +145,11 @@
 			$this->cookie_queue[ $name ] = new Cookie(
 				$name,
 				(string)$value,
-				$expires_seconds,
-				$path,
-				$domain,
-				$secure,
-				$httponly
+				$expires_seconds ?? $this->default_expires_seconds,
+				$path ?? $this->default_path,
+				$domain ?? $this->default_domain,
+				$secure ?? $this->default_secure,
+				$httponly ?? $this->default_httponly
 			);
 			
 			return $this;

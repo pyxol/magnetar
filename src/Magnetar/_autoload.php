@@ -154,7 +154,7 @@
 				return app('cookie')->remove($name);
 			}
 			
-			return app('cookie')->get(
+			return app('cookie')->set(
 				$name,
 				$value,
 				$expires_seconds,
