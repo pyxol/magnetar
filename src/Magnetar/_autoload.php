@@ -3,6 +3,7 @@
 	
 	use Magnetar\Container\Container;
 	use Magnetar\Helpers\Env;
+	use Magnetar\Group\Group;
 	use Magnetar\Helpers\Facades\Config;
 	use Magnetar\Helpers\Facades\Theme;
 	use Magnetar\Helpers\Facades\URL;
@@ -209,6 +210,17 @@
 		 */
 		function env(string $key, mixed $default=null): mixed {
 			return Env::get($key, $default);
+		}
+	}
+	
+	if(!function_exists('group')) {
+		/**
+		 * Create a new Group instance with the specified items
+		 * @param mixed $items Items to add to the group
+		 * @return Group
+		 */
+		function group(mixed $items=[]): Group {
+			return new Group($items);
 		}
 	}
 	
