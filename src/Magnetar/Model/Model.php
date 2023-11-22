@@ -8,6 +8,7 @@
 	use Magnetar\Model\HasDirtyTrait;
 	use Magnetar\Model\HasLookupTrait;
 	use Magnetar\Model\HasMutableTrait;
+	use Magnetar\Model\HasEvents;
 	use Magnetar\Model\HasComparableTrait;
 	use Magnetar\Utilities\Str;
 	use Magnetar\Utilities\Internals;
@@ -21,6 +22,7 @@
 		use HasDirtyTrait,
 			HasLookupTrait,
 			HasMutableTrait,
+			HasEvents,
 			HasComparableTrait;
 		
 		/**
