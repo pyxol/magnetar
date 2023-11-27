@@ -172,6 +172,29 @@ use Magnetar\Http\Request;
 		 * @return self
 		 */
 		public function remove(string $name): self {
+			if(isset($this->cookie_queue[ $name ])) {
+				return $this->unequeue($name);
+			}
+			
+			$this->cookie_queue[ $name ] = new Cookie(
+				$name,
+				'',
+				-604800,
+				$this->default_path,
+				$this->default_domain,
+				$this->default_secure,
+				$this->default_httponly
+			);
+			
+			return $this;
+		}
+		
+		/**
+		 * Unqueue a cookie
+		 * @param string $name The cookie name
+		 * @return self
+		 */
+		public function unequeue(string $name): self {
 			unset($this->cookie_queue[ $name ]);
 			
 			return $this;
