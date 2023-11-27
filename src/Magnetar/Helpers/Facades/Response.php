@@ -9,7 +9,7 @@
 	 * @method static self responseCode(int $response_code)
 	 * @method static self body(string $body)
 	 * @method static self sendBody()
-	 * @method static self setCookie(string $name, ?string $value, ?int $expires)
+	 * @method static self setCookie(\Magnetar\Http\CookieJar\Cookie $cookie)
 	 * @method static self send()
 	 * @method static self sendHeaders()
 	 * @method static self|string header(string $header, ?string $value, int|bool $replace, ?int $response_code)
