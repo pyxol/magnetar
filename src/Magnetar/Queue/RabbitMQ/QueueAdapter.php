@@ -59,8 +59,6 @@
 		
 		/**
 		 * {@inheritDoc}
-		 * 
-		 * @todo post-connection actions
 		 */
 		protected function postConnection(): void {
 			parent::postConnection();

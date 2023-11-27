@@ -24,6 +24,7 @@
 		 */
 		public function provides(): array {
 			return [
+				'database',
 				ConnectionManager::class,
 			];
 		}
