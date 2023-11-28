@@ -27,7 +27,7 @@
 			Route $route,
 			callable|array|string|null $callback
 		): Route {
-			$this->actions[ $route->getName() ] = $callback;
+			$this->actions[ $route->getUniqueID() ] = $callback;
 			
 			return $route;
 		}

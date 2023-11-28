@@ -20,6 +20,12 @@
 	 */
 	class Route {
 		/**
+		 * Unique identifier for this route
+		 * @var string
+		 */
+		protected string|null $uniqueID = null;
+		
+		/**
 		 * The route name
 		 * @var string|null The route name
 		 */
@@ -60,6 +66,8 @@
 		 * An array of parameters that were matched in the request.
 		 * Key is the parameter name, value is a typed variable of the matched value
 		 * @var array|null
+		 * 
+		 * @TODO upon route match, generate a 'MatchedRoute' object that extends this route and stores the matched parameters (among other things)
 		 */
 		protected array|null $parameters = null;
 		
@@ -116,6 +124,26 @@
 			$this->container = $container;
 			
 			return $this;
+		}
+		
+		/**
+		 * Get the route's unique identifier
+		 * @return string
+		 */
+		public function getUniqueID(): string {
+			return $this->uniqueID ??= $this->generateUniqueID();
+		}
+		
+		/**
+		 * Generate a unique identifier for this route
+		 * @return void
+		 */
+		protected function generateUniqueID(): string {
+			// specific method(s) - use pipe-delimited list of methods as a prefix
+			return md5(implode('|', array_map(
+				fn(HTTPMethodEnum $method): string => HTTPMethodEnumResolver::resolveToString($method),
+				$this->methods
+			)) .':'. $this->path_basic);
 		}
 		
 		/**
@@ -267,30 +295,11 @@
 		}
 		
 		/**
-		 * Returns the name of the path, or an md5 hash of the path if no name is set
+		 * Returns the name of the path, or the route's unique identifier (md5 hash) if the name is not set
 		 * @return string
-		 * 
-		 * @todo make this more efficient (maybe have a unique id for each route)
 		 */
 		public function getName(): string {
-			return $this->name ??= $this->generateName();
-		}
-		
-		/**
-		 * Generate a name for this route
-		 * @return string The generated name
-		 */
-		protected function generateName(): string {
-			if(null === $this->methods) {
-				// any method
-				return md5($this->path_basic);
-			}
-			
-			// specific method(s) - use pipe-delimited list of methods as a prefix
-			return md5(implode('|', array_map(
-				fn(HTTPMethodEnum $method): string => HTTPMethodEnumResolver::resolveToString($method),
-				$this->methods
-			)) .':'. $this->path_basic);
+			return $this->name ?? $this->getUniqueID();
 		}
 		
 		/**
@@ -315,6 +324,14 @@
 		 */
 		public function getPathRegex(): string {
 			return $this->path_regex;
+		}
+		
+		/**
+		 * Determine if the route's path is a regex pattern
+		 * @return bool
+		 */
+		public function isPathRegex(): bool {
+			return $this->path_is_regex;
 		}
 		
 		/**
@@ -411,5 +428,38 @@
 		 */
 		public function parameters(): array {
 			return $this->parameters ?? [];
+		}
+		
+		/**
+		 * Export the route's data
+		 * @return array
+		 */
+		public function export(): array {
+			return [
+				'unique_id' => $this->getUniqueID(),
+				'name' => $this->getName(),
+				'methods' => $this->getMethods(),
+				'path_basic' => $this->getPath(),
+				'path_regex' => $this->getPathRegex(),
+				'path_is_regex' => $this->isPathRegex(),
+				'var_types' => $this->getPathVariableTypes(),
+			];
+		}
+		
+		/**
+		 * Import cached route data
+		 * @param array $data The cached route data
+		 * @return void
+		 * 
+		 * @TODO instead of modifying this route, return a new route with the cached data (or use a Route factory)
+		 */
+		public function importCachedRoute(array $data): void {
+			$this->uniqueID = $data['unique_id'] ?? null;
+			$this->name = $data['name'] ?? null;
+			$this->methods = $data['methods'] ?? [];
+			$this->path_basic = $data['path_basic'] ?? '';
+			$this->path_regex = $data['path_regex'] ?? '';
+			$this->path_is_regex = $data['path_is_regex'] ?? false;
+			$this->var_types = $data['var_types'] ?? [];
 		}
 	}

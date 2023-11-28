@@ -15,7 +15,7 @@
 	class RouteCollection {
 		/**
 		 * An array of routes within this collection
-		 * @var array Route[]
+		 * @var array \Magnetar\Router\Route[]
 		 */
 		public array $routes = [];
 		
@@ -172,7 +172,7 @@
 		public function add(
 			Route $route
 		): Route {
-			return $this->routes[ $route->getName() ] = $route;
+			return $this->routes[ $route->getUniqueID() ] = $route;
 		}
 		
 		/**
@@ -211,5 +211,29 @@
 			
 			// no route matches, return null
 			return null;
+		}
+		
+		/**
+		 * Export the collection as a serialized array of routes (for caching)
+		 * @return array
+		 */
+		public function export(): array {
+			$routes = [];
+			
+			foreach($this->routes as $route) {
+				$routes[] = $route->export();
+			}
+			
+			//return serialize($routes);
+			return $routes;
+		}
+		
+		/**
+		 * Import a serialized array of routes (for caching)
+		 * @param string $serializedData
+		 * @return self
+		 */
+		public function import(string $serializedData): self {
+			// @TODO make use of a Route factory to import routes
 		}
 	}

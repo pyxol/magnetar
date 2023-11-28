@@ -14,6 +14,7 @@
 	 * @method static self set(string $name, mixed $value, ?int $expires_seconds, ?string $path, ?string $domain, ?bool $secure, ?bool $httponly)
 	 * @method static self setCookie(\Magnetar\Http\CookieJar\Cookie $cookie)
 	 * @method static self remove(string $name)
+	 * @method static self unequeue(string $name)
 	 * @method static self setDefaults(?int $expires_seconds, ?string $path, ?string $domain, ?bool $secure, ?bool $httponly)
 	 * @method static int getDefaultExpiresSeconds()
 	 * @method static string getDefaultPath()

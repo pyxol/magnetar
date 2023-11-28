@@ -3,9 +3,23 @@
 	
 	namespace Magnetar\Http\Controller;
 	
+	use Magnetar\Http\Controller\HasMiddlewareTrait;
+	
 	use BadMethodCallException;
 	
 	class Controller {
+		use HasMiddlewareTrait;
+		
+		/**
+		 * Call an action registered on the controller
+		 * @param string $method The method to call
+		 * @param array $args The arguments to pass to the method
+		 * @return mixed
+		 */
+		public function callAction(string $method, array $args): mixed {
+			return $this->{$method}(...$args);
+		}
+		
 		/**
 		 * Catch any undefined methods
 		 * @param string $method

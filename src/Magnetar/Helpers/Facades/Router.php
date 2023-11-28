@@ -17,9 +17,11 @@
 	 * @method static \Magnetar\Router\Route patch(string $pattern, callable|array|string|null $callback)
 	 * @method static \Magnetar\Router\Route delete(string $pattern, callable|array|string|null $callback)
 	 * @method static \Magnetar\Router\Route options(string $pattern, callable|array|string|null $callback)
+	 * @method static \Magnetar\Router\Route match(\Magnetar\Router\Enums\HTTPMethodEnum|array|string $methods, string $pattern, callable|array|string|null $callback)
 	 * @method static \Magnetar\Router\RouteCollection group(string $pathPrefix, callable $callback)
 	 * @method static \Magnetar\Router\Route redirect(string $pattern, string $redirect_path, int $response_code)
 	 * @method static \Magnetar\Router\Route permanentRedirect(string $pattern, string $redirect_path)
+	 * @method static array export()
 	 * 
 	 * @see \Magnetar\Router\Router
 	 */

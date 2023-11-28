@@ -114,7 +114,7 @@
 			$request->assignOverrideParameters($route->parameters());
 			
 			// fetch the callback for the route from the action registry
-			$callback = $this->actionRegistry->get($route->getName());
+			$callback = $this->actionRegistry->get($route->getUniqueID());
 			
 			// resolve parameter dependencies for the callback. Additionally pass
 			// the route's path-defined parameters to the resolver so that they can be
@@ -184,39 +184,11 @@
 			HTTPMethodEnum|array|string|null $method=null,
 			string $pattern
 		): Route {
-			// create and add the route to the collection
-			// assign route and return it
-			//return (new Route(
-			//	$this->routeCollection,
-			//	$method,
-			//	$pattern
-			//))->setRouter($this)->setContainer($this->container);
+			// create a route using the route collection
 			return $this->routeCollection->makeRoute(
 				$method,
 				$pattern
 			);
-		}
-		
-		/**
-		 * Attempt to match Request against pattern. If successful override matched parameters in request, set status of router as served
-		 * @param string $pattern The pattern to match against
-		 * @param string|null $http_method The HTTP method to match against
-		 * @return bool
-		 */
-		protected function attemptPathPattern(string $pattern, string|null $http_method=null): bool {
-			if($this->served) {
-				return false;
-			}
-			
-			if((null !== $http_method) && ($http_method !== strtoupper($_SERVER['REQUEST_METHOD']))) {
-				return false;
-			}
-			
-			if(!preg_match($pattern, $this->container['request']->path(), $raw_matches)) {
-				return false;
-			}
-			
-			return true;
 		}
 		
 		/**
@@ -349,6 +321,23 @@
 		}
 		
 		/**
+		 * Assign a route to the router that matches the given HTTP method(s)
+		 * @param HTTPMethodEnum|array|string $methods The HTTP method(s) to match against. String(s) or enum(s) accepted
+		 * @param string $pattern The pattern to match against
+		 * @param callable|array|string|null|null $callback The callback to run if matched
+		 * @return Route
+		 * 
+		 * @see \Magnetar\Router\Enums\HTTPMethodEnum for valid HTTP method names
+		 */
+		public function match(
+			HTTPMethodEnum|array|string $methods,
+			string $pattern,
+			callable|array|string|null $callback=null
+		): Route {
+			return $this->assignRoute($methods, $pattern, $callback);
+		}
+		
+		/**
 		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against. Returns the contextualized route collection
 		 * @param string $pattern The pattern to match against
 		 * @param string $method The HTTP method to match against
@@ -392,6 +381,15 @@
 				$pattern,
 				fn() => $this->container->instance('response', (new RedirectResponse)->permanent()->to($redirect_path))
 			);
+		}
+		
+		/**
+		 * Export the router's route collection to a serialized string
+		 * @return array
+		 */
+		public function export(): array {
+			// export the router's route collection to a serialized string
+			return $this->routeCollection->export();
 		}
 		
 		/**

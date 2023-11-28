@@ -115,7 +115,7 @@
 		 * @return void
 		 */
 		protected function recordException(Throwable $e): void {
-			$this->app[ExceptionHandler::class]->record($e);
+			$this->app[ ExceptionHandler::class ]->record($e);
 		}
 		
 		/**
@@ -125,7 +125,7 @@
 		 * @return Response
 		 */
 		protected function renderException(Request $request, Throwable $e): Response {
-			return $this->app[ExceptionHandler::class]->render($request, $e);
+			return $this->app[ ExceptionHandler::class ]->render($request, $e);
 		}
 		
 		/**
