@@ -3,8 +3,39 @@
 	
 	namespace Magnetar\Http;
 	
+	/**
+	 * Represents a collection of HTTP headers
+	 */
 	class HeaderCollection {
+		protected const UPPER = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		protected const LOWER = '-abcdefghijklmnopqrstuvwxyz';
+		
+		/**
+		 * Headers array
+		 * @var array
+		 */
 		protected array $headers = [];
+		
+		/**
+		 * Store response codes for headers that have them
+		 * @var array
+		 */
+		protected array $response_codes = [];
+		
+		/**
+		 * Constructor
+		 */
+		public function __construct(
+			/**
+			 * The headers to add
+			 * @var array
+			 */
+			array $headers=[]
+		) {
+			foreach($headers as $key => $value) {
+				$this->add($key, $value);
+			}
+		}
 		
 		/**
 		 * Add header
@@ -13,63 +44,55 @@
 		 * @param int|null $response_code The HTTP response code to send
 		 */
 		public function add(
-			string $header_key,
-			string $header_value='',
+			string $name,
+			array|string $value='',
 			bool|int $replace=true,
 			int|null $response_code=0
 		): self {
-			if('' === ($header_key = $this->sanitizeHeaderKey($header_key))) {
+			// sanitize
+			if('' === ($name_sanitized = $this->sanitizeName($name))) {
 				return $this;
 			}
 			
-			$this->headers[] = [
-				'header' => $header_key,
-				'value' => $this->sanitizeHeaderValue($header_value),
-				'replace' => $replace,
-				'response_code' => $response_code
-			];
+			// check if header already exists, if so and we're not replacing, don't add
+			if(isset($this->headers[ $name_sanitized ]) && !$replace) {
+				return $this;
+			}
 			
-			// @TODO add validation support
-			// @TODO add sanitization (trim, lowercase header name, etc)
-			// @TODO utilize replace logic in add()
+			// start building header
+			$this->headers[ $name_sanitized ] = [];
+			
+			if(is_array($value)) {
+				// add each value
+				foreach($value as $header_value) {
+					$this->headers[ $name_sanitized ][] = $header_value;
+				}
+			} else {
+				// set single value as array
+				$this->headers[ $name_sanitized ] = [$value];
+			}
+			
+			if(0 !== $response_code) {
+				// edge-case: one could provide different response codes for each added header
+				// but only the last one (that isn't the default value) is stored for each header
+				$this->response_codes[ $header_sanitized ] = $response_code;
+			}
 			
 			return $this;
 		}
 		
 		/**
-		 * Send all headers
-		 * @return void
-		 */
-		public function send(): void {
-			foreach($this->headers as $header) {
-				header($header['header'] .':'. $header['value'], $header['replace'], $header['response_code']);
-			}
-		}
-		
-		/**
 		 * Get all headers
+		 * @param string|null $name If provided, only return headers with this name
 		 * @return array
 		 */
-		public function all(): array {
+		public function all(string|null $name=null): array {
+			if(null !== $name) {
+				// return only headers with this name
+				return $this->headers[ $this->sanitizeName($name) ] ?? [];
+			}
+			
 			return $this->headers;
-		}
-		
-		/**
-		 * Sanitize a header key (everything before the header's first colon)
-		 * @param string $header_key
-		 * @return string
-		 */
-		public function sanitizeHeaderKey(string $header_key): string {
-			return strtolower(trim($header_key));
-		}
-		
-		/**
-		 * Sanitize a header value (everything after the header's first colon)
-		 * @param string $header_value
-		 * @return string
-		 */
-		public function sanitizeHeaderValue(string $header_value): string {
-			return trim($header_value);
 		}
 		
 		/**
@@ -79,37 +102,16 @@
 		 */
 		public function get(string $name): ?string {
 			// sanitize
-			if('' === ($name = $this->sanitizeHeaderKey($name))) {
+			if('' === ($name_sanitized = $this->sanitizeName($name))) {
 				return null;
 			}
 			
-			foreach($this->headers as $header) {
-				if($header['header'] === $name) {
-					return $header['value'];
-				}
+			if(!isset($this->headers[ $name_sanitized ])) {
+				return null;
 			}
 			
-			return null;
-		}
-		
-		/**
-		 * Remove a header by name
-		 * @param string $name The header name
-		 * @return self
-		 */
-		public function remove(string $name): self {
-			// sanitize
-			if('' === ($name = $this->sanitizeHeaderKey($name))) {
-				return $this;
-			}
-			
-			foreach($this->headers as $key => $header) {
-				if($header['header'] === $name) {
-					unset($this->headers[ $key ]);
-				}
-			}
-			
-			return $this;
+			// return first header value
+			return $this->headers[ $name_sanitized ][0];
 		}
 		
 		/**
@@ -119,17 +121,24 @@
 		 */
 		public function has(string $name): bool {
 			// sanitize
-			if('' === ($name = $this->sanitizeHeaderKey($name))) {
-				return false;
+			return isset($this->headers[ $this->sanitizeName($name) ]);
+		}
+		
+		/**
+		 * Remove a header by name
+		 * @param string $name The header name
+		 * @return self
+		 */
+		public function remove(string $name): self {
+			// sanitize
+			if('' === ($name_sanitized = $this->sanitizeName($name))) {
+				return $this;
 			}
 			
-			foreach($this->headers as $header) {
-				if($header['header'] === $name) {
-					return true;
-				}
-			}
+			unset($this->headers[ $name_sanitized ]);
+			unset($this->response_codes[ $name_sanitized ]);
 			
-			return false;
+			return $this;
 		}
 		
 		/**
@@ -138,7 +147,53 @@
 		 */
 		public function clear(): self {
 			$this->headers = [];
+			$this->response_codes = [];
 			
 			return $this;
+		}
+		
+		/**
+		 * Send all headers. Does not check if headers have already been sent
+		 * @return void
+		 */
+		public function send(): void {
+			foreach($this->headers as $key => $headers) {
+				foreach($headers as $i => $value) {
+					header(
+						$key .': '. $value,
+						!$i,
+						$this->response_codes[ $key ] ?? 0
+					);
+				}
+			}
+		}
+		
+		/**
+		 * Sanitize a header name (everything before the first colon)
+		 * @param string $name The header name
+		 * @return string The sanitized header name
+		 */
+		public function sanitizeName(string $name): string {
+			return trim(strtr(
+				$name,
+				self::UPPER,
+				self::LOWER
+			));
+		}
+		
+		/**
+		 * Get the headers as a string
+		 * @return string
+		 */
+		public function __toString(): string {
+			$headers = '';
+			
+			foreach($this->headers as $key => $headers) {
+				foreach($headers as $i => $header) {
+					$headers .= $key .': '. $header ."\r\n";
+				}
+			}
+			
+			return $headers;
 		}
 	}

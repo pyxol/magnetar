@@ -52,7 +52,7 @@
 		 * @param string $path The requested path (without query string)
 		 */
 		public function __construct() {
-			// set request method
+			// parse the request's http method
 			$this->processRequestMethod();
 			
 			// parse the request path and query string
@@ -61,8 +61,8 @@
 			// parse the request's cookies
 			$this->processRequestCookies();
 			
-			// record request headers
-			$this->recordHeaders();
+			// parse the request's headers
+			$this->processHeaders();
 		}
 		
 		/**
@@ -70,7 +70,6 @@
 		 * @return void
 		 */
 		protected function processRequestMethod(): void {
-			// set request method
 			$this->method = HTTPMethodEnumResolver::resolve(
 				$_SERVER['REQUEST_METHOD'] ?? null,
 				HTTPMethodEnum::GET
@@ -127,30 +126,32 @@
 		}
 		
 		/**
+		 * Get the raw request headers as an associative array.
+		 * Uses filtered values from the $_SERVER global
+		 * @return array
+		 */
+		protected function rawHeaders(): array {
+			$headers = [];
+			
+			foreach($_SERVER as $key => $value) {
+				if(str_starts_with($key, 'HTTP_')) {
+					$headers[ strtr(substr($key, 5), '_', '-') ] = $value;
+				} elseif(in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'])) {
+					$headers[ strtr($key, '_', '-') ] = $value;
+				}
+			}
+			
+			return $headers;
+		}
+		
+		/**
 		 * Record request headers
 		 * @return void
 		 */
-		protected function recordHeaders(): void {
-			$this->headers = new HeaderCollection();
-			
-			$headers = getallheaders();
-			
-			if(empty($headers)) {
-				return;
-			}
-			
-			foreach($headers as $key => $value) {
-				$this->headers->add($key, $value);
-			}
-			
-			//// record request headers
-			//foreach($_SERVER as $key => $value) {
-			//	if(!str_starts_with($key, 'HTTP_')) {
-			//		continue;
-			//	}
-			//	
-			//	$this->headers[ $key ] = $value;
-			//}
+		protected function processHeaders(): void {
+			$this->headers = new HeaderCollection(
+				$this->rawHeaders()
+			);
 		}
 		
 		/**

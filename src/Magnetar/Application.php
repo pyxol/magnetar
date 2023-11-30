@@ -428,6 +428,9 @@
 					\Magnetar\Container\Container::class,
 					\Magnetar\Application::class,
 				],
+				'auth' => [
+					\Magnetar\Auth\AuthManager::class,
+				],
 				'cache' => [
 					\Magnetar\Cache\StoreManager::class,
 				],

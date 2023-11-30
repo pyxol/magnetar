@@ -27,7 +27,6 @@
 		public function provides(): array {
 			return [
 				'cache',
-				//StoreManager::class
 			];
 		}
 	}
