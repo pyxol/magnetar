@@ -148,6 +148,23 @@
 		}
 		
 		/**
+		 * Pluck values from the items in the group by a shared key
+		 * @param string $key
+		 * @return static
+		 */
+		public function pluck(string $key): static {
+			$values = [];
+			
+			foreach($this->items as $item) {
+				if(isset($item[ $key ])) {
+					$values[] = $item[ $key ];
+				}
+			}
+			
+			return new static($values);
+		}
+		
+		/**
 		 * Make a new group with the keys and values flipped
 		 * @return static
 		 */
