@@ -302,6 +302,17 @@
 		}
 	}
 	
+	if(!function_exists('routing_path')) {
+		/**
+		 * Get the path to a file in the routing directory
+		 * @param string $rel_path Path relative to the storage directory. Defaults to an empty string
+		 * @return string
+		 */
+		function routing_path(string $rel_path=''): string {
+			return app()->pathRouting($rel_path);
+		}
+	}
+	
 	if(!function_exists('storage_path')) {
 		/**
 		 * Get the path to a file in the storage directory
