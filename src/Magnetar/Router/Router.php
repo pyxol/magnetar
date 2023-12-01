@@ -5,6 +5,8 @@
 	
 	use Exception;
 	
+	use Magnetar\Router\HasAssignableRoutesTrait;
+	use Magnetar\Router\Route;
 	use Magnetar\Container\Container;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
@@ -19,6 +21,8 @@
 	 * Router class to match requests against routes and generates a response
 	 */
 	class Router {
+		use HasAssignableRoutesTrait;
+		
 		/**
 		 * Whether or not the request has been served
 		 * @var bool
@@ -125,15 +129,8 @@
 			);
 			
 			// pass resolved parameters, execute callback, and return response
-			if(is_array($callback)) {
-				//// class reference and method
-				//list($instance, $method) = $callback;
-				
-				if(isset($callback[0]) && is_string($callback[0])) {
-					$callback[0] = new ($callback[0])($this);
-				}
-				
-				//return $this->container->instance('response', call_user_func([$instance, $method], ...$resolved_parameters));
+			if(is_array($callback) && isset($callback[0]) && is_string($callback[0])) {
+				$callback[0] = new ($callback[0])($this);
 			}
 			
 			// ensure the callback is callable
@@ -142,16 +139,32 @@
 				throw new CannotProcessRouteException('Route matched has an unprocessable callback');
 			}
 			
-			// generate the response by calling the callback with the resolved parameters
-			//return $this->container->instance('response', call_user_func($callback, ...$resolved_parameters));
-			
 			// send the request through the route middleware stack, generating and returning the callback response instance
 			return $this->container->instance('response',
 				(new Pipeline($this->container))
 					->send($this->container->instance('request', $request))
-					->through($this->middleware)
+					->through($this->gatherMiddleware())
 					->then(fn ($request) => call_user_func($callback, ...$resolved_parameters))
 			);
+		}
+		
+		/**
+		 * Gather middleware from the route collection and router
+		 * @return array
+		 * 
+		 *  @TODO
+		 */
+		protected function gatherMiddleware(): array {
+			return $this->middleware;
+			
+			//// gather middleware from the route collection
+			//$middleware = $this->routeCollection->gatherMiddleware();
+			//
+			//// gather middleware from the router
+			//$middleware = array_merge($middleware, $this->middleware);
+			
+			// return the gathered middleware
+			return $middleware;
 		}
 		
 		/**
@@ -227,117 +240,6 @@
 		}
 		
 		/**
-		 * Assign a route to the router that matches any HTTP method
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function any(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute(null, $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches GET and HEAD HTTP methods
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function get(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute([
-				HTTPMethodEnum::GET,
-				HTTPMethodEnum::HEAD
-			], $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches POST HTTP methods
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function post(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute(HTTPMethodEnum::POST, $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches PUT HTTP methods
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function put(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute(HTTPMethodEnum::PUT, $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches PATCH HTTP methods
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function patch(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute(HTTPMethodEnum::PATCH, $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches DELETE HTTP methods
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function delete(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute(HTTPMethodEnum::DELETE, $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches OPTIONS HTTP methods
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null $callback The callback to run if matched
-		 * @return bool
-		 */
-		public function options(
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute(HTTPMethodEnum::OPTIONS, $pattern, $callback);
-		}
-		
-		/**
-		 * Assign a route to the router that matches the given HTTP method(s)
-		 * @param HTTPMethodEnum|array|string $methods The HTTP method(s) to match against. String(s) or enum(s) accepted
-		 * @param string $pattern The pattern to match against
-		 * @param callable|array|string|null|null $callback The callback to run if matched
-		 * @return Route
-		 * 
-		 * @see \Magnetar\Router\Enums\HTTPMethodEnum for valid HTTP method names
-		 */
-		public function match(
-			HTTPMethodEnum|array|string $methods,
-			string $pattern,
-			callable|array|string|null $callback=null
-		): Route {
-			return $this->assignRoute($methods, $pattern, $callback);
-		}
-		
-		/**
 		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against. Returns the contextualized route collection
 		 * @param string $pattern The pattern to match against
 		 * @param string $method The HTTP method to match against
@@ -351,35 +253,6 @@
 				$this->routeCollection,
 				$pathPrefix,
 				$callback
-			);
-		}
-		
-		/**
-		 * Assign a redirect rule for a given path
-		 * @param string $pattern The pattern to match against
-		 * @param string $redirect_path The URI to redirect to
-		 * @param int $response_code The HTTP response code to use. Defaults to 302
-		 * @return Route
-		 */
-		public function redirect(string $pattern, string $redirect_path, int $response_code=302): Route {
-			return $this->assignRoute(
-				null,
-				$pattern,
-				fn() => $this->container->instance('response', (new RedirectResponse)->responseCode($response_code)->to($redirect_path))
-			);
-		}
-		
-		/**
-		 * Assign a permanent redirect (301) rule for a given path
-		 * @param string $pattern The pattern to match against
-		 * @param string $redirect_path The URI to redirect to
-		 * @return Route
-		 */
-		public function permanentRedirect(string $pattern, string $redirect_path): Route {
-			return $this->assignRoute(
-				null,
-				$pattern,
-				fn() => $this->container->instance('response', (new RedirectResponse)->permanent()->to($redirect_path))
 			);
 		}
 		
