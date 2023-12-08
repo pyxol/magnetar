@@ -6,15 +6,13 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method static \Magnetar\Auth\AuthenticationAdapter connection(?string $connection_name)
-	 * @method static ?string getDefaultConnectionName()
-	 * @method static array getConnected()
-	 * @method static \Magnetar\Auth\AuthenticationAdapter adapter(string $connection_name)
-	 * @method static string getAdapterName()
-	 * @method static void setModelClass(string $model_class)
+	 * @method static bool attempt(mixed $credentials, bool $remember)
+	 * @method static bool check()
+	 * @method static \Magnetar\Auth\User user()
+	 * @method static int id()
+	 * @method static void logout()
 	 * 
 	 * @see \Magnetar\Auth\AuthManager
-	 * @see \Magnetar\Auth\AuthenticationAdapter
 	 */
 	class Auth extends Facade {
 		/**

@@ -19,7 +19,6 @@
 		 */
 		public static function getStore(): array {
 			if(null === static::$store) {
-				//static::$store = [];
 				static::$store = $_ENV;
 			}
 			
@@ -28,11 +27,21 @@
 		
 		/**
 		 * Get an environment variable. Returns $default if not found
-		 * @param string $key
-		 * @param mixed $default
+		 * @param string $key Key to get
+		 * @param mixed $default Default value to return if the key is not found
 		 * @return mixed
 		 */
 		public static function get(string $key, mixed $default=null): mixed {
 			return static::getStore()[ $key ] ?? $default;
+		}
+		
+		/**
+		 * Get an environment variable. Returns $default if not found
+		 * @param string $key Key to get
+		 * @param callable $callback Callback to call if the key is not found
+		 * @return mixed
+		 */
+		public static function getElse(string $key, callable $callback): mixed {
+			return static::getStore()[ $key ] ?? call_user_func($callback);
 		}
 	}

@@ -254,6 +254,25 @@
 		}
 		
 		/**
+		 * Set the value of a specific parameter
+		 * @param string $name The name of the parameter to overwrite
+		 * @param mixed $value The new value of the parameter
+		 * @return void
+		 */
+		public function setParameter(string $name, mixed $value): void {
+			$this->parameters[ $name ] = $value;
+		}
+		
+		/**
+		 * Remove a parameter from the request
+		 * @param string $name The name of the parameter to remove
+		 * @return void
+		 */
+		public function removeParameter(string $name): void {
+			unset($this->parameters[ $name ]);
+		}
+		
+		/**
 		 * Get the request's cookies as an associative array
 		 * @return array
 		 */
@@ -338,5 +357,100 @@
 			}
 			
 			return $files;
+		}
+		
+		/**
+		 * Determine if the request accepts the specified content type
+		 * @param array|string $content_types The content type(s) to check
+		 * @return bool
+		 */
+		public function accepts(array|string $content_type): bool {
+			if(null === ($header = $this->header('Accept'))) {
+				return true;
+			}
+			
+			if(!is_array($content_type)) {
+				$content_type = [$content_type];
+			}
+			
+			$accepts = explode(',', strtolower($header));
+			
+			foreach($accepts as $accept) {
+				if(('*' === $accept) || ('*/*' === $accept)) {
+					return true;
+				}
+				
+				foreach($content_type as $content_type) {
+					$content_type = strtolower($content_type);
+					
+					if($content_type === $accept) {
+						return true;
+					}
+					
+					if($accept === strtok($content_type, '/') .'/*') {
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		}
+		
+		/**
+		 * Determine if the request expects any content type
+		 * @return bool
+		 */
+		public function acceptsAnyContentType(): bool {
+			if(null === ($header = $this->header('Accept'))) {
+				return false;
+			}
+			
+			$accepts = explode(',', $header);
+			
+			return !isset($accepts[0]) || (('*' === $accepts[0]) || ('*/*' === $accepts[0]));
+		}
+		
+		/**
+		 * Determine if the request wants a JSON response
+		 * @return bool
+		 */
+		public function wantsJson(): bool {
+			return (
+				$this->isAjax() && $this->acceptsAnyContentType()
+			) || $this->acceptsJson();
+		}
+		
+		/**
+		 * Determine if the request client can accept a JSON response
+		 * @return bool
+		 */
+		public function acceptsJson(): bool {
+			if(null === ($header = $this->header('Accept'))) {
+				return false;
+			}
+			
+			$accepts = explode(',', $header);
+			
+			return isset($accepts[0]) && (str_contains($accepts[0], '/json') || str_contains($accepts[0], '+json'));
+		}
+		
+		/**
+		 * Determine if the request is an AJAX request
+		 * @return bool
+		 */
+		public function isAjax(): bool {
+			return 'XMLHttpRequest' === $this->header('X-Requested-With');
+		}
+		
+		/**
+		 * Determine if the request is a JSON request
+		 * @return bool
+		 */
+		public function isJson(): bool {
+			if(null === ($content_type = $this->header('Content-Type'))) {
+				return false;
+			}
+			
+			return str_contains($content_type, '/json') || str_contains($content_type, '+json');
 		}
 	}

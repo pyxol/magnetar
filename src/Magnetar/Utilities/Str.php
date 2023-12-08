@@ -30,17 +30,19 @@
 		}
 		
 		/**
-		 * Convert a string to a URL-friendly string
+		 * Convert a string to a URL-friendly slug. Example: 'This is a test' returns 'this-is-a-test'
 		 * @param string $string The string to convert
 		 * @param string $separator Optional. The separator to use. Defaults to '-'
 		 * @param bool $lowercase Optional. Whether to lowercase the string. Defaults to true
+		 * @param int $max_length Optional. The maximum length of the string. Defaults to 0 (no limit)
 		 * @param string $default Optional. The default string to return if the string is empty. Defaults to an empty string
 		 * @return string
 		 */
-		public static function mkurl(
+		public static function slug(
 			string $string,
 			string $separator='-',
 			bool $lowercase=true,
+			int $max_length=0,
 			string $default=''
 		): string {
 			if(!empty($lowercase)) {
@@ -59,6 +61,10 @@
 			
 			if('' === ($string = trim($string, $separator))) {
 				return $default;
+			}
+			
+			if($max_length && (strlen($string) > $max_length)) {
+				$string = substr($string, 0, $max_length);
 			}
 			
 			return $string;
@@ -118,7 +124,7 @@
 		 * @param array $user_encasings An array of encasings to ignore. Encasing are soft word boundaries to ignore (parenthesis, brackets around words, etc)
 		 * @return array
 		 */
-		public static function text_to_sentences(
+		public static function textToSentences(
 			string $text,
 			array $user_encasings=[]
 		): array {
@@ -287,11 +293,11 @@
 		}
 		
 		/**
-		 * Convert Document Editor styled quotes to regular quotes
+		 * Convert Smart Quotes (typically from word document editors) to standard quotes. Includes single and double quotes and their HTML entities
 		 * @param string $text String to modify
 		 * @return string
 		 */
-		public static function replaceFancyTextToWebText(string $text): string {
+		public static function fixSmartQuotes(string $text): string {
 			// Quotes cleanup
 			return strtr($text, [
 				// single quotes

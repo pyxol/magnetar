@@ -20,6 +20,7 @@
 	 * @method static ?string getHeader(string $name)
 	 * @method static bool hasHeader(string $name)
 	 * @method static bool sentHeaders()
+	 * @method static int getResponseCode()
 	 * @method static bool sent()
 	 * @method static self redirect(string $path, int $response_code)
 	 * @method static self json(mixed $body)

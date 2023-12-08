@@ -14,6 +14,8 @@
 	use Magnetar\Helpers\Facades\Facade;
 	use Magnetar\Pipeline\Pipeline;
 	use Magnetar\Http\ExceptionHandler;
+	use Magnetar\Http\MiddlewareSorter;
+	use Magnetar\Auth\Exceptions\AuthorizationException;
 	
 	class Kernel {
 		/**
@@ -31,8 +33,9 @@
 		 * @var array
 		 */
 		protected array $middlewareSorted = [
-			\Magnetar\Http\CoookieJar\Middleware\EncryptCookies::class,
-			\Magnetar\Http\CookieJar\Middleware\AddQueuedCookiesToResponse::class,
+			\Magnetar\Http\CookieJar\Middleware\EncryptCookies::class,
+			\Magnetar\Http\CookieJar\Middleware\AddPendingCookiesToResponse::class,
+			\Magnetar\Http\Middleware\ZeroLengthParametersToNull::class,
 		];
 		
 		/**
@@ -97,6 +100,16 @@
 					->send($request)
 					->through($this->middleware)
 					->then($this->sendRequestToRouter());
+				
+				// send to client
+				$response->send();
+			} catch(AuthorizationException $e) {
+				// authorization exception
+				$response = $e->getResponse();
+				
+				if(null === $response) {
+					$response = $this->handle404($e->getMessage());
+				}
 				
 				// send to client
 				$response->send();
@@ -192,10 +205,21 @@
 		 * @return void
 		 */
 		protected function sortMiddleware(): void {
+			$middlewares = $this->resolveMiddlewares();
+			
 			$this->middleware = (new MiddlewareSorter(
-				$this->middleware,
+				$middlewares,
 				$this->middlewareSorted
 			))->sorted();
+		}
+		
+		/**
+		 * Get the contextualized middleware stack
+		 * @return array
+		 */
+		protected function resolveMiddlewares(): array {
+			return $this->middleware;
+			//return array_merge($this->middleware, $this->middlewareSorted);
 		}
 		
 		/**
@@ -229,7 +253,7 @@
 		}
 		
 		/**
-		 * Handle a 404 response
+		 * Handle a 404 Page Not Found response
 		 * @param string $message The message to display
 		 * @return void
 		 */
@@ -237,6 +261,20 @@
 			// send 404 response
 			return (new Response())->responseCode(404)->body(
 				$this->app->make('theme')->tpl('errors/404', [
+					'message' => $message
+				])
+			);
+		}
+		
+		/**
+		 * Handle a 403 Unauthorized response
+		 * @param string $message The message to display
+		 * @return void
+		 */
+		public function handle403(string $message=''): Response {
+			// send 404 response
+			return (new Response())->responseCode(403)->body(
+				$this->app->make('theme')->tpl('errors/403', [
 					'message' => $message
 				])
 			);

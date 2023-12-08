@@ -18,10 +18,18 @@
 	 * @method static mixed get(string $name, mixed $default)
 	 * @method static bool isset(string $name)
 	 * @method static array parameters()
+	 * @method static void setParameter(string $name, mixed $value)
+	 * @method static void removeParameter(string $name)
 	 * @method static array cookies()
 	 * @method static string body()
 	 * @method static \Magnetar\Http\UploadedFile|array|null file(string $input_name)
 	 * @method static array files()
+	 * @method static bool accepts(array|string $content_type)
+	 * @method static bool acceptsAnyContentType()
+	 * @method static bool wantsJson()
+	 * @method static bool acceptsJson()
+	 * @method static bool isAjax()
+	 * @method static bool isJson()
 	 * 
 	 * @see \Magnetar\Http\Request
 	 */

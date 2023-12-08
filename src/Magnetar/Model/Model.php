@@ -80,6 +80,22 @@
 		}
 		
 		/**
+		 * Get the model's database table name
+		 * @return string
+		 */
+		public function getTable(): string {
+			return $this->table;
+		}
+		
+		/**
+		 * Get the model's identifier column name
+		 * @return string
+		 */
+		public function getIdentifier(): string {
+			return $this->identifier;
+		}
+		
+		/**
 		 * Check if an offset exists
 		 * @param mixed $offset The offset to check
 		 * @return bool True if the offset exists, false otherwise

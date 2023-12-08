@@ -3,33 +3,25 @@
 	
 	namespace Magnetar\Auth;
 	
-	use Exception;
-	
 	use Magnetar\Application;
-	use Magnetar\Auth\AuthenticationAdapter;
+	use Magnetar\Model\Model;
+	use Magnetar\Auth\Exceptions\AuthorizationException;
 	
 	/**
 	 * Authentication manager
-	 * 
-	 * @see \Magnetar\Auth\AuthenticationAdapter
 	 */
 	class AuthManager {
 		/**
-		 * Array of authentication adapter instances
-		 * @var array<string, AuthenticationAdapter>
+		 * The currently authenticated user
+		 * @var ?\Magnetar\Model\Model
 		 */
-		protected array $connections = [];
+		protected ?Model $user=null;
 		
 		/**
-		 * Array of authentication adapter classes
-		 * @var array
+		 * The full class name for model to use for authentication. Must extend Magnetar\Model\Model
+		 * @var string
 		 */
-		protected array $adapters = [
-			//'oauth' => OAuth\AuthenticationAdapter::class,
-			'session' => Session\AuthenticationAdapter::class,
-			'cookie' => Cookie\AuthenticationAdapter::class,
-			//'api' => API\AuthenticationAdapter::class,
-		];
+		protected ?string $user_model=null;
 		
 		/**
 		 * Constructor
@@ -41,96 +33,81 @@
 			 */
 			protected Application $app
 		) {
-			
+			$this->setDefaultUserModel();
 		}
 		
 		/**
-		 * Returns the active authentication adapter for the specified driver
-		 * @param string|null $connection_name Connection name from the auth config file. If no connection name is specified, the default connection is used
-		 * @return AuthenticationAdapter
-		 * 
-		 * @throws Exception
-		 */
-		public function connection(string|null $connection_name=null): AuthenticationAdapter {
-			// interfaces with the app's configuration to create an authentication connection
-			if(null === $connection_name) {
-				$connection_name = $this->getDefaultConnectionName() ?? throw new Exception('No default authentication connection specified');
-			}
-			
-			if(!isset($this->connections[ $connection_name ])) {
-				$this->makeConnection($connection_name);
-			}
-			
-			return $this->connections[ $connection_name ];
-		}
-		
-		/**
-		 * Creates a new authentication connection
-		 * @param string $connection_name Connection name
+		 * Set the default user model
 		 * @return void
-		 * 
-		 * @throws Exception
 		 */
-		protected function makeConnection(string $connection_name): void {
-			if(null === ($adapter_name = $this->getAdapterNameFromConnectionName($connection_name))) {
-				throw new Exception('Authentication driver not specified for connection');
+		protected function setDefaultUserModel(): void {
+			$this->user_model = $this->app->config('auth.model.class') ?? null;
+		}
+		
+		/**
+		 * Get the user model
+		 * @return \Magnetar\Model\Model
+		 * 
+		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
+		 */
+		protected function getNewModel(): Model {
+			if(null === $this->user_model) {
+				throw new AuthorizationException('Model class for authentication is not specified');
 			}
 			
-			if(null === ($adapter_class = $this->adapters[ $adapter_name ] ?? null)) {
-				throw new Exception('Invalid authentication driver');
+			return new $this->user_model;
+		}
+		
+		/**
+		 * Attempt to authenticate a user. The $credentials array should specify the columns to validate against and their values
+		 * @param mixed $credentials The object to authenticate with. Can be a Request object or an assoc array
+		 * @param bool $remember Whether to remember the user. If true, a cookie will be set
+		 * @return bool
+		 */
+		public function attempt(mixed $credentials, bool $remember=false): bool {
+			// @TODO
+			if($credentials instanceof Request) {
+				// @TODO
+			} else if(is_array($credentials)) {
+				// @TODO
 			}
 			
-			$this->connections[ $connection_name ] = new $adapter_class(
-				$connection_name,
-				$this->app['config']->get('auth.connections.'. $connection_name, [])
-			) ?? throw new Exception('Unable to start authentication driver');
+			return false;
 		}
 		
 		/**
-		 * Get the authentication adapter from the connection name. Returns null if the adapter cannot be determined from configuration
-		 * @param string $connection_name Connection name from the auth config file
-		 * @return string|null
+		 * Check if a user is authenticated
+		 * @return bool
 		 */
-		protected function getAdapterNameFromConnectionName(string $connection_name): string|null {
-			return $this->app['config']->get('auth.connections.'. $connection_name .'.adapter', null);
+		public function check(): bool {
+			// @TODO
+			return false;
 		}
 		
 		/**
-		 * Returns the default authentication connection name
-		 * @return string|null
+		 * Get the currently authenticated user
+		 * @return User
 		 */
-		public function getDefaultConnectionName(): string|null {
-			return $this->app['config']->get('auth.default', null);
+		public function user(): User {
+			// @TODO
+			
+			return new User();
+		}
+		
+		
+		public function id(): int {
+			// @TODO
+			
+			return 0;
 		}
 		
 		/**
-		 * Returns an array of driver names that have been connected to
-		 * @return array
+		 * Log the user out
+		 * @return void
 		 */
-		public function getConnected(): array {
-			return array_keys($this->connections);
+		public function logout(): void {
+			// @TODO
 		}
 		
-		/**
-		 * Returns the authentication adapter for the specified driver
-		 * @param string $connection_name
-		 * @return AuthenticationAdapter
-		 * 
-		 * @throws Exception
-		 */
-		public function adapter(string $connection_name): AuthenticationAdapter {
-			return $this->connections[ $connection_name ] ?? throw new Exception('Specified authentication driver is not connected');
-		}
 		
-		/**
-		 * Passes method calls to the default authentication adapter
-		 * @param string $method
-		 * @param array $args
-		 * @return mixed
-		 * 
-		 * @see \Magnetar\Auth\AuthenticationAdapter
-		 */
-		public function __call(string $method, array $args): mixed {
-			return $this->connection()->$method(...$args);
-		}
 	}

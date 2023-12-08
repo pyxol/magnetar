@@ -28,57 +28,42 @@
 		 * @return array
 		 */
 		public function sorted(): array {
-			return $this->sortMiddleware($this->stack, $this->prioritizedStack);
+			return $this->smoothMiddlewareStacks($this->stack, $this->prioritizedStack);
 		}
 		
 		/**
-		 * Sort the middleware by priority
-		 * @param array $stack The middleware to sort
-		 * @param array $prioritizedStack The list of middleware and their priorities
-		 * @return array
+		 * Smooth the middleware stack by replacing default prioritized middleware with extended versions, and appending any remaining middleware
+		 * @param array $stack The middleware stack from the application
+		 * @param array $prioritizedStack The prioritized middleware stack
+		 * @return array The smoothed middleware stack
 		 */
-		protected function sortMiddleware(
+		public function smoothMiddlewareStacks(
 			array $stack,
 			array $prioritizedStack=[]
 		): array {
-			foreach($stack as $index => $class) {
-				if(!is_string($class)) {
+			// start smoothed stack
+			$smoothedStack = $prioritizedStack;
+			
+			// replace default with extended versions from stack, and append any remaining middleware
+			foreach($stack as $class) {
+				if(in_array($class, $smoothedStack)) {
 					continue;
 				}
 				
-				$priorityIndex = $this->findPrioritizedIndex($class, $prioritizedStack);
-				
-				if(null !== $priorityIndex) {
-					return $this->sortMiddleware(
-						$prioritizedStack,
-						array_values($this->moveMiddleware($stack, $index, $lastIndex))
-					);
+				foreach($this->middlewareNames($class) as $name) {
+					if(in_array($name, $smoothedStack)) {
+						if($name !== $class) {
+							$smoothedStack[ array_search($name, $smoothedStack) ] = $class;
+						}
+						
+						continue 2;
+					}
 				}
 				
-				$lastIndex = $index;
-				
-				$lastPriorityIndex = $priorityIndex;
+				$smoothedStack[] = $class;
 			}
 			
-			return $stack;
-		}
-		
-		/**
-		 * Find the index of the middleware in the prioritized stack
-		 * @param string $class The middleware class
-		 * @param array $prioritizedStack The prioritized stack
-		 * @return int|null
-		 */
-		protected function findPrioritizedIndex(string $class, array $prioritizedStack): int|null {
-			foreach($this->middlewareNames($class) as $name) {
-				$index = array_search($name, $prioritizedStack);
-				
-				if($index !== false) {
-					return $index;
-				}
-			}
-			
-			return null;
+			return $smoothedStack;
 		}
 		
 		/**
@@ -91,7 +76,7 @@
 			
 			$interfaces = @class_implements($class);
 			
-			if($interfaces !== false) {
+			if(false !== $interfaces) {
 				foreach($interfaces as $interface) {
 					yield $interface;
 				}
@@ -104,20 +89,5 @@
 					yield $parent;
 				}
 			}
-		}
-		
-		/**
-		 * Move middleware from one index to another
-		 * @param array $stack The middleware stack
-		 * @param int $from The index to move the middleware from
-		 * @param int $to The index to move the middleware to
-		 * @return array
-		 */
-		protected function moveMiddleware(array $stack, int $from, int $to): array {
-			array_splice($stack, $to, 0, $stack[ $from ]);
-			
-			unset($stack[ $from + 1 ]);
-			
-			return $stack;
 		}
 	}

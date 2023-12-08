@@ -253,6 +253,14 @@
 		}
 		
 		/**
+		 * Get the response code
+		 * @return int
+		 */
+		public function getResponseCode(): int {
+			return $this->response_code;
+		}
+		
+		/**
 		 * Check if the response has been sent
 		 * @return bool
 		 */
