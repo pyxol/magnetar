@@ -35,12 +35,11 @@
 		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
 		 */
 		protected function authenticate(Request $request): void {
-			// @TODO: Implement authentication
-			if(Auth::attempt($request)) {
+			if(app('auth')->remember()) {
 				return;
 			}
 			
-			$this->unauthorized();
+			$this->unauthorized($request);
 		}
 		
 		/**
@@ -50,7 +49,7 @@
 		 * 
 		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
 		 */
-		protected function unauthorizedResponse(Request $request): void {
+		protected function unauthorized(Request $request): void {
 			throw (new AuthorizationException())->respondWith($this->redirect($request));
 		}
 		

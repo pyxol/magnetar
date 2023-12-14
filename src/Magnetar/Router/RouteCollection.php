@@ -26,6 +26,12 @@
 		protected string $namePrefix = '';
 		
 		/**
+		 * Middleware stack for this collection
+		 * @var array
+		 */
+		protected array $middleware = [];
+		
+		/**
 		 * Constructor
 		 * 
 		 * @param Router $router The router instance
@@ -45,6 +51,8 @@
 		) {
 			if(null !== $this->parentCollection) {
 				$this->pathPrefix = $this->parentCollection->formatPathWithPrefix($this->pathPrefix);
+				
+				$this->middleware($this->parentCollection->getMiddleware());
 			}
 			
 			// process callback?
@@ -185,6 +193,8 @@
 		): self {
 			//$this->routes = array_merge($this->routes, $routes);
 			foreach($routes as $route) {
+				$route->middleware($this->middleware);
+				
 				$this->add($route);
 			}
 			
@@ -211,6 +221,55 @@
 			
 			// no route matches, return null
 			return null;
+		}
+		
+		/**
+		 * Group routes together under a common prefix and pass a child router instance to the callback to run matches against. Returns the contextualized route collection
+		 * @param string $pattern The pattern to match against
+		 * @param string $method The HTTP method to match against
+		 * @return self
+		 */
+		public function group(string $pathPrefix, callable $callback): self {
+			$this->attachContext();
+			
+			// create a new route collection
+			$collection = new RouteCollection(
+				$this->router,
+				$this,
+				$pathPrefix,
+				$callback
+			);
+			
+			// add the collection to the route collection
+			$this->addRoutes($collection->routes);
+			
+			$this->detachContext();
+			
+			// return the collection
+			return $collection;
+		}
+		
+		/**
+		 * Register middleware for this collection
+		 * @param array|string $middleware The middleware to register. Array or string of middleware class names
+		 * @return self
+		 */
+		public function middleware(array|string $middleware): self {
+			$this->middleware = array_unique(array_merge($this->middleware, (array) $middleware));
+			
+			foreach($this->routes as $route) {
+				$route->middleware($middleware);
+			}
+			
+			return $this;
+		}
+		
+		/**
+		 * Get the middleware for this collection
+		 * @return array
+		 */
+		public function getMiddleware(): array {
+			return $this->middleware;
 		}
 		
 		/**

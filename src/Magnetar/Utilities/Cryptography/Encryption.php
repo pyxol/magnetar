@@ -7,24 +7,33 @@
 	 * Encryption utility static class
 	 */
 	class Encryption {
-		protected string $digest_method = 'SHA256';   // a value from openssl_get_md_methods()
-		protected string $cipher_method = 'aes-128-ctr';   // a value from openssl_get_cipher_methods()
+		/**
+		 * The digest method to use for encryption/decryption.
+		 * @var string
+		 * 
+		 * @see https://www.php.net/manual/en/function.openssl-get-md-methods.php
+		 */
+		protected string $digest_method = 'SHA256';
+		
+		/**
+		 * The cipher method to use for encryption/decryption.
+		 * @var string
+		 * 
+		 * @see https://www.php.net/manual/en/function.openssl-get-cipher-methods.php
+		 */
+		protected string $cipher_method = 'AES-256-CBC';
 		
 		/**
 		 * Encryption constructor.
 		 * @param string $salt Effectively a 'password' to an encrypted block of text. Encrypting with one salt and decrypting with another will result in garbage data.
 		 * @param string|null $digest_method Optional. A value from openssl_get_md_methods()
 		 * @param string|null $cipher_method Optional. A value from openssl_get_cipher_methods()
+		 * 
 		 * @see https://www.php.net/manual/en/function.openssl-get-md-methods.php
 		 * @see https://www.php.net/manual/en/function.openssl-get-cipher-methods.php
 		 */
 		public function __construct(
-			/**
-			 * Effectively a 'password' to an encrypted block of text. Encrypting with one salt and decrypting with another will result in garbage data.
-			 * @var string
-			 */
 			protected string $salt,
-			
 			string|null $digest_method=null,
 			string|null $cipher_method=null
 		) {

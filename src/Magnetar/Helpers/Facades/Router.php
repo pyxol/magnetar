@@ -11,6 +11,7 @@
 	 * @method static void detachContext()
 	 * @method static bool isTrailingSlashOptional()
 	 * @method static \Magnetar\Router\RouteCollection group(string $pathPrefix, callable $callback)
+	 * @method static \Magnetar\Router\RouteCollection middleware(array|string $middleware)
 	 * @method static array export()
 	 * @method static \Magnetar\Router\Route any(string $pattern, callable|array|string|null $callback)
 	 * @method static \Magnetar\Router\Route get(string $pattern, callable|array|string|null $callback)

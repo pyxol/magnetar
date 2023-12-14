@@ -281,6 +281,32 @@
 		}
 		
 		/**
+		 * Get a cookie by name
+		 * @param string $name The name of the cookie to get
+		 * @param mixed $default Optional. Return this if requested cookie isn't set
+		 * @return mixed
+		 */
+		public function cookie(string $name, mixed $default=null): mixed {
+			return $this->cookies[ $name ] ?? $default;
+		}
+		
+		/**
+		 * Update a request cookie. Generally used during cookie decryption
+		 * @param string $name The name of the cookie to update
+		 * @param mixed $value The new value of the cookie
+		 * @return void
+		 */
+		public function setCookie(string $name, mixed $value=null): void {
+			if(null === $value) {
+				unset($this->cookies[ $name ]);
+				
+				return;
+			}
+			
+			$this->cookies[ $name ] = $value;
+		}
+		
+		/**
 		 * Get the raw request body
 		 * @return string
 		 */

@@ -21,6 +21,8 @@
 	 * @method static void setParameter(string $name, mixed $value)
 	 * @method static void removeParameter(string $name)
 	 * @method static array cookies()
+	 * @method static mixed cookie(string $name, mixed $default)
+	 * @method static void setCookie(string $name, mixed $value)
 	 * @method static string body()
 	 * @method static \Magnetar\Http\UploadedFile|array|null file(string $input_name)
 	 * @method static array files()

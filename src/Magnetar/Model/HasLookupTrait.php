@@ -12,20 +12,32 @@
 	trait HasLookupTrait {
 		/**
 		 * Find a model by ID
-		 * @param int|string $id The ID of the model to find
+		 * @param array|string|int $id The ID of the model to find. If an array is passed, this will match all keys (model columns) in their values
 		 * @return static
 		 * 
 		 * @throws ModelNotFoundException
 		 */
-		private function find(int|string $id): static {
+		private function find(array|string|int $id): static {
 			// pull model data
-			$data = DB::connection($this->connection_name)
-				->table($this->table)
-				->where($this->identifier, $id)
-				->fetchOne();
+			$query = DB::connection($this->connection_name)
+				->table($this->getTable());
+			
+			if(is_array($id)) {
+				if(empty($id)) {
+					throw new Exceptions\ModelNotFoundException('Model not found in table ['. $this->getTable() .'] using empty identifier');
+				}
+				
+				foreach($id as $key => $value) {
+					$query = $query->where($key, $value);
+				}
+			} else {
+				$query = $query->where($this->getIdentifier(), $id);
+			}
+			
+			$data = $query->fetchOne();
 			
 			if(false === $data) {
-				throw new Exceptions\ModelNotFoundException('Model not found in table ['. $this->table .'] with identifier ['. $id .']');
+				throw new Exceptions\ModelNotFoundException('Model not found in table ['. $this->getTable() .'] with identifier ['. $id .']');
 			}
 			
 			return new static($data);
@@ -33,11 +45,13 @@
 		
 		/**
 		 * Find a model by ID or return a specified default value
-		 * @param int|string $id The ID of the model to find
+		 * @param array|string|int $id The ID of the model to find
 		 * @param mixed $default The default value to return if the model is not found
 		 * @return mixed
+		 * 
+		 * @see \Magnetar\Model\HasLookupTrait::find()
 		 */
-		private function findOr(int|string $id, mixed $default): mixed {
+		private function findOr(array|string|int $id, mixed $default): mixed {
 			try {
 				return $this->find($id);
 			} catch(ModelNotFoundException $e) {
@@ -47,19 +61,23 @@
 		
 		/**
 		 * Find a model by ID or return null
-		 * @param int|string $id The ID of the model to find
+		 * @param array|string|int $id The ID of the model to find
 		 * @return static|null
+		 * 
+		 * @see \Magnetar\Model\HasLookupTrait::find()
 		 */
-		private function findOrNull(int|string $id): ?static {
+		private function findOrNull(array|string|int $id): ?static {
 			return $this->findOr($id, null);
 		}
 		
 		/**
 		 * Find a model by ID or return false
-		 * @param int|string $id The ID of the model to find
+		 * @param array|string|int $id The ID of the model to find
 		 * @return static|false
+		 * 
+		 * @see \Magnetar\Model\HasLookupTrait::find()
 		 */
-		private function findOrFalse(int|string $id): static|false {
+		private function findOrFalse(array|string|int $id): static|false {
 			return $this->findOr($id, false);
 		}
 	}

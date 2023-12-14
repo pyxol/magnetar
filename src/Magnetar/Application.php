@@ -446,6 +446,9 @@
 				'files' => [
 					\Magnetar\Filesystem\Filesystem::class,
 				],
+				'hashing' => [
+					\Magnetar\Hashing\HashingManager::class,
+				],
 				'logger' => [
 					\Magnetar\Log\Logger::class,
 				],

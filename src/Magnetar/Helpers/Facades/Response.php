@@ -9,6 +9,7 @@
 	 * @method static self responseCode(int $response_code)
 	 * @method static self body(string $body)
 	 * @method static self sendBody()
+	 * @method static array cookies()
 	 * @method static self setCookie(\Magnetar\Http\CookieJar\Cookie $cookie)
 	 * @method static self send()
 	 * @method static self sendHeaders()

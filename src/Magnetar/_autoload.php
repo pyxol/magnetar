@@ -229,6 +229,17 @@
 		}
 	}
 	
+	if(!function_exists('hasher')) {
+		/**
+		 * Get the hasher instance
+		 * @param string|null $driver Optional. The name of the driver to use. Defaults to null, the default driver
+		 * @return \Magnetar\Hashing\Hasher
+		 */
+		function hasher(string|null $driver=null): \Magnetar\Hashing\Hasher {
+			return app('hashing')->driver($driver);
+		}
+	}
+	
 	if(!function_exists('json')) {
 		/**
 		 * Make a JSON Response instance with the specified data
@@ -299,6 +310,16 @@
 			array $headers=[]
 		): Response {
 			return (new Response)->responseCode($response_code)->setHeaders($headers)->body($body);
+		}
+	}
+	
+	if(!function_exists('route')) {
+		/**
+		 * Get the route instance
+		 * @return ?\Magnetar\Router\Route
+		 */
+		function route(): ?\Magnetar\Router\Route {
+			return app('route') ?? null;
 		}
 	}
 	

@@ -37,7 +37,17 @@
 		 * @return Request
 		 */
 		protected function decrypt(Request $request): Request {
-			// @TODO get cookies from request and decrypt them
+			// get cookies from request and decrypt them
+			// @TODO update to use the (to be created) cookiejar instance from request
+			$cookies = $request->cookies();
+			
+			foreach($cookies as $name => $value) {
+				if(in_array($name, $this->exempt)) {
+					continue;
+				}
+				
+				$request->cookie($name, CookieJar::decrypt($value));
+			}
 			
 			return $request;
 		}
@@ -48,7 +58,24 @@
 		 * @return Response
 		 */
 		protected function encrypt(Response $response): Response {
-			// @TODO get cookies from response and encrypt them
+			// get cookies from response and encrypt them
+			// @TODO update to use the (to be created) cookiejar instance from response->cookies()
+			$cookies = $response->cookies();
+			
+			foreach($cookies as $name => $cookie) {
+				if(in_array($name, $this->exempt)) {
+					continue;
+				}
+				
+				$cookie->setValue(
+					CookieJar::encrypt($cookie->getValue())
+				);
+				
+				$response->setCookie(
+					$name,
+					$cookie
+				);
+			}
 			
 			return $response;
 		}

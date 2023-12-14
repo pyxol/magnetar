@@ -25,6 +25,7 @@
 		public function provides(): array {
 			return [
 				AuthManager::class,
+				'auth',
 			];
 		}
 	}

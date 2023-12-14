@@ -72,6 +72,12 @@
 		protected array|null $parameters = null;
 		
 		/**
+		 * The middleware to run for this route
+		 * @var array
+		 */
+		protected array $middleware = [];
+		
+		/**
 		 * The router instance
 		 * @var Router
 		 */
@@ -428,6 +434,35 @@
 		 */
 		public function parameters(): array {
 			return $this->parameters ?? [];
+		}
+		
+		/**
+		 * Set the route's middleware
+		 * @param string|array $middleware The middleware to set
+		 * @return Route
+		 */
+		public function middleware(string|array $middleware): Route {
+			$this->middleware = array_unique(array_merge($this->middleware, (array) $middleware));
+			
+			return $this;
+		}
+		
+		/**
+		 * Reset the route's middleware
+		 * @return Route
+		 */
+		public function resetMiddleware(): Route {
+			$this->middleware = [];
+			
+			return $this;
+		}
+		
+		/**
+		 * Get the route's middleware
+		 * @return array
+		 */
+		public function getMiddleware(): array {
+			return $this->middleware;
 		}
 		
 		/**

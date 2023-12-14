@@ -75,7 +75,7 @@
 			if(0 !== $response_code) {
 				// edge-case: one could provide different response codes for each added header
 				// but only the last one (that isn't the default value) is stored for each header
-				$this->response_codes[ $header_sanitized ] = $response_code;
+				$this->response_codes[ $name_sanitized ] = $response_code;
 			}
 			
 			return $this;

@@ -18,6 +18,7 @@
 			$string = base64_encode($str);
 			$string = trim($string, '=');
 			$string = strrev($string);
+			
 			return Str::flipCase($string);
 		}
 		
@@ -29,7 +30,7 @@
 		public static function decode(string $str): string|false {
 			$string = Str::flipCase($str);
 			$string = strrev($string);
-			//$string = trim($string, '=');
+			
 			return base64_decode($string);
 		}
 	}

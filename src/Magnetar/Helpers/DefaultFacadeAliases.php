@@ -23,6 +23,7 @@
 				'Config' => Facades\Config::class,
 				'DB' => Facades\DB::class,
 				'File' => Facades\File::class,
+				'Hash' => Facades\Hash::class,
 				'Log' => Facades\Log::class,
 				'Request' => Facades\Request::class,
 				'Response' => Facades\Response::class,

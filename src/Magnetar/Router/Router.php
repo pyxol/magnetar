@@ -114,6 +114,9 @@
 				throw new RouteUnassignedException('Requested path is not assigned to a route');
 			}
 			
+			// assign route to container
+			$this->container->instance('route', $route);
+			
 			// override request parameters with matched route parameters
 			$request->assignOverrideParameters($route->parameters());
 			
@@ -155,16 +158,17 @@
 		 *  @TODO
 		 */
 		protected function gatherMiddleware(): array {
-			return $this->middleware;
-			
-			//// gather middleware from the route collection
-			//$middleware = $this->routeCollection->gatherMiddleware();
+			//// gather middleware from router
+			//$middleware = $this->middleware;
 			//
-			//// gather middleware from the router
-			//$middleware = array_merge($middleware, $this->middleware);
+			//// gather middleware from route
+			//$middleware = array_merge($middleware, route()->getMiddleware());
+			//
+			//// return the gathered middleware
+			//return $middleware;
 			
-			// return the gathered middleware
-			return $middleware;
+			// gather router middleware and route middleware, removing duplicates
+			return array_unique(array_merge($this->middleware, route()->getMiddleware()));
 		}
 		
 		/**
@@ -248,12 +252,23 @@
 		public function group(string $pathPrefix, callable $callback): RouteCollection {
 			// instantiate a route collection, pass in the context, path prefix, and callback that will
 			// use a temporary router context to define routes. Automatically reverts context when finished
-			return new RouteCollection(
+			return (new RouteCollection(
 				$this,
-				$this->routeCollection,
-				$pathPrefix,
-				$callback
-			);
+				$this->routeCollection
+			))->group($pathPrefix, $callback);
+		}
+		
+		/**
+		 * Register middleware 
+		 * @param string|array $middleware
+		 * @return RouteCollection
+		 */
+		public function middleware(string|array $middleware): RouteCollection {
+			// start a route collection and set it's middleware
+			return (new RouteCollection(
+				$this,
+				$this->routeCollection
+			))->middleware($middleware);
 		}
 		
 		/**

@@ -26,6 +26,7 @@
 				\Magnetar\Http\CookieJar\CookieJarServiceProvider::class,
 				\Magnetar\Database\DatabaseServiceProvider::class,
 				\Magnetar\Filesystem\FilesystemServiceProvider::class,
+				\Magnetar\Hashing\HashingServiceProvider::class,
 				\Magnetar\Queue\QueueServiceProvider::class,
 				\Magnetar\Template\TemplateServiceProvider::class,
 			];

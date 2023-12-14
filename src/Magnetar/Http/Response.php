@@ -91,6 +91,14 @@
 		}
 		
 		/**
+		 * Get the response's cookies
+		 * @return array<Cookie>
+		 */
+		public function cookies(): array {
+			return $this->cookies;
+		}
+		
+		/**
 		 * Send a cookie through the response. Not intended to be used directly, use cookie() instead
 		 * @param Cookie $cookie
 		 * @return self
