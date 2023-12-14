@@ -16,11 +16,11 @@
 	if(!function_exists('app')) {
 		/**
 		 * Get an instance of the application container or an instance of a class from the container
-		 * @param string|null|null $abstract Optional. The abstract class name to get an instance of. If null, the application instance is returned. Defaults to null
+		 * @param ?string $abstract Optional. The abstract class name to get an instance of. If null, the application instance is returned. Defaults to null
 		 * @param array $params Optional. Parameters to pass to the class constructor. Not used if $abstract is null. Defaults to an empty array
 		 * @return mixed
 		 */
-		function app(string|null $abstract=null, array $params=[]): mixed {
+		function app(?string $abstract=null, array $params=[]): mixed {
 			if(null === $abstract) {
 				// return the application instance
 				return Container::getInstance();
@@ -82,7 +82,7 @@
 		 * Get an instance of the cache manager
 		 * @param string $key The cache key
 		 * @param mixed $value Optional. The value to cache. If callable, this will be called and the value returned is stored in cache. If null, the stored cache value will be returned (defaults to null)
-		 * @param string|null $connection_name The name of the cache connection to use (from config/cache.php). Defaults to null, the default connection
+		 * @param ?string $connection_name The name of the cache connection to use (from config/cache.php). Defaults to null, the default connection
 		 * @return mixed
 		 * 
 		 * @see \Magnetar\Cache\Memcached\MemcachedStore::get
@@ -90,7 +90,7 @@
 		function cache(
 			string $key,
 			mixed $value,
-			string|null $connection_name=null
+			?string $connection_name=null
 		): mixed {
 			if(null !== $connection_name) {
 				return app('cache')->connection($connection_name)->get($key, $value);
@@ -128,7 +128,7 @@
 		 * Get or set a cookie. If $value is null, the cookie value from the request is returned. If $value is false, the cookie will be deleted
 		 * @param ?string $name Cookie name. If null, the cookie jar will be returned. Defaults to null
 		 * @param mixed $value Optional. Cookie value. If null, the cookie value will be returned. If false, the cookie will be deleted. Defaults to null
-		 * @param int|null $expires_seconds Optional. Number of seconds until the cookie expires. If null, the default expiration time from config will be used. Defaults to null
+		 * @param ?int $expires_seconds Optional. Number of seconds until the cookie expires. If null, the default expiration time from config will be used. Defaults to null
 		 * @param ?string $path Optional. Cookie path. If null, the default path from config will be used. Defaults to null
 		 * @param ?string $domain Optional. Cookie domain. If null, the default domain from config will be used. Defaults to null
 		 * @param ?bool $secure Optional. Whether the cookie should only be sent over HTTPS. If null, the default secure setting from config will be used. Defaults to null
@@ -232,10 +232,10 @@
 	if(!function_exists('hasher')) {
 		/**
 		 * Get the hasher instance
-		 * @param string|null $driver Optional. The name of the driver to use. Defaults to null, the default driver
+		 * @param ?string $driver Optional. The name of the driver to use. Defaults to null, the default driver
 		 * @return \Magnetar\Hashing\Hasher
 		 */
-		function hasher(string|null $driver=null): \Magnetar\Hashing\Hasher {
+		function hasher(?string $driver=null): \Magnetar\Hashing\Hasher {
 			return app('hashing')->driver($driver);
 		}
 	}
@@ -264,7 +264,7 @@
 	if(!function_exists('logs')) {
 		/**
 		 * Get the logger instance
-		 * @return Logger|null
+		 * @return Logger
 		 */
 		function logs(): Logger {
 			return app('logger');
@@ -313,6 +313,16 @@
 		}
 	}
 	
+	if(!function_exists('request')) {
+		/**
+		 * Get the request instance
+		 * @return \Magnetar\Http\Request
+		 */
+		function request(): \Magnetar\Http\Request {
+			return app('request');
+		}
+	}
+	
 	if(!function_exists('route')) {
 		/**
 		 * Get the route instance
@@ -348,10 +358,10 @@
 	if(!function_exists('theme')) {
 		/**
 		 * Use a specific theme
-		 * @param string|null $theme_name
+		 * @param ?string $theme_name
 		 * @return Theme The theme instance
 		 */
-		function theme(string|null $theme_name=null): Template {
+		function theme(?string $theme_name=null): Template {
 			return app('theme')->theme($theme_name);
 		}
 	}
