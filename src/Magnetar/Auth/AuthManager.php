@@ -27,6 +27,12 @@
 		protected ?string $user_model=null;
 		
 		/**
+		 * Status of whether the request has been checked for authentication
+		 * @var bool
+		 */
+		protected bool $requestChecked = false;
+		
+		/**
 		 * Constructor
 		 */
 		public function __construct(
@@ -48,26 +54,13 @@
 		}
 		
 		/**
-		 * Get the user model
-		 * @return \Magnetar\Model\Model
-		 * 
-		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
-		 */
-		protected function newUserModel(): Model {
-			if(null === $this->user_model) {
-				throw new AuthorizationException('Model class for authentication is not specified');
-			}
-			
-			return new $this->user_model;
-		}
-		
-		/**
 		 * Attempt to authenticate a user. The $credentials array should specify the columns to validate against and their values
-		 * @param array|null $credentials The object to authenticate with. Can be a Request object or an assoc array
-		 * @param bool $remember Whether to remember the user. If true, a cookie will be set
+		 * @param Request|array|null $credentials The object to authenticate with. Can be a Request object or an assoc array
 		 * @return bool
 		 */
-		public function attempt(array|null $credentials=null, bool $remember=false): bool {
+		public function attempt(
+			Request|array|null $credentials=null
+		): bool {
 			if(null === $credentials) {
 				$credentials = $this->app->request();
 			}
@@ -77,7 +70,9 @@
 				// use cookie to remember user
 				$cookies = $credentials->cookies();
 				
-				die(var_dump($cookies));
+				if(isset($cookies[ $this->rememberCookieName() ])) {
+					
+				}
 			} else if(is_array($credentials)) {
 				
 			}
@@ -86,37 +81,42 @@
 		}
 		
 		/**
+		 * Act as a specific user
+		 * @param Model $user The user to act as
+		 * @return void
+		 * 
+		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
+		 */
+		public function actAs(Model $user): void {
+			if(!($user instanceof $this->user_model)) {
+				throw new AuthorizationException('Invalid user model');
+			}
+			
+			$this->user = $user;
+		}
+		
+		/**
 		 * Check if a user is authenticated
 		 * @return bool
 		 */
 		public function check(): bool {
-			if(null !== $this->user) {
-				return true;
-			}
-			
-			
-			
-			return false;
+			return (null !== $this->user);
 		}
 		
 		/**
 		 * Get the currently authenticated user
-		 * @return User
+		 * @return User|null
 		 */
-		public function user(): User {
-			// @TODO
-			
-			return new User();
+		public function user(): User|null {
+			return $this->user;
 		}
 		
 		/**
-		 * Get the ID of the currently authenticated user. Returns 0 if no user is authenticated
-		 * @return int
+		 * Get the ID (key) of the currently authenticated user. Returns 0 if no user is authenticated
+		 * @return int|string
 		 */
-		public function id(): int {
-			// @TODO
-			
-			return 0;
+		public function id(): int|string {
+			return $this->user?->getKey() ?? 0;
 		}
 		
 		/**
@@ -124,12 +124,15 @@
 		 * @return void
 		 */
 		public function logout(): void {
-			// @TODO
+			$this->invalidateSession();
+			$this->invalidateRememberCookie();
 		}
 		
 		/**
 		 * Remember the user by looking up the 'remember me' cookie
 		 * @return bool
+		 * 
+		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
 		 */
 		public function remember(): bool {
 			if(null !== $this->user) {
@@ -146,7 +149,7 @@
 				$this->app['config']['app.key'],
 				null,//$this->app['config']['app.digest'],
 				$this->app['config']['app.cipher']
-			))::decrypt($raw_cookie);
+			))->decrypt($raw_cookie);
 			
 			// validate cookie
 			if(!isset($cookie['id']) || !isset($cookie['token'])) {
@@ -168,6 +171,16 @@
 			);
 			
 			return (null !== $this->user);
+		}
+		
+		/**
+		 * Invalidate the current session
+		 * @return void
+		 */
+		protected function invalidateSession(): void {
+			if(null !== $this->user) {
+				$this->user = null;
+			}
 		}
 		
 		/**
@@ -196,5 +209,19 @@
 		 */
 		protected function rememberCookieName(): string {
 			return Str::snake_case($this->app['config']['app.name'] ?? 'magnetar') .'_auth'. ((null !== $this->user_model)?'_'. substr(md5($this->user_model), 0, 10):'');
+		}
+		
+		/**
+		 * Get the user model
+		 * @return \Magnetar\Model\Model
+		 * 
+		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
+		 */
+		protected function newUserModel(): Model {
+			if(null === $this->user_model) {
+				throw new AuthorizationException('Model class for authentication is not specified');
+			}
+			
+			return new $this->user_model;
 		}
 	}

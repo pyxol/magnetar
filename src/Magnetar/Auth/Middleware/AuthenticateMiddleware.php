@@ -35,7 +35,7 @@
 		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
 		 */
 		protected function authenticate(Request $request): void {
-			if(app('auth')->remember()) {
+			if(app('auth')->attempt($request)) {
 				return;
 			}
 			
