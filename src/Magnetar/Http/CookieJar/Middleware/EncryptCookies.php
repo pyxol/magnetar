@@ -5,6 +5,7 @@
 	
 	use Closure;
 	
+	use Magnetar\Encryption\Encryption;
 	use Magnetar\Http\CookieJar\CookieJar;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\Response;
@@ -18,6 +19,26 @@
 		 * @var array
 		 */
 		protected array $exempt = [];
+		
+		/**
+		 * Whether to serialize the cookie values before encrypting
+		 * @var bool
+		 */
+		protected bool $serialize = false;
+		
+		/**
+		 * Encryption instance
+		 * @var Encryption
+		 */
+		protected Encryption $encryption;
+		
+		/**
+		 * Constructor
+		 * @param Encryption $encryption Encryption instance
+		 */
+		public function __construct(Encryption $encryption) {
+			$this->encryption = $encryption;
+		}
 		
 		/**
 		 * Handle the request
@@ -46,7 +67,20 @@
 					continue;
 				}
 				
-				$request->cookie($name, CookieJar::decrypt($value));
+				try {
+					$request->cookie(
+						$name,
+						$this->encryption->decrypt(
+							$value,
+							$this->serialize
+						)
+					);
+				} catch(DecryptionException $e) {
+					$request->cookie(
+						$name,
+						null
+					);
+				}
 			}
 			
 			return $request;
@@ -67,13 +101,14 @@
 					continue;
 				}
 				
-				$cookie->setValue(
-					CookieJar::encrypt($cookie->getValue())
-				);
-				
 				$response->setCookie(
 					$name,
-					$cookie
+					$cookie->setValue(
+						$this->encryption->encrypt(
+							$cookie->getValue(),
+							$this->serialize
+						)
+					)
 				);
 			}
 			

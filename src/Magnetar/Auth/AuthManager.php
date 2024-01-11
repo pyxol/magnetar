@@ -7,7 +7,7 @@
 	use Magnetar\Model\Model;
 	use Magnetar\Auth\Exceptions\AuthorizationException;
 	use Magnetar\Http\Request;
-	use Magnetar\Utilities\Cryptography\Encryption;
+	use Magnetar\Encryption\Encryption;
 	use Magnetar\Utilities\Str;
 	
 	/**
@@ -129,10 +129,19 @@
 		}
 		
 		/**
+		 * Get the encryption instance
+		 * @return Encryption
+		 */
+		protected function encrypter(): Encryption {
+			return $this->app->make('encryption');
+		}
+		
+		/**
 		 * See if we remember the user by looking up the 'remember me' cookie
 		 * @return bool
 		 * 
 		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
+		 * @throws \Magnetar\Encryption\Exceptions\DecryptionException
 		 */
 		public function remember(): bool {
 			if(null !== $this->user) {
@@ -145,11 +154,7 @@
 			}
 			
 			// decode and decrypt cookie
-			$cookie = (new Encryption(
-				$this->app['config']['app.key'],
-				$this->app['config']['app.digest'],
-				$this->app['config']['app.cipher']
-			))->decrypt($raw_cookie);
+			$cookie = $this->encrypter()->decrypt($raw_cookie);
 			
 			// validate cookie
 			if(!isset($cookie['id']) || !isset($cookie['token'])) {

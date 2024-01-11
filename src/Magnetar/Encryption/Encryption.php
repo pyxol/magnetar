@@ -4,19 +4,21 @@
 	namespace Magnetar\Encryption;
 	
 	use Magnetar\Encryption\Exceptions\EncryptionException;
-	use Magnetar\Utilities\Str;
+	use Magnetar\Encryption\Exceptions\DecryptionException;
 	
 	/**
-	 * Encryption utility static class
+	 * Encryption class
 	 */
 	class Encryption {
+		protected string $key = '';
+		
 		/**
-		 * The digest method to use for encryption/decryption.
+		 * The digest method to use for mac generation.
 		 * @var string
 		 * 
-		 * @see https://www.php.net/manual/en/function.openssl-get-md-methods.php
+		 * @see https://www.php.net/manual/en/function.hash-hmac-algos.php
 		 */
-		protected string $digest_method = 'SHA256';
+		protected string $digest_algo = 'sha256';
 		
 		/**
 		 * The cipher method to use for encryption/decryption.
@@ -24,52 +26,62 @@
 		 * 
 		 * @see https://www.php.net/manual/en/function.openssl-get-cipher-methods.php
 		 */
-		protected string $cipher_method = 'AES-256-CBC';
+		protected string $cipher_method = 'aes-256-cbc';
 		
 		/**
 		 * Encryption constructor.
-		 * @param string $salt Effectively a 'password' to an encrypted block of text. Encrypting with one salt and decrypting with another will result in garbage data.
-		 * @param string|null $digest_method Optional. A value from openssl_get_md_methods()
-		 * @param string|null $cipher_method Optional. A value from openssl_get_cipher_methods()
+		 * @param string $key The key to use for encryption/decryption. If the key is prefixed with "base64:", it will be base64 decoded.
+		 * @param string|null $cipher_method Optional. A value from \openssl_get_cipher_methods()
+		 * @param string|null $digest_algo Optional. A value from \hash_hmac_algos()
 		 * 
 		 * @see https://www.php.net/manual/en/function.openssl-get-md-methods.php
 		 * @see https://www.php.net/manual/en/function.openssl-get-cipher-methods.php
 		 */
 		public function __construct(
-			protected string $salt,
-			string|null $digest_method=null,
-			string|null $cipher_method=null
+			string $key='',
+			string|null $cipher_method=null,
+			string|null $digest_algo=null
 		) {
-			if(str_contains($this->salt, 'base64:')) {
-				$this->salt = base64_decode(substr(trim($this->salt), 7));
-			}
-			
-			if(null !== $digest_method) {
-				$this->digest_method = $digest_method;
+			if(str_contains($this->key, 'base64:')) {
+				$this->key = base64_decode(substr(trim($key), 7));
+			} else {
+				$this->key = $key;
 			}
 			
 			if(null !== $cipher_method) {
-				$this->cipher_method = $cipher_method;
+				$this->cipher_method = strtolower($cipher_method);
+			}
+			
+			if(null !== $digest_algo) {
+				$this->digest_algo = $digest_algo;
 			}
 		}
 		
 		/**
-		 * Encrypt a string with config-based key/settings that can passed on and be decrypted via Encryption->decrypt. Returns false on error (usually from bad digest_method/cipher_method settings)
-		 * @param string $string String to encrypt
+		 * Generate a random key
+		 * @return string
+		 */
+		public static function generateKey(): string {
+			return base64_encode(random_bytes(32));
+		}
+		
+		/**
+		 * Encrypt a variable using this app's encryption config
+		 * @param mixed $value What's being encrypted
 		 * @param bool $serialize Whether to serialize the string before encrypting it
-		 * @return string|false
+		 * @return string
 		 * 
 		 * @throws \Magnetar\Encryption\Exceptions\EncryptionException
 		 */
-		public function encrypt(string $string, bool $serialize=true): string|false {
+		public function encrypt(string $string, bool $serialize=true): string {
 			// generate initialization vector
-			$iv = random_bytes(openssl_cipher_iv_length($this->cipher_method));
+			$iv = random_bytes(openssl_cipher_iv_length(strtolower($this->cipher_method)));
 			
 			// encrypt value
 			$value = openssl_encrypt(
 				$serialize ? serialize($string) : $string,
 				strtolower($this->cipher_method),
-				openssl_digest($this->salt, $this->digest_method, true),
+				$this->key,
 				0,
 				$iv,
 				$tag
@@ -86,6 +98,7 @@
 			// generate mac
 			$mac = $this->hash($iv, $value);
 			
+			// package into a base64 encoded json string
 			$json = json_encode(compact('iv', 'value', 'mac', 'tag'), JSON_UNESCAPED_SLASHES);
 			
 			if(JSON_ERROR_NONE !== json_last_error()) {
@@ -99,42 +112,48 @@
 		 * Decrypt a previously encrypted string from Encryption->encrypt. Returns false on error (mostly from wrong encrypted data or a changed encryption key, or sometimes from bad digest_method/cipher_method settings)
 		 * @param string $payload Payload to decrypt
 		 * @param bool $unserialize Whether to unserialize the decrypted string
-		 * @return string|false
+		 * @return mixed
 		 * 
-		 * @throws \Magnetar\Encryption\Exceptions\EncryptionException
+		 * @throws \Magnetar\Encryption\Exceptions\DecryptionException
 		 */
-		public function decrypt(string $payload, bool $unserialize=true): string|false {
+		public function decrypt(string $payload, bool $unserialize=true): mixed {
 			$payload = json_decode(base64_decode($payload), true);
 			
 			if(JSON_ERROR_NONE !== json_last_error()) {
-				throw new EncryptionException('Failed to decode encrypted data');
+				throw new DecryptionException('Encrypted data does not appear to be formed properly');
 			}
 			
-			if(!isset($payload['iv'], $payload['value'], $payload['mac'], $payload['tag'])) {
-				throw new EncryptionException('Failed to decode encrypted data');
+			if(!$this->isValidPayload($payload)) {
+				throw new DecryptionException('Failed to decode encrypted data');
 			}
 			
-			// decode iv and tag
+			// decode iv
 			$iv = base64_decode($payload['iv']);
-			$tag = base64_decode($payload['tag']);
+			
+			// decode and validate tag
+			$tag = (!empty($payload['tag'])?base64_decode($payload['tag']):'');
+			
+			if(!$this->isValidTag($tag)) {
+				throw new DecryptionException('Failed to decode tag');
+			}
 			
 			// validate mac
 			if(!$this->isValidMac($payload)) {
-				throw new EncryptionException('Failed to validate mac');
+				throw new DecryptionException('Failed to validate mac');
 			}
 			
 			// decrypt value
 			$value = openssl_decrypt(
 				$payload['value'],
 				strtolower($this->cipher_method),
-				openssl_digest($this->salt, $this->digest_method, true),
+				$this->key,
 				0,
 				$iv,
 				$tag
 			);
 			
 			if(false === $value) {
-				throw new EncryptionException('Failed to decrypt data');
+				throw new DecryptionException('Failed to decrypt data');
 			}
 			
 			return ($unserialize?unserialize($value):$value);
@@ -148,9 +167,9 @@
 		 */
 		protected function hash(string $iv, string $value): string {
 			return hash_hmac(
-				'sha256',
+				$this->digest_algo,
 				$iv . $value,
-				$this->salt
+				$this->key
 			);
 		}
 		
@@ -177,6 +196,17 @@
 			if(strlen(base64_decode($payload['iv'], true)) !== openssl_cipher_iv_length(strtolower($this->cipher_method))) {
 				return false;
 			}
+			
+			return true;
+		}
+		
+		/**
+		 * Validate the mac of a decrypted payload
+		 * @param array $payload Payload to validate
+		 * @return bool
+		 */
+		protected function isValidTag(string $tag): bool {
+			// @TODO - validate length of tag based on cipher method
 			
 			return true;
 		}

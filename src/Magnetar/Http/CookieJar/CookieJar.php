@@ -6,7 +6,6 @@
 	use Magnetar\Application;
 	use Magnetar\Http\Request;
 	use Magnetar\Http\CookieJar\Cookie;
-	use Magnetar\Utilities\Cryptography\Scramble;
 	
 	class CookieJar {
 		/**
@@ -285,25 +284,5 @@
 		 */
 		public function getDefaultHttpOnly(): bool {
 			return $this->default_httponly;
-		}
-		
-		/**
-		 * Encrypt a cookie value
-		 * @param string $cookie_value The cookie value
-		 * @return string
-		 */
-		public static function encrypt(string $cookie_value): string {
-			// @TODO add mac, iv, etc
-			return Scramble::encode($cookie_value);
-		}
-		
-		/**
-		 * Decrypt a raw cookie
-		 * @param string $cookie_value The raw cookie value
-		 * @return string|false
-		 */
-		public static function decrypt(string $cookie_value): string|false {
-			// @TODO make use of changes from encrypt()
-			return Scramble::decode($cookie_value);
 		}
 	}

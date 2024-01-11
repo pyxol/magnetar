@@ -21,8 +21,6 @@
 	 * @method static string getDefaultDomain()
 	 * @method static bool getDefaultSecure()
 	 * @method static bool getDefaultHttpOnly()
-	 * @method static string encrypt(string $cookie_value)
-	 * @method static string|false decrypt(string $cookie_value)
 	 * 
 	 * @see \Magnetar\Http\CookieJar\CookieJar
 	 */

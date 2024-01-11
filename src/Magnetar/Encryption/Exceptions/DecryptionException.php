@@ -6,8 +6,8 @@
 	use Exception;
 	
 	/**
-	 * Exception thrown during encryption
+	 * Exception thrown during decryption
 	 */
-	class EncryptionException extends Exception {
+	class DecryptionException extends Exception {
 		
 	}

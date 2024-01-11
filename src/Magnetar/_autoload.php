@@ -185,14 +185,14 @@
 	if(!function_exists('decrypt')) {
 		/**
 		 * Decrypt a string that was encrypted via Encryption->encrypt
-		 * @param string $string String to decrypt
+		 * @param string $payload The encrypted payload
 		 * @param bool $unserialize Whether to unserialize the decrypted string
-		 * @return string|false
+		 * @return mixed
 		 * 
 		 * @throws \Magnetar\Encryption\Exceptions\EncryptionException
 		 */
-		function decrypt(string $string, bool $unserialize=true): string|false {
-			return app('encryption')->decrypt($string, $unserialize);
+		function decrypt(string $payload, bool $unserialize=true): mixed {
+			return app('encryption')->decrypt($payload, $unserialize);
 		}
 	}
 	
@@ -222,15 +222,15 @@
 	
 	if(!function_exists('encrypt')) {
 		/**
-		 * Encrypt a string with config-based key/settings that can passed on and be decrypted via Encryption->decrypt. Returns false on error (usually from bad digest_method/cipher_method settings)
-		 * @param string $string String to encrypt
+		 * Encrypt a variable using this app's encryption config
+		 * @param mixed $value What's being encrypted
 		 * @param bool $serialize Whether to serialize the string before encrypting it
-		 * @return string|false
+		 * @return string
 		 * 
 		 * @throws \Magnetar\Encryption\Exceptions\EncryptionException
 		 */
-		function encrypt(string $string, bool $serialize=true): string|false {
-			return app('encryption')->encrypt($string, $serialize);
+		function encrypt(mixed $value, bool $serialize=true): string {
+			return app('encryption')->encrypt($value, $serialize);
 		}
 	}
 	

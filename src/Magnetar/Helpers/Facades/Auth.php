@@ -6,10 +6,11 @@
 	use Magnetar\Helpers\Facades\Facade;
 	
 	/**
-	 * @method static bool attempt(?array $credentials, bool $remember)
+	 * @method static bool attempt(\Magnetar\Http\Request|array|null $credentials)
+	 * @method static void actAs(\Magnetar\Model\Model $user)
 	 * @method static bool check()
-	 * @method static \Magnetar\Auth\User user()
-	 * @method static int id()
+	 * @method static ?\Magnetar\Auth\User user()
+	 * @method static string|int id()
 	 * @method static void logout()
 	 * @method static bool remember()
 	 * 

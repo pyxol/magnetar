@@ -18,8 +18,8 @@
 			$this->app->singleton('encryption', function() {
 				return new Encryption(
 					$this->app->config['app.key'],
-					$this->app->config['app.digest'] ?? 'sha256',
-					$this->app->config['app.cipher']
+					$this->app->config['app.cipher_method'],
+					$this->app->config['app.digest_algo'] ?? 'sha256'
 				);
 			});
 		}
