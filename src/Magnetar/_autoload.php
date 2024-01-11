@@ -182,6 +182,20 @@
 		}
 	}
 	
+	if(!function_exists('decrypt')) {
+		/**
+		 * Decrypt a string that was encrypted via Encryption->encrypt
+		 * @param string $string String to decrypt
+		 * @param bool $unserialize Whether to unserialize the decrypted string
+		 * @return string|false
+		 * 
+		 * @throws \Magnetar\Encryption\Exceptions\EncryptionException
+		 */
+		function decrypt(string $string, bool $unserialize=true): string|false {
+			return app('encryption')->decrypt($string, $unserialize);
+		}
+	}
+	
 	if(!function_exists('display')) {
 		/**
 		 * Generate a Response by processing a template from the active theme
@@ -203,6 +217,20 @@
 		 */
 		function display_tpl(string $template_name, mixed $data=[]): void {
 			print Theme::tpl($template_name, $data);
+		}
+	}
+	
+	if(!function_exists('encrypt')) {
+		/**
+		 * Encrypt a string with config-based key/settings that can passed on and be decrypted via Encryption->decrypt. Returns false on error (usually from bad digest_method/cipher_method settings)
+		 * @param string $string String to encrypt
+		 * @param bool $serialize Whether to serialize the string before encrypting it
+		 * @return string|false
+		 * 
+		 * @throws \Magnetar\Encryption\Exceptions\EncryptionException
+		 */
+		function encrypt(string $string, bool $serialize=true): string|false {
+			return app('encryption')->encrypt($string, $serialize);
 		}
 	}
 	

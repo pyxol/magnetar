@@ -160,7 +160,7 @@
 		 * @return Route
 		 */
 		public function makeRoute(
-			HTTPMethodEnum|array|string|null $method=null,
+			HTTPMethodEnum|array|string|null $method,
 			string $pattern
 		): Route {
 			// create and add the route to the collection

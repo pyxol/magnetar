@@ -198,14 +198,11 @@
 		 * @return Route The generated route
 		 */
 		protected function makeRoute(
-			HTTPMethodEnum|array|string|null $method=null,
+			HTTPMethodEnum|array|string|null $method,
 			string $pattern
 		): Route {
 			// create a route using the route collection
-			return $this->routeCollection->makeRoute(
-				$method,
-				$pattern
-			);
+			return $this->routeCollection->makeRoute($method, $pattern);
 		}
 		
 		/**

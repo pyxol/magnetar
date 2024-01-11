@@ -129,7 +129,7 @@
 		}
 		
 		/**
-		 * Remember the user by looking up the 'remember me' cookie
+		 * See if we remember the user by looking up the 'remember me' cookie
 		 * @return bool
 		 * 
 		 * @throws \Magnetar\Auth\Exceptions\AuthorizationException
@@ -147,7 +147,7 @@
 			// decode and decrypt cookie
 			$cookie = (new Encryption(
 				$this->app['config']['app.key'],
-				null,//$this->app['config']['app.digest'],
+				$this->app['config']['app.digest'],
 				$this->app['config']['app.cipher']
 			))->decrypt($raw_cookie);
 			
