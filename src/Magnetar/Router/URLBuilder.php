@@ -46,6 +46,18 @@
 		protected string $path = '';
 		
 		/**
+		 * Path prefix
+		 * @var string|null
+		 */
+		protected string|null $pathPrefix = null;
+		
+		/**
+		 * Path suffix
+		 * @var string|null
+		 */
+		protected string|null $pathSuffix = null;
+		
+		/**
 		 * Named parameters (?param=value&param2=value2)
 		 * @var array
 		 */
@@ -161,6 +173,28 @@
 		}
 		
 		/**
+		 * Prefix the path
+		 * @param string $path The path to prefix with
+		 * @return self
+		 */
+		public function prefixPath(string|null $path=null): self {
+			$this->pathPrefix = $path;
+			
+			return $this;
+		}
+		
+		/**
+		 * Suffix the path
+		 * @param string $path The path to suffix with
+		 * @return self
+		 */
+		public function suffixPath(string|null $path=null): self {
+			$this->pathSuffix = $path;
+			
+			return $this;
+		}
+		
+		/**
 		 * Store an array of named parameters
 		 * @param array $params Associative array of parameters
 		 * @return self
@@ -217,11 +251,15 @@
 		 */
 		public function getCachedScheme(): string {
 			if(null === static::$cachedScheme) {
-				$scheme = parse_url($this->app['config']->get('app.url', ''), PHP_URL_SCHEME);
-				
-				if((false === $scheme) || (null === $scheme)) {
-					// default to http
-					$scheme = $_SERVER['REQUEST_SCHEME'] ?? $_SERVER['SERVER_PROTOCOL'] ?? 'http';
+				if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && (('https' === $_SERVER['HTTP_X_FORWARDED_PROTO']) || ('http' === $_SERVER['HTTP_X_FORWARDED_PROTO']))) {
+					$scheme = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
+				} else {
+					//$scheme = parse_url($this->app['config']->get('app.url', ''), PHP_URL_SCHEME);
+					//
+					//if((false === $scheme) || (null === $scheme)) {
+						// default to http if we can't get the scheme from the environment
+						$scheme = $_SERVER['REQUEST_SCHEME'] ?? $_SERVER['SERVER_PROTOCOL'] ?? 'http';
+					//}
 				}
 				
 				static::$cachedScheme = $scheme;
@@ -281,9 +319,19 @@
 			// add a trailing slash
 			$url .= '/';
 			
+			// attach the path prefix
+			if(null !== $this->pathPrefix) {
+				$url .= ltrim($this->pathPrefix, '/');
+			}
+			
 			// add the path
 			if('' !== $this->path) {
 				$url .= ltrim($this->path, '/');
+			}
+			
+			// attach the path suffix
+			if(null !== $this->pathSuffix) {
+				$url .= $this->pathSuffix;
 			}
 			
 			// add params

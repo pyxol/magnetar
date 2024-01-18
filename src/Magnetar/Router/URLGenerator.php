@@ -33,7 +33,7 @@
 		/**
 		 * Generate a URLBuilder instance from a URL
 		 * @param string $url The URL to use
-		 * @return URLBuilder
+		 * @return \Magnetar\Router\URLBuilder
 		 */
 		public function from(string $url): URLBuilder {
 			return (new URLBuilder($this->app))->make($url);

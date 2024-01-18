@@ -50,8 +50,10 @@
 		 * 
 		 * @todo implement
 		 */
-		function asset(string $rel_path=''): string {
-			return URL::to('/static/' . $rel_path);
+		function asset(string $rel_path='', array $params=[]): string {
+			return (string)URL::from( app('config')->get('app.asset_url') ?? app('config')->get('app.url') )
+				->path($rel_path)
+				->params($params);
 		}
 	}
 	
