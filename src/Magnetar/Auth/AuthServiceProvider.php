@@ -4,13 +4,12 @@
 	namespace Magnetar\Auth;
 	
 	use Magnetar\Helpers\ServiceProvider;
-	use Magnetar\Helpers\DeferrableServiceInterface;
 	use Magnetar\Auth\AuthManager;
 	
 	/**
 	 * Auth service provider
 	 */
-	class AuthServiceProvider extends ServiceProvider implements DeferrableServiceInterface {
+	class AuthServiceProvider extends ServiceProvider {
 		/**
 		 * {@inheritDoc}
 		 */

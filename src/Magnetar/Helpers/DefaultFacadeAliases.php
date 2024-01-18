@@ -19,12 +19,17 @@
 		) {
 			$this->aliases = $aliases ?? [
 				'App' => Facades\App::class,
+				'Auth' => Facades\Auth::class,
 				'Cache' => Facades\Cache::class,
 				'Config' => Facades\Config::class,
+				'Cookie' => Facades\Cookie::class,
 				'DB' => Facades\DB::class,
+				'Encrypt' => Facades\Encrypt::class,
 				'File' => Facades\File::class,
 				'Hash' => Facades\Hash::class,
 				'Log' => Facades\Log::class,
+				'Pipeline' => Facades\Pipeline::class,
+				'Queue' => Facades\Queue::class,
 				'Request' => Facades\Request::class,
 				'Response' => Facades\Response::class,
 				'Router' => Facades\Router::class,

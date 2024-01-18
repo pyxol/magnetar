@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 	
-	namespace Magnetar\Filesystem;
+	namespace Magnetar\Pipeline;
 	
 	use Magnetar\Helpers\ServiceProvider;
 	use Magnetar\Filesystem\ConnectionManager;

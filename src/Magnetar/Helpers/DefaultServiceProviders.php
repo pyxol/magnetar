@@ -28,7 +28,10 @@
 				\Magnetar\Encryption\EncryptionServiceProvider::class,
 				\Magnetar\Filesystem\FilesystemServiceProvider::class,
 				\Magnetar\Hashing\HashingServiceProvider::class,
+				\Magnetar\Log\LogServiceProvider::class,
+				\Magnetar\Pipeline\PipelineServiceProvider::class,
 				\Magnetar\Queue\QueueServiceProvider::class,
+				\Magnetar\Router\RouterServiceProvider::class,
 				\Magnetar\Template\TemplateServiceProvider::class,
 			];
 		}
